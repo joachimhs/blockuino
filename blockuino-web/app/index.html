@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Blockuino.no</title>
+
+    <meta property="og:title" content="Blockuino - Blokk basert Arduino programmering!">
+    <meta property="og:locale" content="no_nb">
+    <meta property="og:site_name" content="Blockuino">
+    <meta name="description" content="Blockuino er et blokk-basert kode-genereringsverktøy. Ved å bruke Blockuino kan du enkelt generere kode som du kan lime direkte inn i Arduino IDE. Blockuino er tilpasset barn, unge og nybegynnere!">
+    <meta property="og:description" content="Blockuino er et blokk-basert kode-genereringsverktøy. Ved å bruke Blockuino kan du enkelt generere kode som du kan lime direkte inn i Arduino IDE. Blockuino er tilpasset barn, unge og nybegynnere!">
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="http://blockuino.no/blockuino_og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script>
+      var ga;
+    </script>
+
+    {{content-for 'head'}}
+
+    <link rel="stylesheet" href="assets/vendor.css">
+    <link rel="stylesheet" href="assets/blockuino-web.css">
+
+    {{content-for 'head-footer'}}
+  </head>
+  <body>
+    {{content-for 'body'}}
+
+    <script src="assets/vendor.js"></script>
+    <script src="assets/blockuino-web.js"></script>
+
+    {{content-for 'body-footer'}}
+  </body>
+</html>

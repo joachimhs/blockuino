@@ -1,0 +1,6 @@
+blockuino-web/.DS_Store
+.idea
+dist
+tmp
+bower_components
+node_modules

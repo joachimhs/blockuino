@@ -1,0 +1,43 @@
+<xml id="toolboxSetup" style="display: none">
+    <category name="Struktur">
+        <block type="arduino_setup"></block>
+        <block type="arduino_loop"></block>
+    </category>
+    <category name="Styring">
+        <category name="Hvis">
+            <block type="controls_if"></block>
+            <block type="controls_if">
+                <mutation else="1"></mutation>
+            </block>
+            <block type="controls_if">
+                <mutation elseif="1" else="1"></mutation>
+            </block>
+        </category>
+        <category name="Gjentakelser">
+            <block type="controls_repeat_ext"></block>
+            <block type="arduino_for"></block>
+        </category>
+    </category>
+    <category name="Operatorer">
+        <block type="logic_compare"></block>
+        <block type="logic_operation"></block>
+        <block type="logic_negate"></block>
+        <block type="logic_boolean"></block>
+        <block type="logic_null"></block>
+    </category>
+    <category name="Maskinvare kontroll">
+        <block type="arduino_pinmode"></block>
+        <block type="arduino_digitalWrite"></block>
+        <block type="arduino_delay"></block>
+    </category>
+    <category name="Funksjoner">
+        <block type="arduino_declare_function"></block>
+        <block type="arduino_function"></block>
+    </category>
+    <category name="Variabler">
+        <block type="arduino_declare_variable"></block>
+        <block type="arduino_set_variable"></block>
+        <block type="arduino_variable"></block>
+        <block type="arduino_variable_value"></block>
+    </category>
+</xml>

@@ -1,0 +1,13 @@
+<div class="row header-area">
+    <div class="col-sm-12 text-center">
+        {{#link-to "index"}}
+            <img src="/blockuino_logo.png" class="logo">
+        {{/link-to}}
+      {{link-to "Hjem" "index" classNames="header-link"}}
+      {{link-to "Nyheter" "news" classNames="header-link"}}
+      {{link-to "Dokumentasjon" "docs" classNames="header-link"}}
+        <a href="https://github.com/joachimhs/blockuino" class="header-link">GitHub</a>
+    </div>
+</div>
+
+{{outlet}}

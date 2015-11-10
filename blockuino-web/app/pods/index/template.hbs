@@ -1,0 +1,20 @@
+<div class="row">
+    <div class="col-md-7">
+      {{blockly-comp generatedCode=blocklyCode}}
+    </div>
+    <div class="col-md-5">
+      {{highlight-code sourceCode=blocklyCode}}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="text-right right-margin-small">
+            <a href="https://kodegenet.no"><img src="/kodegenet_logo.png" class="kodegenet-logo" /></a>
+            <br />
+            Developed by Joachim Haagen Skeie, Kodegenet AS
+        </div>
+    </div>
+</div>
+
+{{outlet}}
