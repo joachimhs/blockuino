@@ -48,6 +48,54 @@ Blockly.Arduino['arduino_digitalWrite'] = function (block) {
   return code;
 };
 
+Blockly.Blocks['arduino_digital_write_variable'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Sett pin");
+    this.appendValueInput("PIN")
+      .setCheck(null);
+    this.appendDummyInput()
+      .appendField("til");
+    this.appendValueInput("PINTYPE");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(120);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_digital_write_variable'] = function(block) {
+  var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
+  var value_pintype = Blockly.Arduino.getValueForVariable(block, 'PINTYPE', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'digitalWrite(' + value_pin + ', ' + value_pintype + ");";
+  return code;
+};
+
+Blockly.Blocks['arduino_digital_read'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Les fra pin: ");
+    this.appendValueInput("PIN")
+      .setCheck(null);
+    this.setInputsInline(true);
+    this.setOutput(true);
+    this.setColour(120);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_digital_read'] = function(block) {
+  var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'digitalRead(' + value_pin + ');';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.Arduino.ORDER_NONE];
+};
+
 Blockly.Blocks['arduino_setup'] = {
   init: function () {
     this.appendStatementInput("setup")
@@ -59,6 +107,33 @@ Blockly.Blocks['arduino_setup'] = {
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
+};
+
+Blockly.Blocks['arduino_analog_write'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Skriv til pin (PWM):");
+    this.appendValueInput("PIN")
+      .setCheck(null);
+    this.appendDummyInput()
+      .appendField("med verdi:");
+    this.appendValueInput("VALUE")
+      .setCheck("Number");
+    this.setInputsInline(false);
+    this.setOutput(true);
+    this.setColour(120);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_analog_write'] = function(block) {
+  var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
+  var value_value = Blockly.Arduino.getValueForVariable(block, 'VALUE', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'analogWrite(' + value_pin + ', ' + value_value + ');';
+  // TODO: Change ORDER_NONE to the correct strength.
+  return [code, Blockly.Arduino.ORDER_NONE];
 };
 
 Blockly.Arduino['arduino_setup'] = function (block) {
@@ -566,4 +641,28 @@ Blockly.Arduino['arduino_for'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
   var code = 'for (int index = ' + value_from + "; index < " + value_to + '; index++) { ' + statements_statement + '};';
   return code;
+};
+
+Blockly.Arduino['math_arithmetic'] = function(block) {
+  // Basic arithmetic operators, and power.
+  var OPERATORS = {
+    'ADD': [' + ', Blockly.Arduino.ORDER_ADDITION],
+    'MINUS': [' - ', Blockly.Arduino.ORDER_SUBTRACTION],
+    'MULTIPLY': [' * ', Blockly.Arduino.ORDER_MULTIPLICATION],
+    'DIVIDE': [' / ', Blockly.Arduino.ORDER_DIVISION],
+    'POWER': [null, Blockly.Arduino.ORDER_COMMA]  // Handle power separately.
+  };
+  var tuple = OPERATORS[block.getFieldValue('OP')];
+  var operator = tuple[0];
+  var order = tuple[1];
+  var argument0 = Blockly.Arduino.getValueForVariable(block, 'A', order) || '0';
+  var argument1 = Blockly.Arduino.getValueForVariable(block, 'B', order) || '0';
+  var code;
+  // Power in JavaScript requires a special case since it has no operator.
+  if (!operator) {
+    code = 'Math.pow(' + argument0 + ', ' + argument1 + ')';
+    return [code, Blockly.Arduino.ORDER_FUNCTION_CALL];
+  }
+  code = argument0 + operator + argument1;
+  return [code, order];
 };

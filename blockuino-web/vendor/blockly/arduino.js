@@ -115,6 +115,18 @@ Blockly.Arduino.init = function(workspace) {
   Blockly.Arduino.definitions_['variables'] = defvars.join('\n');
 };
 
+Blockly.Arduino.getValueForVariable = function(block, variable, order) {
+  var retValue = Blockly.Arduino.valueToCode(block, variable, order);
+
+  if (retValue.match(/^[0-9]+$/) != null) {
+    //return number as is
+  } else if (retValue === 'e' || retValue.length === 1 || retValue === 'string') {
+    retValue = Blockly.Arduino.statementToCode(block, variable);
+  }
+
+  return retValue;
+};
+
 /**
  * Prepend the generated code with the variable definitions.
  * @param {string} code Generated code.
