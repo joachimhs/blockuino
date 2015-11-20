@@ -3,6 +3,12 @@ var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
+
+    emberCliFontAwesome: {
+      useScss: true
+    }
+
+
     // Add options here
   });
 
@@ -31,8 +37,20 @@ module.exports = function(defaults) {
 
   app.import('bower_components/js-beautify/js/lib/beautify.js');
 
+  app.import('vendor/lz-string/lz-string.js');
+  app.import('vendor/filesaver/filesaver.js');
+
   app.import('bower_components/bootstrap/dist/js/bootstrap.min.js');
   app.import('bower_components/bootstrap/dist/css/bootstrap.css');
+
+
+  app.import('bower_components/font-awesome/css/font-awesome.css');
+  app.import('bower_components/font-awesome/fonts/fontAwesome.otf');
+  app.import('bower_components/font-awesome/fonts/fontawesome-webfont.eot');
+  app.import('bower_components/font-awesome/fonts/fontawesome-webfont.svg');
+  app.import('bower_components/font-awesome/fonts/fontawesome-webfont.ttf');
+  app.import('bower_components/font-awesome/fonts/fontawesome-webfont.woff');
+  app.import('bower_components/font-awesome/fonts/fontawesome-webfont.woff2');
 
 
   return app.toTree();

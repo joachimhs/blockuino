@@ -1,12 +1,80 @@
 .header-area {
 }
 
+.generated-code {
+  max-height: 75vh;
+  min-height: 75vh;
+  height: 75vh;
+  overflow: scroll;
+  width: 100%;
+  min-width: 100%
+}
+
 .blockly-setup {
   width: 100%;
-  height: 82vh;
+  height: 75vh;
   border: 1px #000 solid;
 }
 
+.tilbakemelding-area {
+  margin-top: 20px;
+  margin-left: 20px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.programming-area {
+  margin-left: 60px;
+}
+
+.vertical-menu-bar {
+  position: absolute;
+
+  left: 0px;
+  width: 55px;
+  height: 75vh;
+  background-color: #735B4D;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.vertical-menu-item {
+  width: 45px;
+  height: 45px;
+  margin-left: 5px;
+  padding-top: 5px;
+  border: 1px solid #fff;
+  color: #fff;
+  background-color: #455977;
+  line-height: 45px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.vertical-menu-item a {
+  color: #fff;
+}
+
+.vertical-menu-separator {
+  border-color: #bd9883;
+  width: 75%;
+}
+
+.vertical-menu-item-content {
+  color: #fff;
+  position: relative;
+  top: -51px;
+  max-width: 200px;
+  background: #455977;
+  left: 44px;
+  overflow: hidden;
+  min-width: 300px;
+  z-index: 10;
+  border: 1px solid #fff;
+  height: 46px;
+  font-size: 16px;
+  cursor: pointer;
+}
 .header-link {
   font-size: 16px;
   color: #a94442;
@@ -21,7 +89,7 @@
 .source-code {
   width: 100%;
   min-width: 100%;
-  height: 82vh;
+  height: 75vh;
   min-height: 400px;
 }
 

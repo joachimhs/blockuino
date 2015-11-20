@@ -1,3 +1,46 @@
+Blockly.Blocks.logic.HUE = 59;
+Blockly.Blocks.loops.HUE = 59;
+Blockly.Blocks.math.HUE = 118;
+Blockly.Blocks.variables = {
+  HUE: 10
+};
+Blockly.Blocks.hardware = {
+  HUE: 230
+};
+Blockly.Blocks.structure = {
+  HUE: 320
+};
+
+Blockly.Blocks['arduino_blink'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Blink LED koblet til port")
+      .appendField(new Blockly.FieldDropdown([["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"], ["11", "11"], ["12", "12"], ["13", "13"]]), "Pin")
+      .appendField(", ")
+      .appendField(new Blockly.FieldDropdown([["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"], ["5", "5"], ["6", "6"], ["7", "7"], ["8", "8"], ["9", "9"], ["10", "10"]]), "Antall")
+      .appendField("ganger i sekundet");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.hardware.HUE);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_blink'] = function (block) {
+  var dropdown_pin = block.getFieldValue('Pin');
+  var dropdown_antall = block.getFieldValue('Antall');
+  // TODO: Assemble JavaScript into code variable.
+
+  var ms = parseInt(1000 / dropdown_antall / 2);
+
+  var code = 'digitalWrite(' + dropdown_pin + ', HIGH);';
+  code += 'delay(' + ms + ');';
+  code += 'digitalWrite(' + dropdown_pin + ', LOW);';
+  code += 'delay(' + ms + ');';
+  return code;
+};
+
 Blockly.Blocks['arduino_pinmode'] = {
   init: function () {
     this.appendDummyInput()
@@ -9,7 +52,7 @@ Blockly.Blocks['arduino_pinmode'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(230);
+    this.setColour(Blockly.Blocks.hardware.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -20,6 +63,32 @@ Blockly.Arduino['arduino_pinmode'] = function (block) {
   var dropdown_type = block.getFieldValue('Type');
   // TODO: Assemble JavaScript into code variable.
   var code = 'pinMode(' + dropdown_pin + ', ' + dropdown_type + ' );';
+  return code;
+};
+
+Blockly.Blocks['arduino_pinmode_variable'] = {
+  init: function () {
+    this.appendDummyInput()
+      .appendField("Definer Pin: ");
+    this.appendValueInput("PIN")
+      .setCheck(null);
+    this.appendDummyInput()
+      .appendField("som: ")
+      .appendField(new Blockly.FieldDropdown([["INPUT", "INPUT"], ["OUTPUT", "OUTPUT"], ["INPUT_PULLDOWN", "INPUT_PULLDOWN"]]), "Type");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.hardware.HUE);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_pinmode_variable'] = function (block) {
+  var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
+  var dropdown_type = block.getFieldValue('Type');
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'pinMode(' + value_pin + ', ' + dropdown_type + ' );';
   return code;
 };
 
@@ -34,7 +103,7 @@ Blockly.Blocks['arduino_digitalWrite'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(45);
+    this.setColour(Blockly.Blocks.hardware.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -60,7 +129,7 @@ Blockly.Blocks['arduino_digital_write_variable'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(120);
+    this.setColour(Blockly.Blocks.hardware.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -82,7 +151,7 @@ Blockly.Blocks['arduino_digital_read'] = {
       .setCheck(null);
     this.setInputsInline(true);
     this.setOutput(true);
-    this.setColour(120);
+    this.setColour(Blockly.Blocks.hardware.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -103,7 +172,7 @@ Blockly.Blocks['arduino_setup'] = {
       .appendField("setup");
     this.setInputsInline(true);
     this.setNextStatement(true, null);
-    this.setColour(20);
+    this.setColour(Blockly.Blocks.structure.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -120,8 +189,10 @@ Blockly.Blocks['arduino_analog_write'] = {
     this.appendValueInput("VALUE")
       .setCheck("Number");
     this.setInputsInline(false);
-    this.setOutput(true);
-    this.setColour(120);
+    this.setOutput(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.hardware.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -133,7 +204,7 @@ Blockly.Arduino['arduino_analog_write'] = function(block) {
   // TODO: Assemble JavaScript into code variable.
   var code = 'analogWrite(' + value_pin + ', ' + value_value + ');';
   // TODO: Change ORDER_NONE to the correct strength.
-  return [code, Blockly.Arduino.ORDER_NONE];
+  return code;
 };
 
 Blockly.Arduino['arduino_setup'] = function (block) {
@@ -154,7 +225,7 @@ Blockly.Blocks['arduino_loop'] = {
       .appendField("loop");
     this.setInputsInline(true);
     this.setNextStatement(true, null);
-    this.setColour(20);
+    this.setColour(Blockly.Blocks.structure.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -176,7 +247,7 @@ Blockly.Blocks['arduino_delay'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(45);
+    this.setColour(56);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -224,7 +295,7 @@ Blockly.Blocks['arduino_declare_variable'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(260);
+    this.setColour(Blockly.Blocks.variables.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   },
@@ -265,7 +336,7 @@ Blockly.Blocks['arduino_set_variable'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(260);
+    this.setColour(Blockly.Blocks.variables.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   },
@@ -278,7 +349,7 @@ Blockly.Blocks['arduino_set_variable'] = {
 Blockly.Arduino['arduino_set_variable'] = function (block) {
   var value_variable_name = Blockly.Arduino.statementToCode(block, 'VAR');
 
-  var value_variable_value = Blockly.Arduino.valueToCode(block, 'variable_value');
+  var value_variable_value = Blockly.Arduino.getValueForVariable(block, 'variable_value');
   // TODO: Assemble JavaScript into code variable.
   var code = value_variable_name + ' =  ' + value_variable_value + ";";
   return code;
@@ -286,14 +357,28 @@ Blockly.Arduino['arduino_set_variable'] = function (block) {
 
 Blockly.Blocks['arduino_variable'] = {
   init: function () {
+    this.appendDummyInput("labelInput")
+      .appendField("Variabel: ");
     this.appendDummyInput()
-      .appendField("Variabel: ")
       .appendField(new Blockly.FieldVariable(Blockly.Msg.VARIABLES_DEFAULT_NAME), 'VAR');
     this.setInputsInline(true);
     this.setOutput(true, null);
-    this.setColour(260);
+    this.setColour(Blockly.Blocks.variables.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
+  },
+
+  onchange: function(ev) {
+    var labelInput = this.getInput("labelInput");
+    var variableName = this.getFieldValue('VAR');
+    console.log('valiableName: ' + variableName);
+    if (variableName === 'element') {
+      labelInput.setVisible(true);
+    } else {
+      labelInput.setVisible(false);
+    }
+
+    labelInput.sourceBlock_.render();
   },
 
   getVars: function () {
@@ -334,16 +419,101 @@ Blockly.Arduino['arduino_variable'] = function (block) {
   return code;
 };
 
+Blockly.Blocks['arduino_true'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("true");
+    this.setOutput(true);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_true'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'true';
+  return code;
+};
+
+Blockly.Blocks['arduino_false'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("false");
+    this.setOutput(true);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_false'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'false';
+  return code;
+};
+
+Blockly.Blocks['arduino_high'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("HIGH");
+    this.setOutput(true);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_high'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'HIGH';
+  return code;
+};
+
+Blockly.Blocks['arduino_low'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("LOW");
+    this.setOutput(true);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_low'] = function(block) {
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'LOW';
+  return code;
+};
+
 Blockly.Blocks['arduino_variable_value'] = {
   init: function () {
+    this.appendDummyInput("labelInput")
+      .appendField("Verdi: ");
     this.appendDummyInput()
-      .appendField("Verdi: ")
       .appendField(new Blockly.FieldTextInput(""), "variable_value");
     this.setInputsInline(true);
     this.setOutput(true, null);
-    this.setColour(210);
+    this.setColour(Blockly.Blocks.variables.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
+  },
+
+  onchange: function(ev) {
+    var labelInput = this.getInput("labelInput");
+    var variableValue = this.getFieldValue('variable_value');
+
+    console.log('variableValue: ');
+    console.log(variableValue);
+
+    if (!variableValue) {
+      labelInput.setVisible(true);
+    } else {
+      labelInput.setVisible(false);
+    }
+
+    labelInput.sourceBlock_.render();
   }
 };
 
@@ -489,47 +659,6 @@ Blockly.Arduino['logic_null'] = function (block) {
   return ['null', Blockly.Arduino.ORDER_ATOMIC];
 };
 
-Blockly.Arduino['controls_repeat_ext'] = function (block) {
-  // Repeat n times.
-  var repeats = 0;
-  console.log('repeats: ');
-
-  if (block.getField('TIMES')) {
-    // Internal number.
-    console.log('internal');
-    repeats = String(Number(block.getFieldValue('TIMES')));
-  } else {
-    // External number.
-    console.log('external');
-    repeats = Blockly.Arduino.valueToCode(block, 'TIMES', Blockly.Arduino.ORDER_ATOMIC) || '0';
-
-    if (repeats === 'e') {
-      repeats = Blockly.Arduino.statementToCode(block, 'TIMES', Blockly.Arduino.ORDER_ATOMIC) || '0';
-    }
-
-    if (repeats.indexOf("(") == 0 && repeats.indexOf(")") == repeats.length-1) {
-      repeats = repeats.substr(1, repeats.length-2);
-    }
-  }
-
-  console.log(repeats);
-
-  var branch = Blockly.Arduino.statementToCode(block, 'DO');
-  branch = Blockly.Arduino.addLoopTrap(branch, block.id);
-  var code = '';
-  var loopVar = Blockly.Arduino.variableDB_.getDistinctName('count', Blockly.Variables.NAME_TYPE);
-  var endVar = repeats;
-  /*if (!repeats.match(/^\w+$/) && !Blockly.isNumber(repeats)) {
-    var endVar = Blockly.Arduino.variableDB_.getDistinctName('repeat_end', Blockly.Variables.NAME_TYPE);
-    code += 'var ' + endVar + ' = ' + repeats + ';\n';
-  }*/
-  code += 'for (var ' + loopVar + ' = 0; ' +
-  loopVar + ' < ' + endVar + '; ' +
-  loopVar + '++) {\n' +
-  branch + '}\n';
-  return code;
-};
-
 Blockly.Blocks['arduino_declare_function'] = {
   init: function() {
     this.appendStatementInput("NAME")
@@ -538,7 +667,7 @@ Blockly.Blocks['arduino_declare_function'] = {
       .appendField(new Blockly.FieldVariable("function"), "FUNCTION")
       .appendField("som returnerer: ")
       .appendField(new Blockly.FieldDropdown([["void", "void"], ["int", "int"], ["string", "string"], ["double", "double"], ["boolean", "boolean"]]), "TYPE");
-    this.setColour(20);
+    this.setColour(267);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   },
@@ -565,7 +694,7 @@ Blockly.Arduino['arduino_declare_function'] = function(block) {
   var dropdown_type = block.getFieldValue('TYPE');
   var statements_name = Blockly.Arduino.statementToCode(block, 'NAME');
   // TODO: Assemble JavaScript into code variable.
-  var code = dropdown_type + " function " + text_funktion + "() { " + statements_name + "}";
+  var code = dropdown_type + " " + text_funktion + "() { " + statements_name + "}";
   return code;
 };
 
@@ -576,7 +705,7 @@ Blockly.Blocks['arduino_function'] = {
       .appendField(new Blockly.FieldVariable("function"), "FUNCTION");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(20);
+    this.setColour(267);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   },
@@ -607,6 +736,7 @@ Blockly.Arduino['arduino_function'] = function(block) {
 
 Blockly.Blocks['arduino_for'] = {
   init: function() {
+    this.setColour(Blockly.Blocks.loops.HUE);
     this.appendDummyInput()
       .appendField("Gjenta fra ");
     this.appendValueInput("FROM")
@@ -618,30 +748,66 @@ Blockly.Blocks['arduino_for'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(120);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
 };
 
 Blockly.Arduino['arduino_for'] = function(block) {
-  var value_from = Blockly.Arduino.valueToCode(block, 'FROM', Blockly.Arduino.ORDER_ATOMIC);
-
-  if (value_from === 'e') {
-    value_from = Blockly.Arduino.statementToCode(block, 'FROM', Blockly.Arduino.ORDER_ATOMIC);
-  }
-
-  var value_to = Blockly.Arduino.valueToCode(block, 'TO', Blockly.Arduino.ORDER_ATOMIC);
-
-  if (value_to.length === 1) {
-    value_to = Blockly.Arduino.statementToCode(block, 'TO', Blockly.Arduino.ORDER_ATOMIC);
-  }
+  var value_from = Blockly.Arduino.getValueForVariable(block, 'FROM', Blockly.Arduino.ORDER_ATOMIC);
+  var value_to = Blockly.Arduino.getValueForVariable(block, 'TO', Blockly.Arduino.ORDER_ATOMIC);
 
   var statements_statement = Blockly.Arduino.statementToCode(block, 'STATEMENT');
   // TODO: Assemble JavaScript into code variable.
-  var code = 'for (int index = ' + value_from + "; index < " + value_to + '; index++) { ' + statements_statement + '};';
+  var code = 'for (int index = ' + value_from + "; index < " + value_to + '; index++) { ' + statements_statement + '}';
   return code;
 };
+
+Blockly.Blocks['arduino_repeat'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.loops.HUE);
+    this.appendDummyInput()
+      .appendField("Gjenta ");
+    this.appendValueInput("TO")
+      .setCheck(null);
+    this.appendDummyInput()
+      .appendField(" ganger");
+    this.appendStatementInput("STATEMENT");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_repeat'] = function(block) {
+  var value_to = Blockly.Arduino.getValueForVariable(block, 'TO', Blockly.Arduino.ORDER_ATOMIC);
+
+  var statements_statement = Blockly.Arduino.statementToCode(block, 'STATEMENT');
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'for (int index = 0; index < ' + value_to + '; index++) { ' + statements_statement + '}';
+  return code;
+};
+
+Blockly.Blocks['arduino_high_low'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField(new Blockly.FieldDropdown([["På", "HIGH"], ["Av", "LOW"]]), "NAME");
+    this.setOutput(true);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_high_low'] = function(block) {
+  var dropdown_name = block.getFieldValue('NAME');
+  // TODO: Assemble JavaScript into code variable.
+  var code = dropdown_name;
+  return code;
+};
+
 
 Blockly.Arduino['math_arithmetic'] = function(block) {
   // Basic arithmetic operators, and power.
@@ -665,4 +831,174 @@ Blockly.Arduino['math_arithmetic'] = function(block) {
   }
   code = argument0 + operator + argument1;
   return [code, order];
+};
+
+
+/* *** */
+/* *** */
+/* *** */
+/* overriding the default blocks to change hue... Must be a better way */
+Blockly.Blocks['logic_compare'] = {
+  /**
+   * Block for comparison operator.
+   * @this Blockly.Block
+   */
+  init: function() {
+    var OPERATORS = this.RTL ? [
+      ['=', 'EQ'],
+      ['\u2260', 'NEQ'],
+      ['>', 'LT'],
+      ['\u2265', 'LTE'],
+      ['<', 'GT'],
+      ['\u2264', 'GTE']
+    ] : [
+      ['=', 'EQ'],
+      ['\u2260', 'NEQ'],
+      ['<', 'LT'],
+      ['\u2264', 'LTE'],
+      ['>', 'GT'],
+      ['\u2265', 'GTE']
+    ];
+    this.setHelpUrl(Blockly.Msg.LOGIC_COMPARE_HELPURL);
+    this.setColour(Blockly.Blocks.math.HUE);
+    this.setOutput(true, 'Boolean');
+    this.appendValueInput('A');
+    this.appendValueInput('B')
+      .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP');
+    this.setInputsInline(true);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+    this.setTooltip(function() {
+      var op = thisBlock.getFieldValue('OP');
+      var TOOLTIPS = {
+        'EQ': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_EQ,
+        'NEQ': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_NEQ,
+        'LT': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_LT,
+        'LTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_LTE,
+        'GT': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GT,
+        'GTE': Blockly.Msg.LOGIC_COMPARE_TOOLTIP_GTE
+      };
+      return TOOLTIPS[op];
+    });
+    this.prevBlocks_ = [null, null];
+  },
+  /**
+   * Called whenever anything on the workspace changes.
+   * Prevent mismatched types from being compared.
+   * @this Blockly.Block
+   */
+  onchange: function() {
+    var blockA = this.getInputTargetBlock('A');
+    var blockB = this.getInputTargetBlock('B');
+    // Disconnect blocks that existed prior to this change if they don't match.
+    if (blockA && blockB &&
+      !blockA.outputConnection.checkType_(blockB.outputConnection)) {
+      // Mismatch between two inputs.  Disconnect previous and bump it away.
+      for (var i = 0; i < this.prevBlocks_.length; i++) {
+        var block = this.prevBlocks_[i];
+        if (block === blockA || block === blockB) {
+          block.setParent(null);
+          block.bumpNeighbours_();
+        }
+      }
+    }
+    this.prevBlocks_[0] = blockA;
+    this.prevBlocks_[1] = blockB;
+  }
+};
+
+Blockly.Blocks['logic_operation'] = {
+  /**
+   * Block for logical operations: 'and', 'or'.
+   * @this Blockly.Block
+   */
+  init: function() {
+    var OPERATORS =
+      [[Blockly.Msg.LOGIC_OPERATION_AND, 'AND'],
+        [Blockly.Msg.LOGIC_OPERATION_OR, 'OR']];
+    this.setHelpUrl(Blockly.Msg.LOGIC_OPERATION_HELPURL);
+    this.setColour(Blockly.Blocks.math.HUE);
+    this.setOutput(true, 'Boolean');
+    this.appendValueInput('A')
+      .setCheck('Boolean');
+    this.appendValueInput('B')
+      .setCheck('Boolean')
+      .appendField(new Blockly.FieldDropdown(OPERATORS), 'OP');
+    this.setInputsInline(true);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+    this.setTooltip(function() {
+      var op = thisBlock.getFieldValue('OP');
+      var TOOLTIPS = {
+        'AND': Blockly.Msg.LOGIC_OPERATION_TOOLTIP_AND,
+        'OR': Blockly.Msg.LOGIC_OPERATION_TOOLTIP_OR
+      };
+      return TOOLTIPS[op];
+    });
+  }
+};
+
+Blockly.Blocks['logic_negate'] = {
+  /**
+   * Block for negation.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.jsonInit({
+      "message0": Blockly.Msg.LOGIC_NEGATE_TITLE,
+      "args0": [
+        {
+          "type": "input_value",
+          "name": "BOOL",
+          "check": "Boolean"
+        }
+      ],
+      "output": "Boolean",
+      "colour": Blockly.Blocks.math.HUE,
+      "tooltip": Blockly.Msg.LOGIC_NEGATE_TOOLTIP,
+      "helpUrl": Blockly.Msg.LOGIC_NEGATE_HELPURL
+    });
+  }
+};
+
+Blockly.Blocks['logic_boolean'] = {
+  /**
+   * Block for boolean data type: true and false.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.jsonInit({
+      "message0": "%1",
+      "args0": [
+        {
+          "type": "field_dropdown",
+          "name": "BOOL",
+          "options": [
+            [Blockly.Msg.LOGIC_BOOLEAN_TRUE, "TRUE"],
+            [Blockly.Msg.LOGIC_BOOLEAN_FALSE, "FALSE"]
+          ]
+        }
+      ],
+      "output": "Boolean",
+      "colour": Blockly.Blocks.variables.HUE,
+      "tooltip": Blockly.Msg.LOGIC_BOOLEAN_TOOLTIP,
+      "helpUrl": Blockly.Msg.LOGIC_BOOLEAN_HELPURL
+    });
+  }
+};
+
+Blockly.Blocks['logic_null'] = {
+  /**
+   * Block for null data type.
+   * @this Blockly.Block
+   */
+  init: function() {
+    this.jsonInit({
+      "message0": Blockly.Msg.LOGIC_NULL,
+      "output": null,
+      "colour": Blockly.Blocks.variables.HUE,
+      "tooltip": Blockly.Msg.LOGIC_NULL_TOOLTIP,
+      "helpUrl": Blockly.Msg.LOGIC_NULL_HELPURL
+    });
+  }
 };
