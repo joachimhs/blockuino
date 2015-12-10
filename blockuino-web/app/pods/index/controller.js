@@ -66,8 +66,11 @@ export default Ember.Controller.extend({
 
     copyArduino: function() {
       var sourceCode = js_beautify(this.get('blocklyCode'));
+      sourceCode = sourceCode.replace("#\n  ", "#");
+      sourceCode = sourceCode.replace("< ", "<");
+      sourceCode = sourceCode.replace(" >", ">");
 
-        var $temp = $("<textarea>")
+        var $temp = $("<textarea>");
         $("body").append($temp);
         $temp.val(sourceCode).select();
         document.execCommand("copy");

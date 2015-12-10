@@ -14,6 +14,11 @@ export default Ember.Component.extend({
             var highligted = js_beautify(self.get('sourceCode'));
             highligted = hljs.highlight('javascript', highligted).value;
 
+            console.log(highligted);
+            highligted = highligted.replace("#\n  ", "#");
+            highligted = highligted.replace("&lt; ", "&lt;");
+            highligted = highligted.replace(" &gt;", "&gt;");
+
             self.set('highligtedSourceCode', new Ember.Handlebars.SafeString(highligted));
           });
         });
