@@ -152,7 +152,11 @@ export default Ember.Controller.extend({
     var generatedXml = this.get('generatedXML');
 
     if (compressed && !generatedXml) {
-      this.set('generatedXML', LZString.decompressFromBase64(compressed));
+      var xml = LZString.decompressFromBase64(compressed);
+
+      if (xml) {
+        this.set('generatedXML', xml);
+      }
     }
 
   }.observes('xml', 'generatedXML').on('init'),
