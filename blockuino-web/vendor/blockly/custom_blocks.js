@@ -319,6 +319,41 @@ Blockly.Arduino['arduino_map'] = function(block) {
   return code;
 };
 
+Blockly.Msg.ARDUINO_TONE_MS_DECLARE = "Spill tone";
+Blockly.Msg.ARDUINO_TONE_MS_PIN = "Fra Pin: ";
+Blockly.Msg.ARDUINO_TONE_MS_FREQ = "med frekvens:";
+Blockly.Msg.ARDUINO_TONE_MS_IN = "I: ";
+Blockly.Msg.ARDUINO_TONE_MS_MS = "ms";
+Blockly.Msg.ARDUINO_TONE_MS_TOOLTIP = "Bruk denne klossen for å spille av en tone med angitt frekvens og lengde.";
+
+Blockly.Blocks['arduino_tone_ms'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ARDUINO_TONE_MS_DECLARE);
+    this.appendValueInput("PIN")
+      .appendField(Blockly.Msg.ARDUINO_TONE_MS_PIN);
+    this.appendValueInput("FREQUENCY")
+      .appendField(Blockly.Msg.ARDUINO_TONE_MS_FREQ);
+    this.appendValueInput("MS")
+      .appendField(Blockly.Msg.ARDUINO_TONE_MS_IN);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ARDUINO_TONE_MS_MS);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.ARDUINO_TONE_MS_TOOLTIP);
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_tone_ms'] = function(block) {
+  var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
+  var value_frequency = Blockly.Arduino.statementToCode(block, 'FREQUENCY', Blockly.Arduino.ORDER_ATOMIC);
+  var value_ms = Blockly.Arduino.getValueForVariable(block, 'MS', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'tone(' + value_pin + ', ' + value_frequency + ', ' + value_ms + ');';
+  return code;
+};
+
 Blockly.Blocks['arduino_setup'] = {
   init: function () {
     this.appendStatementInput("setup")
@@ -421,7 +456,7 @@ Blockly.Blocks['arduino_declare_variable'] = {
       .appendField(Blockly.Msg.ARDUINO_DECLARE_VARIABLE_DEFINE)
       .appendField(new Blockly.FieldVariable(Blockly.Msg.VARIABLES_DEFAULT_NAME), 'VAR')
       .appendField(Blockly.Msg.ARDUINO_DECLARE_VARIABLE_TYPE)
-      .appendField(new Blockly.FieldDropdown([["int", "int"], ["string", "string"], ["boolean", "boolean"]]), "type");
+      .appendField(new Blockly.FieldDropdown([["int", "int"], ["double", "double"], ["string", "string"], ["boolean", "boolean"]]), "type");
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -461,7 +496,7 @@ Blockly.Blocks['arduino_declare_variable_with_value'] = {
       .appendField(Blockly.Msg.ARDUINO_DECLARE_VARIABLE_DEFINE)
       .appendField(new Blockly.FieldVariable(Blockly.Msg.VARIABLES_DEFAULT_NAME), 'VAR')
       .appendField(Blockly.Msg.ARDUINO_DECLARE_VARIABLE_TYPE)
-      .appendField(new Blockly.FieldDropdown([["int", "int"], ["string", "string"], ["boolean", "boolean"]]), "type");
+      .appendField(new Blockly.FieldDropdown([["int", "int"], ["double", "double"], ["string", "string"], ["boolean", "boolean"]]), "type");
     this.appendValueInput("VALUE")
       .appendField(Blockly.Msg.ARDUINO_DECLARE_VARIABLE_VALUE);
     this.setInputsInline(true);
@@ -670,10 +705,10 @@ Blockly.Arduino['arduino_variable_value'] = function (block) {
   // TODO: Assemble JavaScript into code variable.
   var code = text_variable_value;
 
-  var numberRegex = /^[0-9]+$/
+  var numberRegex = /^-?\d*\.?\d*$/;
 
   if (text_variable_value.match(numberRegex)) {
-    code = parseInt(text_variable_value);
+    code = parseFloat(text_variable_value);
   } else if (text_variable_value.toLowerCase() === 'true') {
     code = true;
   } else if (text_variable_value.toLowerCase() === 'false') {
@@ -684,6 +719,29 @@ Blockly.Arduino['arduino_variable_value'] = function (block) {
 
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.Arduino.ORDER_NONE];
+};
+
+Blockly.Blocks['arduino_pulse_in'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Puls Inn: ");
+    this.appendValueInput("PIN")
+      .appendField("fra Pin:");
+    this.appendValueInput("VALUE")
+      .appendField("Verdi: ");
+    this.setInputsInline(true);
+    this.setOutput(true);
+    this.setTooltip('');
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_pulse_in'] = function(block) {
+  var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
+  var value_value = Blockly.Arduino.getValueForVariable(block, 'VALUE', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'pulseIn(' + value_pin + ', ' + value_value + ')';
+  return code;
 };
 
 Blockly.Blocks['arduino_declare_function'] = {
@@ -859,6 +917,40 @@ Blockly.Arduino['arduino_high_low'] = function(block) {
   var dropdown_name = block.getFieldValue('NAME');
   // TODO: Assemble JavaScript into code variable.
   var code = dropdown_name;
+  return code;
+};
+
+Blockly.Blocks['arduino_tones'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Tone: ")
+      .appendField(new Blockly.FieldDropdown([["C", "C"], ["D", "D"], ["E", "E"], ["F", "F"], ["G", "G"], ["A", "A"], ["H", "H"]]), "FREQ");
+    this.setOutput(true);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip(Blockly.Msg.ARDUINO_HIGH_LOW_TOOLTIP);
+    this.setHelpUrl('http://www.example.com/');
+  }
+};
+
+Blockly.Arduino['arduino_tones'] = function(block) {
+  var dropdown_name = block.getFieldValue('FREQ');
+
+  if (dropdown_name == "C") {
+    code = "523.25";
+  } else if (dropdown_name == "D") {
+    code = "587.33";
+  } else if (dropdown_name == "E") {
+    code = "659.25";
+  } else if (dropdown_name == "F") {
+    code = "698.46";
+  } else if (dropdown_name == "G") {
+    code = "783.99";
+  } else if (dropdown_name == "A") {
+    code = "880";
+  } else if (dropdown_name == "H") {
+    code = "987.76";
+  }
+
   return code;
 };
 
