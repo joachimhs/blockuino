@@ -22,6 +22,7 @@
         <block type="logic_compare"></block>
         <block type="logic_operation"></block>
         <block type="logic_negate"></block>
+        <block type="arduino_random"></block>
     </category>
 
     <category name="Maskinvare kontroll" colour="240">
@@ -38,11 +39,13 @@
     </category>
 
     <category name="Funksjoner" colour="267">
-        <block type="arduino_declare_function"></block>
-        <block type="arduino_function"></block>
+        <!--block type="arduino_declare_function"></block>
+        <block type="arduino_function"></block-->
         <block type="arduino_map"></block>
         <block type="arduino_tone_ms"></block>
         <block type="arduino_pulse_in"></block>
+        <block type="arduino_raw_thermistor_to_temp_function"></block>
+        <block type="arduino_raw_thermistor_to_temp"></block>
     </category>
 
     <category name="Variabler" colour="10">
@@ -68,5 +71,60 @@
       <block type="arduino_pixel_strip_begin"></block>
       <block type="arduino_pixel_strip_show"></block>
       <block type="arduino_pixel_strip_color"></block>
+    </category>
+
+
+    <category name="Sensorer" colour="40">
+        <category name="Ultrasonic Sensor" colour="40">
+            <block type="ultrasonic_init"></block>
+            <block type="ultrasonic_setup"></block>
+            <block type="ultrasonic_distance"></block>
+        </category>
+        <category name="DHT11 Temp+Fukt" colour="40">
+            <block type="dht11_init"></block>
+            <block type="dht11_setup"></block>
+            <block type="dht11_read_temp"></block>
+            <block type="dht11_read_humidity"></block>
+        </category>
+    </category>
+
+    <category name="Motorer" colour="40">
+        <category name="Arduino Bil L293/298" colour="40">
+            <block type="arduino_car_variables"></block>
+            <block type="arduino_car_setup"></block>
+            <block type="arduino_car_forwards"></block>
+            <block type="arduino_car_backwards"></block>
+            <block type="arduino_car_stop"></block>
+            <block type="arduino_car_rotate_right"></block>
+            <block type="arduino_bil_rotate_left"></block>
+            <block type="arduino_car_set_speed"></block>
+            <block type="arduino_car_analog_speed"></block>
+        </category>
+
+        <category name="Servo Motor" colour="40">
+            <block type="servo_include"></block>
+            <block type="servo_attach"></block>
+            <block type="servo_write"></block>
+        </category>
+    </category>
+
+    <category name="Display" colour="40">
+        <category name="OLED Display" colour="40">
+            <block type="oled_include"></block>
+            <block type="oled_setup"></block>
+            <block type="oled_draw_pixel"></block>
+            <block type="oled_set_cursor"></block>
+            <block type="oled_print"></block>
+            <block type="oled_clear_display"></block>
+            <block type="oled_update_display"></block>
+        </category>
+    </category>
+
+    <category name="EEPROM" colour="40">
+        <block type="eeprom_include"></block>
+        <block type="eeprom_write"></block>
+        <block type="eeprom_update"></block>
+        <block type="eeprom_read"></block>
+        <block type="eeprom_length"></block>
     </category>
 </xml>

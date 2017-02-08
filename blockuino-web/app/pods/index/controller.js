@@ -4,7 +4,10 @@ export default Ember.Controller.extend({
   showCode: true,
   showXml: false,
   workspace: null,
-  queryParams: 'xml',
+  xml: "",
+  queryParams: ['projectId'],
+  //queryParams: 'xml',
+  codeVisible: true,
 
   init: function() {
     this._super();
@@ -15,6 +18,16 @@ export default Ember.Controller.extend({
     showCode: function () {
       this.set('showCode', true);
       this.set('showXml', false);
+    },
+
+    hideCodeArea: function() {
+      this.set('codeVisible', false);
+      Blockly.fireUiEvent(window, 'resize');
+    },
+
+    showCodeArea: function() {
+      this.set('codeVisible', true);
+      Blockly.fireUiEvent(window, 'resize');
     },
 
     showDownloadXmlModal: function() {
@@ -65,14 +78,11 @@ export default Ember.Controller.extend({
     },
 
     copyArduino: function() {
-      var sourceCode = js_beautify(this.get('blocklyCode'));
-      sourceCode = sourceCode.replace("#\n  ", "#");
-      sourceCode = sourceCode.replace("< ", "<");
-      sourceCode = sourceCode.replace(" >", ">");
+      var highligted = this.getGeneratedCode();
 
-        var $temp = $("<textarea>");
+      var $temp = $("<textarea>");
         $("body").append($temp);
-        $temp.val(sourceCode).select();
+        $temp.val(highligted).select();
         document.execCommand("copy");
         $temp.remove();
 
@@ -90,8 +100,6 @@ export default Ember.Controller.extend({
 
       alert('XML koden er kopiert til utklippstavlen');
     },
-
-
 
     hideUploadXmlModal: function() {
       Ember.$("#uploadXmlModal").modal('hide');
@@ -125,6 +133,65 @@ export default Ember.Controller.extend({
     }
   },
 
+  getGeneratedCode: function() {
+    var highligted = js_beautify(this.get('blocklyCode'));
+    //highligted = hljs.highlight('javascript', highligted).value;
+
+    highligted = this.replaceAll(highligted, "#\n  ", "#");
+    highligted = this.replaceAll(highligted, "< ", "<");
+    highligted = this.replaceAll(highligted, " >", ">");
+    highligted = this.replaceAll(highligted, "    #", "#");
+    highligted = this.replaceAll(highligted, "  #", "#");
+    highligted = this.replaceAll(highligted, "&nbsp;&nbsp;#", "#");
+    highligted = this.replaceAll(highligted, "# ", "#");
+    highligted = this.replaceAll(highligted, "    #include", "#include");
+    highligted = this.replaceAll(highligted, " &gt;", ">");
+    highligted = this.replaceAll(highligted, "&lt; ", "<");
+    highligted = this.replaceAll(highligted, "&gt;", ">");
+    highligted = this.replaceAll(highligted, "&lt;", "<");
+
+    return highligted;
+  },
+
+  blocklyCol: function() {
+    if (this.get('codeVisible') === true) {
+      return "col-md-6";
+    } else {
+      return "col-md-11";
+    }
+  }.property('codeVisible'),
+
+  codeCol: function() {
+    if (this.get('codeVisible') === true) {
+      return "col-md-5";
+    } else {
+      return "col-md-1";
+    }
+  }.property('codeVisible'),
+
+  projectObserver: function() {
+    var self = this;
+
+    console.log('projectObserver!');
+
+    var projectId = this.get('projectId');
+    var modelProjectId = this.get('model.projectId');
+    var project = this.get('model.project');
+
+    console.log(projectId);
+    console.log(project);
+
+    if (project != null && project.get('id') != null) {
+      if (projectId == null || projectId !== project.get('id')) {
+        Ember.run.later(function() {
+          self.set('projectId', project.get('id'));
+        }, 1000);
+
+      }
+    }
+
+  }.observes('model.project', 'model.projectId'),
+
   uploadXmlListener: function() {
     var self = this;
 
@@ -147,7 +214,7 @@ export default Ember.Controller.extend({
       });
   },
 
-  xmlObserver: function () {
+  /*xmlObserver: function () {
     var compressed = this.get('xml');
     var generatedXml = this.get('generatedXML');
 
@@ -159,15 +226,20 @@ export default Ember.Controller.extend({
       }
     }
 
-  }.observes('xml', 'generatedXML').on('init'),
+  }.observes('xml', 'generatedXML').on('init'),*/
 
   convertFromXml: function() {
-    Blockly.mainWorkspace.clear();
-    var workspace = this.get('workspace');
+    var self = this;
+    if (!Blockly.mainWorkspace) {
+      Ember.run.later(function() {
+        Blockly.mainWorkspace.clear();
+        var workspace = self.get('workspace');
 
-    var xml = this.get('generatedXML');
-    var dom = Blockly.Xml.textToDom(xml);
-    Blockly.Xml.domToWorkspace(this.get('workspace'), dom);
+        var xml = self.get('generatedXML');
+        var dom = Blockly.Xml.textToDom(xml);
+        Blockly.Xml.domToWorkspace(workspace, dom);
+      }, 500);
+    }
   },
 
   generatedXmlObserver: function () {
@@ -178,5 +250,37 @@ export default Ember.Controller.extend({
     }
 
     //var decodedData = window.atob(encodedData); // decode the string
-  }.observes('generatedXML').on('init')
+  }.observes('generatedXML').on('init'),
+
+  escapeRegExp: function (str) {
+    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+  },
+
+  replaceAll: function (str, find, replace) {
+    return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+  },
+
+  modelProjectIdObserver: function() {
+    var self = this;
+    var project = this.get('model.project');
+
+    if (project && project.get('xml')) {
+
+        console.log('setting generatedXML to projectXML: ');
+        console.log(project.get('xml'));
+        self.set('generatedXML', project.get('xml'));
+        self.convertFromXml();
+
+    }
+  }.observes('model.project.id').on('init'),
+
+  projectIdObserver: function() {
+    var projectId = this.get('projectId');
+    var model = this.get('model');
+
+    if (projectId && model) {
+      this.set('model.project', this.store.find('project', this.get('projectId')));
+    }
+
+  }.observes('projectId', 'model')
 });

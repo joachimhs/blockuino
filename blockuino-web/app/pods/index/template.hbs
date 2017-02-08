@@ -4,47 +4,38 @@
   {{vertical-menu-item icon="fa fa-2x fa-upload" text="Last opp fra datamasinen" clickAction="showUploadXmlModal"}}
 
     <hr class="vertical-menu-separator">
-  {{vertical-menu-item icon="fa fa-2x fa-home" text="Besøk Kodeklubben Kodegenet" link="http://kodegenet.no"}}
+  {{#if codeVisible}}
+    {{vertical-menu-item icon="fa fa-2x fa-arrow-circle-o-right" text="Skjul Arduinokode" clickAction="hideCodeArea"}}
+  {{else}}
+    {{vertical-menu-item icon="fa fa-2x fa-arrow-circle-o-left" text="Vis Arduinokode" clickAction="showCodeArea"}}
+  {{/if}}
+
+    <hr class="vertical-menu-separator">
+  {{vertical-menu-item icon="fa fa-2x fa-home" text="Besøk Kodegenet Kodeklubb" link="http://kodegenet.no"}}
+  {{vertical-menu-item icon="fa fa-2x fa-github" text="Se kildekoden på GitHub" link="https://github.com/joachimhs/blockuino"}}
+  {{vertical-menu-item icon="fa fa-2x fa-instagram" text="Besøk oss på Instagram" link="http://instagram.com/kodegenet"}}
   {{vertical-menu-item icon="fa fa-2x fa-twitter-square" text="Besøk oss på Twitter" link="http://twitter.com/kodegenet"}}
   {{vertical-menu-item icon="fa fa-2x fa-facebook-square" text="Besøk oss på Facebook" link="http://facebook.com/kodegenet"}}
 </div>
 <div class="programming-area">
     <div class="row">
-        <div class="col-md-6">
-          {{blockly-comp workspace=workspace generatedCode=blocklyCode generatedXML=generatedXML}}
+        <div class="{{if codeVisible 'col-md-6' 'col-md-12'}}">
+          {{blockly-comp codeVisible=codeVisible workspace=workspace generatedCode=blocklyCode generatedXML=generatedXML}}
         </div>
-        <div class="col-md-5">
-            <ul class="nav nav-tabs">
-                <li role="presentation" class=showCode:active:inactive><a href="#" {{action "showCode"}}>Vis
-                    Arduinokode</a></li>
-                <li role="presentation" class=showXml:active:inactive><a href="#" {{action "showXml"}}>Vis XML</a></li>
-            </ul>
+        <div class="{{if codeVisible 'col-md-6' 'col-md-2'}}">
+          {{#if codeVisible}}
+            {{#if showCode}}
+              {{highlight-code sourceCode=blocklyCode isCode=true isXml=false}}
 
-          {{#if showCode}}
-            {{highlight-code sourceCode=blocklyCode isCode=true isXml=false}}
+            {{/if}}
+
+            {{#if showXml}}
+                <button class="btn btn-primary" {{action "fromXml"}}><i class="fa fa-arrow-circle-o-left"></i> Last inn
+                    XML
+                </button>
+              {{textarea classNames="generated-code" value=generatedXML}}
+            {{/if}}
           {{/if}}
-
-          {{#if showXml}}
-              <button class="btn btn-primary" {{action "fromXml"}}><i class="fa fa-arrow-circle-o-left"></i> Last inn
-                  XML
-              </button>
-            {{textarea classNames="generated-code" value=generatedXML}}
-          {{/if}}
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="tilbakemelding-area">Har du tilbakemeldinger? <a href="mailto:jhs@kodegenet.no">Vi vil gjerne
-                høre dem</a>!
-            </div>
-        </div>
-        <div class="col-sm-8">
-            <div class="text-right right-margin-small">
-                <a href="https://kodegenet.no"><img src="/kodegenet_logo.png" class="kodegenet-logo"/></a>
-                <br/>
-                Developed by Joachim Haagen Skeie, Kodegenet AS
-            </div>
         </div>
     </div>
 </div>
@@ -120,9 +111,9 @@
                         <button class="btn btn-primary" style="margin-top: 20px;" {{action "copyArduino"}}>Kopier
                             Arduino kildekode
                         </button>
-                        <button class="btn btn-primary" style="margin-top: 20px;" {{action "copyXml"}}>Kopier XML
+                        <!--button class="btn btn-primary" style="margin-top: 20px;" {{action "copyXml"}}>Kopier XML
                             kildekode
-                        </button>
+                        </button-->
                     </div>
 
                 </div>

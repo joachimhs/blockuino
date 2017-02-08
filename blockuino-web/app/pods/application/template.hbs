@@ -1,0 +1,48 @@
+{{header-component
+  doNews="doNews"
+  doDocs="doDocs"
+  sendToPi="sendToPi"
+  saveProject="saveProject"
+  doSavedProjects="doSavedProjects"
+  onPi=model.onPi.onPi
+}}
+
+{{outlet}}
+
+{{#if showSaveProjectModal}}
+    <div id="saveProjectModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-center">Lagre Prosjektet</h4>
+                </div>
+                <div class="modal-body">
+                    <div>Her kan du lagre prosjektet ditt ved å gi prosjektet et navn</div>
+                    <div class="text-center" style="margin-top: 20px;">
+                      <div>
+                        {{input type="text" value=model.project.name}}
+                          {{#if projectSaving}}
+                            <i class="fa fa-spinner fa-spin"></i>
+                          {{/if}}
+                          {{#if projectSaveSuccess}}
+                              <span class="label label-success"><i class="fa fa-check"></i> Lagret</span>
+                          {{/if}}
+                          {{#if projectSaveFailed}}
+                              <span class="label label-danger"><i class="fa fa-times"></i> Klarte ikke lagre</span>
+                          {{/if}}
+                      </div>
+                      <div>
+                          <button class="btn btn-primary" style="margin-top: 20px;" {{action "doSaveProject"}}>Lagre</button>
+                      </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" {{action "hideSaveProject"}}>Ferdig</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{{/if}}
