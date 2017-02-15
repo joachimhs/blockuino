@@ -119,13 +119,22 @@ public class WebServer {
         post("/upload", (req, res) -> {
             String code = req.body();
             String returnMessage = "";
+            String hex = null;
 
             if (code != null && code.length() > 10) {
                 Files.write(Paths.get(arduinoProjectFile), code.getBytes());
-                returnMessage = executeCommandAndReturnResult (pioExecutable);
+                String executable = "pio run -d  " + pioExecutable;
+                returnMessage = executeCommandAndReturnResult(executable);
+                hex = getFileContent("/srv/piotest/.pioenvs/uno", "firmware.hex");
             }
 
-            return "{ \"status\": \"OK\", \"exitStatus\": \"" + returnMessage + "\"}";
+            return hex;
+        });
+
+        get("/hexfile", (req, res) -> {
+            String hexfileContents =getFileContent("/srv/piotest/.pioenvs/uno", "firmware.hex");
+
+            return hexfileContents;
         });
     }
 

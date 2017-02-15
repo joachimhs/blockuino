@@ -17,6 +17,12 @@ export default Ember.Controller.extend({
 
       Ember.$.post( "/upload", highligted, function( data ) {
         console.log("UPLOAD RESULT:" + data);
+
+        chrome.runtime.sendMessage("iobkdcnmnbcjhdnlglhplmjonobkmipo", { hex: data },
+          function (response) {
+            console.log("RESPONSE: ");
+            console.log(response);
+          });
       });
     },
 

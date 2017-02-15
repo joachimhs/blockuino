@@ -27,6 +27,36 @@ export default Ember.Component.extend({
     doSavedProjects: function() {
       this.set('showingHamburger', false);
       this.sendAction('doSavedProjects');
+    },
+
+    runHex: function() {
+      // The ID of the extension we want to talk to.
+      var editorExtensionId = "gfahdikfchnbgbdmkjfecfcpenjmjcll";
+
+      // Make a simple request:
+      Ember.$.get( "hexfile", function( data ) {
+        console.log('got HEX from Blockuino-pi!');
+        console.log(data);
+
+        /*window.postMessage({ type: "FROM_BLOCKUINO", text: "Hello from the webpage!", hex: data }, "*");*/
+
+        chrome.runtime.sendMessage("iobkdcnmnbcjhdnlglhplmjonobkmipo", { hex: data },
+          function (response) {
+            console.log("RESPONSE: ");
+            console.log(response);
+          });
+
+
+        /*chrome.runtime.sendMessage(editorExtensionId, {hex: data}, function(response) {
+          console.log('sendMessage');
+            if (response.success) {
+              console.log("SUCCESS");
+            } else {
+              console.log("sendMessage FAILED!");
+            }
+          });*/
+      });
+
     }
   },
 
