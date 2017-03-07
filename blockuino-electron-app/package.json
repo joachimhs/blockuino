@@ -1,0 +1,30 @@
+{
+  "name": "mojibar",
+  "version": "2.3.3",
+  "description": "A menubar app adaptation of Emoji searcher.",
+  "main": "index.js",
+  "dependencies": {
+    "electron-is-dev": "^0.1.2",
+    "menubar": "^5.1.0"
+  },
+  "devDependencies": {
+    "electron": "^1.4.0",
+    "electron-packager": "^8.0.0",
+    "standard": "^4.5.3"
+  },
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . Mojibar --platform=darwin --arch=x64 --overwrite --icon=mojibar",
+    "test": "standard index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joachimhs/blockuino.git"
+  },
+  "author": "Joachim Haagen Skeie <joachim@kodegenet.no>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joachimhs/blockuino/issues"
+  },
+  "homepage": "https://github.com/joachimhs/blockuino"
+}

@@ -39,6 +39,7 @@ public class WebServer {
         String arduinoProjectFile = System.getProperty("blockuino.arduinoProjectFile");
         String pioExecutable = System.getProperty("blockuino.pioExecutable");
         String savedDirectory = System.getProperty("blockuino.savedProjectsDir");
+        String pioDir = System.getProperty("blockuino.pioDir");
 
         get("/onPi", (req, res) -> "true");
         get("/onPis/*", (req, res) -> {
@@ -125,7 +126,7 @@ public class WebServer {
                 Files.write(Paths.get(arduinoProjectFile), code.getBytes());
                 String executable = "pio run -d  " + pioExecutable;
                 returnMessage = executeCommandAndReturnResult(executable);
-                hex = getFileContent("/srv/piotest/.pioenvs/uno", "firmware.hex");
+                hex = getFileContent(pioDir + File.separatorChar + ".pioenvs/uno", "firmware.hex");
             }
 
             return hex;

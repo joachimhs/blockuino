@@ -14,6 +14,6 @@
     "serial"
   ],
   "externally_connectable": {
-    "matches": ["*://dev.blockuino.no/*"]
+    "matches": ["*://*.blockuino.no/*"]
   }
 }
