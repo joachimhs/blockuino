@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
+  session: Ember.inject.service('session'),
+
   showCode: true,
   showXml: false,
   workspace: null,
@@ -275,6 +277,7 @@ export default Ember.Controller.extend({
   }.observes('model.project.id').on('init'),
 
   projectIdObserver: function() {
+    console.log('projectIdObserver... ');
     var projectId = this.get('projectId');
     var model = this.get('model');
 

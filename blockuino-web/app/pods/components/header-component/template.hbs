@@ -1,67 +1,86 @@
 <div class="row header-area">
-    <div class="col-sm-10 text-center">
-      {{#link-to "index"}}
-          <img src="/blockuino_logo.png" class="logo">
-      {{/link-to}}
+  <div class="col-sm-10 text-center">
+    {{#link-to "index"}}
+      <img src="/blockuino_logo.png" class="logo">
+    {{/link-to}}
 
-        <div class="pull-right header-save-link" {{action "saveProject"}}>Lagre Prosjektet</div>
-      {{#if onPi}}
-          <div class="pull-right header-save-link" {{action "sendToPi"}}>Send til Arduino</div>
-      {{/if}}
+    {{#if session.session.username}}
+      <div class="pull-right header-save-link" {{action "saveProject"}}>
 
+        {{#if projectIsOwn}}
+          Lagre prosjektet
+        {{else}}
+          Remiks prosjektet
+        {{/if}}
+
+      </div>
+    {{/if}}
+
+    {{#if chromeAppInstalled}}
+      <div class="pull-right header-save-link" {{action "sendToPi"}}>Send til Arduino</div>
+    {{/if}}
+
+    {{#if (eq session.lang "no")}}
+      <div class="pull-right header-save-link" {{action "chooseEnglish"}}>English</div>
+    {{else}}
+      <div class="pull-right header-save-link" {{action "chooseNorwegian"}}>Norsk</div>
+    {{/if}}
+
+  </div>
+  <div class="col-sm-2">
+    <div class="menu-button" {{action "toggleHamburger"}}>
+      {{fa-icon "cog" spin=showingHamburger size=2}}
     </div>
-    <div class="col-sm-2">
-        <div class="menu-button" {{action "toggleHamburger"}}>
-          {{fa-icon "cog" spin=showingHamburger size=2}}
-        </div>
-    </div>
+  </div>
 </div>
 <div id="headerHamburger" class="header-hamburger">
-    <div class="header-container">
-        <div class="center-container">
-          {{#if liveEmbed}}
-              <a href="{{newWindowUrl}}" target="_blank" class="menu-item">
-                {{fa-icon "home" size=2 border=true}}
-                  <div>Åpne Kodebiten i et eget vindu</div>
-              </a>
-              <a href="https://editor.kodegenet.no/howto" target="_blank" class="menu-item">
-                {{fa-icon "info" size=2 border=true}}
-                  <div>Om Kodegenets Editor</div>
-              </a>
-              <a href="https://editor.kodegenet.no/info" target="_blank" class="menu-item">
-                {{fa-icon "question" size=2 border=true}}
-                  <div>Hvordan fungerer Kode editoren?</div>
-              </a>
-          {{else}}
-              <div class="menu-item" {{action "doHome"}}>
-                {{fa-icon "home" size=2 border=true}}
-                  <div>Forsiden</div>
-              </div>
-              <div class="menu-item" {{action "doSavedProjects"}}>
-                {{fa-icon "list-alt" size=2 border=true}}
-                  <div>Lagrede prosjekter</div>
-              </div>
-              <div class="menu-item" {{action "doNews"}}>
-                {{fa-icon "newspaper-o" size=2 border=true}}
-                  <div>Nyheter</div>
-              </div>
-              <div class="menu-item" {{action "doDocs"}}>
-                {{fa-icon "book" size=2 border=true}}
-                  <div>Dokumentasjon</div>
-              </div>
-              <div class="menu-item" {{action "doLogIn"}}>
-                {{fa-icon "sign-in" size=2 border=true}}
-                  <div>Logg inn</div>
-              </div>
-              <div class="menu-item" {{action "doRegister"}}>
-                {{fa-icon "user-plus" size=2 border=true}}
-                  <div>Lag ny konto</div>
-              </div>
-              <div class="menu-item"  {{action "doHowto"}}>
-                {{fa-icon "question" size=2 border=true}}
-                  <div>Om Blockuino</div>
-              </div>
-          {{/if}}
+  <div class="header-container">
+    <div class="center-container">
+      {{#if liveEmbed}}
+        <a href="{{newWindowUrl}}" target="_blank" class="menu-item">
+          {{fa-icon "home" size=2 border=true}}
+          <div>Åpne Kodebiten i et eget vindu</div>
+        </a>
+        <a href="https://editor.kodegenet.no/howto" target="_blank" class="menu-item">
+          {{fa-icon "info" size=2 border=true}}
+          <div>Om Kodegenets Editor</div>
+        </a>
+        <a href="https://editor.kodegenet.no/info" target="_blank" class="menu-item">
+          {{fa-icon "question" size=2 border=true}}
+          <div>Hvordan fungerer Kode editoren?</div>
+        </a>
+      {{else}}
+        <div class="menu-item" {{action "doHome"}}>
+          {{fa-icon "home" size=2 border=true}}
+          <div>Forsiden</div>
         </div>
+        {{#if session.session.username}}
+          <div class="menu-item" {{action "doSavedProjects"}}>
+            {{fa-icon "list-alt" size=2 border=true}}
+            <div>Lagrede prosjekter</div>
+          </div>
+        {{/if}}
+        <div class="menu-item" {{action "doNews"}}>
+          {{fa-icon "newspaper-o" size=2 border=true}}
+          <div>Nyheter</div>
+        </div>
+        <div class="menu-item" {{action "doDocs"}}>
+          {{fa-icon "book" size=2 border=true}}
+          <div>Dokumentasjon</div>
+        </div>
+
+        {{#if session.session.username}}
+          <div class="menu-item" {{action "doLogOut"}}>
+            {{fa-icon "sign-in" size=2 border=true}}
+            <div>Logg ut</div>
+          </div>
+        {{else}}
+          <div class="menu-item" {{action "doLogIn"}}>
+            {{fa-icon "sign-in" size=2 border=true}}
+            <div>Logg inn</div>
+          </div>
+        {{/if}}
+      {{/if}}
     </div>
+  </div>
 </div>

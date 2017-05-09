@@ -1,25 +1,45 @@
 package no.blockuino.pi.models;
 
+import com.datastax.driver.mapping.annotations.ClusteringColumn;
+import com.datastax.driver.mapping.annotations.PartitionKey;
+import com.datastax.driver.mapping.annotations.Table;
 import com.google.gson.annotations.Expose;
 import no.haagensoftware.hyrrokkin.annotations.SerializedClassName;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by jhsmbp on 01/10/16.
  */
 @SerializedClassName("project")
+@Table(keyspace = "blockuino_no", name ="projects")
 public class Project {
-    @Expose private String id;
+    @Expose @PartitionKey private String id;
+    @Expose @ClusteringColumn private String username;
+
     @Expose private String name;
     @Expose private String xml;
     @Expose private String createdDate;
     @Expose private String updatedDate;
     @Expose private String content;
     @Expose private String title;
-    @Expose private String username;
+    @Expose private String remixOf;
+
 
     public Project() {
+    }
+
+    public Project(Project project, String username) {
+        this.id = UUID.randomUUID().toString().replace("-", "").substring(0, 11);
+        this.username = username;
+        this.name = project.getName();
+        this.xml = project.getXml();
+        this.createdDate = "" + (System.currentTimeMillis() / 1000);
+        this.updatedDate = "" + (System.currentTimeMillis() / 1000);
+        this.content = project.getContent();
+        this.title = project.getTitle();
+        this.remixOf = project.getId();
     }
 
     public String getId() {
@@ -84,5 +104,13 @@ public class Project {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getRemixOf() {
+        return remixOf;
+    }
+
+    public void setRemixOf(String remixOf) {
+        this.remixOf = remixOf;
     }
 }

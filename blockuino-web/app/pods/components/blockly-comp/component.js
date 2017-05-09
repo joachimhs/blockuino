@@ -6,6 +6,24 @@ export default Ember.Component.extend({
   generatedCode: null,
   codeVisible: true,
 
+  compStructure: 'Struktur',
+  compSetup: 'Oppsett (Setup)',
+  compControl: 'Styring',
+  compOperators: 'Operatorer',
+  compInputOutput: "Input/Output",
+  compSerialCommunication: "Seriell Kommunikasjon",
+  compSound: "Lyd",
+  compTools: "Hjelpefunksjoner",
+  compCustomFunctions: "Egne funksjoner",
+  compVariables: "Variabler",
+  compConstants: "Konstanter",
+  compLedPixels: "LED Pixels",
+  compSensors: "Sensorer",
+  compTemp: "DHT11 Temp+Fukt",
+  compMotors: "Motorer!",
+  compServo: "Servo Motorer",
+  compDisplay: "Display!",
+
   actions: {
     generateCode: function () {
       this.updateCode();
@@ -18,7 +36,57 @@ export default Ember.Component.extend({
 
   didInsertElement: function () {
     this._super();
+    this.createWorkspace();
+  },
 
+  langChange: function () {
+    console.log('LANG CHANGE!!!');
+
+    if (this.get('lang')) {
+      Blockly.mainWorkspace.dispose();
+      this.createWorkspace();
+    }
+
+    if (this.get('lang') === 'en') {
+      this.set('compStructure', "Structure");
+      this.set('compSetup', "Setup");
+      this.set('compControl', "Control");
+      this.set('compOperators', "Operators");
+      this.set('compInputOutput', "Input/Output");
+      this.set('compSerialCommunication', "Serial Communication");
+      this.set('compSound', "Sound");
+      this.set('compTools', "Tools");
+      this.set('compCustomFunctions', "Custom Functions");
+      this.set('compVariables', "Variables");
+      this.set('compConstants', "Constants");
+      this.set('compLedPixels', "LED Pixels");
+      this.set('compSensors', "Sensors");
+      this.set('compTemp', "DHT11 Temp+moisture");
+      this.set('compMotors', "Motors");
+      this.set('compServo', "Servo Motors");
+      this.set('compDisplay', "Display");
+    } else if (this.get('lang') === 'no') {
+      this.set('compStructure', "Struktur");
+      this.set('compSetup', "Oppsett (Setup");
+      this.set('compControl', "Styring");
+      this.set('compOperators', "Operatorer");
+      this.set('compInputOutput', "Input/Output");
+      this.set('compSerialCommunication', "Seriell Kommunikasjon");
+      this.set('compSound', "Lyd");
+      this.set('compTools', "Hjelpefunksjoner");
+      this.set('compCustomFunctions', "Egne funksjoner");
+      this.set('compVariables', "Variabler");
+      this.set('compConstants', "Konstanter");
+      this.set('compLedPixels', "LED Pixels");
+      this.set('compSensors', "Sensorer");
+      this.set('compTemp', "DHT11 Temp+Fukt");
+      this.set('compMotors', "Motorer");
+      this.set('compServo', "Servo Motorer");
+      this.set('compDisplay', "Display");
+    }
+  }.observes('lang'),
+
+  createWorkspace: function () {
     var elementId = this.get('elementId');
     var self = this;
 
@@ -27,21 +95,23 @@ export default Ember.Component.extend({
     Ember.run.schedule('afterRender', function () {
       console.log('afterRender!');
 
-        var workspace = Blockly.inject(elementId,
-          {toolbox: document.getElementById('toolboxSetup'),
-            zoom:
-            {controls: false,
-              wheel: false,
-              startScale: 1.0,
-              maxScale: 3,
-              minScale: 0.3,
-              scaleSpeed: 1.2},
-            trashcan: false
-          });
+      var workspace = Blockly.inject(elementId,
+        {
+          toolbox: document.getElementById('toolboxSetup'),
+          zoom: {
+            controls: false,
+            wheel: false,
+            startScale: 1.0,
+            maxScale: 3,
+            minScale: 0.3,
+            scaleSpeed: 1.2
+          },
+          trashcan: false
+        });
 
 
-        console.log('setting workspace: ' + workspace);
-        self.set('workspace', workspace);
+      console.log('setting workspace: ' + workspace);
+      self.set('workspace', workspace);
 
       if (self.get('generatedXML') != null) {
         var xml = self.get('generatedXML');
@@ -51,7 +121,7 @@ export default Ember.Component.extend({
     });
   },
 
-  codeVisibleObserver: function() {
+  codeVisibleObserver: function () {
     console.log('codeVisibleObserver');
     if (this.get('codeVisible') === true) {
       Ember.$("#" + this.get('elementId')).addClass('code-visible')

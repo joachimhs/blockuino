@@ -11,6 +11,7 @@ Router.map(function() {
   this.route('news');
   this.route('docs');
   this.route('saved-projects');
+  this.route('login');
 });
 
 export default Router;

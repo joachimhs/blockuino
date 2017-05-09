@@ -1,10 +1,35 @@
 import Ember from 'ember';
+import SessionData from '../session/sessionData';
 
 export default Ember.Route.extend({
+  session: Ember.inject.service('session'),
+
   beforeModel(params){
     console.log('APPLICATION ROUTE BEFORE MODEL:');
     console.log(params.queryParams.projectId);
     this.set('projectId', params.queryParams.projectId);
+    var self = this;
+
+    Ember.$.get("/currSession").then(function(data) {
+      console.log("CURR SESSION;:");
+      console.log(data);
+
+      var dataObj = JSON.parse(data);
+
+      console.log('auth:');
+      console.log(dataObj.session.authenticated);
+
+      if (dataObj.session.authenticated === true) {
+        var sessionData = SessionData.create({
+          id: dataObj.session.id,
+          username: dataObj.session.username
+        });
+
+        self.get('session').set('session', sessionData);
+        self.get('session').createCookie('uuid', sessionData.get('id'), 30);
+      }
+    });
+    console.log(this.get('session'));
   },
 
   model: function() {

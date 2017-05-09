@@ -1,7 +1,15 @@
 package no.blockuino.pi;
 
+import com.google.gson.Gson;
+import no.blockuino.pi.cassandra.CassandraDataPlugin;
+import no.blockuino.pi.cassandra.dao.ProjectDao;
+import no.blockuino.pi.models.Credentials;
 import no.blockuino.pi.models.Project;
+import no.blockuino.pi.models.Session;
 import no.blockuino.pi.util.FileUtil;
+import no.haagensoftware.conticious.stormpath.ConticiousStormpath;
+import no.haagensoftware.conticious.stormpath.data.StormpathAccount;
+import no.haagensoftware.hyrrokkin.base.HyrrokkinSerializer;
 import no.haagensoftware.hyrrokkin.deserializer.RestDeserializer;
 import no.haagensoftware.hyrrokkin.serializer.RestSerializer;
 import org.apache.log4j.ConsoleAppender;
@@ -9,14 +17,14 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.List;
+import java.util.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Properties;
 
 import static spark.Spark.*;
 
@@ -25,13 +33,16 @@ import static spark.Spark.*;
  */
 public class WebServer {
     private static final Logger logger = Logger.getLogger(WebServer.class.getName());
+    private static Map<String, Session> sessions = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
+        sessions.clear();
         if (System.getProperty("log4j.configuration") == null) {
             configureLogger();
         }
 
         readProperties();
+        CassandraDataPlugin.getInstance();
 
         staticFiles.location("/public"); // Static files
         staticFiles.externalLocation(System.getProperty("blockuino.webappDir"));
@@ -49,7 +60,12 @@ public class WebServer {
 
         get("/blockuino/projects", (req, res) -> {
             res.header("Content-Type", "application/json");
-            List<Project> projects = getAllProjects(savedDirectory);
+            String username = getUsernameFromId(req.cookie("uuid"));
+            List<Project> projects = CassandraDataPlugin.getInstance().getProjectDao().getProjectsForUsername("DEFAULT_USER");
+
+            if (username != null) {
+                projects.addAll(CassandraDataPlugin.getInstance().getProjectDao().getProjectsForUsername(username));
+            }
             RestSerializer serializer = new RestSerializer();
             return serializer.serialize(projects, new ArrayList<>(), false);
         });
@@ -60,10 +76,20 @@ public class WebServer {
             //Initialize with blank response (if no project is saved with the ID yet)
             String projectJson = "{ \"project\": { \"id\": \"" + projectId + "\"}}";
 
+            String username = getUsernameFromId(req.cookie("uuid"));
+
+            Project project = CassandraDataPlugin.getInstance().getProjectDao().getProjectFromId(projectId);
+
+            if (project != null) {
+                RestSerializer serializer = new RestSerializer();
+                projectJson = serializer.serialize(project).toString();
+            }
+
+            /*
             //If file exists, return saves project
             if (fileExists(savedDirectory, projectId + ".json")) {
                 projectJson = getFileContent(savedDirectory, projectId + ".json");
-            }
+            }*/
 
             return projectJson;
         });
@@ -81,9 +107,14 @@ public class WebServer {
                     project.setCreatedDate("" + (System.currentTimeMillis() / 1000));
                 }
 
-                FileUtil.writeContentsToFile(
+                Session session = getSessionFromId(req.cookie("uuid"));
+                if (session != null && session.getAuthenticated() != null && session.getAuthenticated().booleanValue()) {
+                    project.setUsername(session.getUsername());
+                }
+                /*FileUtil.writeContentsToFile(
                         FileSystems.getDefault().getPath(savedDirectory + File.separatorChar + project.getId() + ".json"),
-                        serializer.serialize(project, new ArrayList<>(), false).toString());
+                        serializer.serialize(project, new ArrayList<>(), false).toString());*/
+                CassandraDataPlugin.getInstance().getProjectDao().persistProject(project);
 
                 logger.info("/project PUT");
                 logger.info(content);
@@ -94,22 +125,41 @@ public class WebServer {
         put("/blockuino/projects/:projectId", (req, res) -> {
             String content = req.body();
             String projectId = req.params(":projectId");
+            Project oldProject = null;
+
+            String username = getUsernameFromId(req.cookie("uuid"));
+            if (username != null) {
+                oldProject = CassandraDataPlugin.getInstance().getProjectDao().getProject(projectId, username);
+            }
+
+            if (oldProject == null) {
+                oldProject = CassandraDataPlugin.getInstance().getProjectDao().getProject(projectId, "DEFAULT_USER");
+            }
 
             if (projectId != null && content != null) {
                 RestDeserializer deserializer = new RestDeserializer();
                 RestSerializer serializer = new RestSerializer();
                 Project project = deserializer.deserialize(content, Project.class);
                 project.setId(projectId);
-                project.setUpdatedDate("" + (System.currentTimeMillis() / 1000));
-                if (project.getCreatedDate() == null) {
-                    project.setCreatedDate("" + (System.currentTimeMillis() / 1000));
+
+                if (oldProject == null || oldProject.getUsername() == null) {
+                    oldProject = project;
+                    project.setUsername(username);
                 }
 
-                content = serializer.serialize(project, new ArrayList<>(), false).toString();
+                if (oldProject != null && oldProject.getUsername().equals(username)) {
+                    project.setUpdatedDate("" + (System.currentTimeMillis() / 1000));
+                    if (project.getCreatedDate() == null) {
+                        project.setCreatedDate("" + (System.currentTimeMillis() / 1000));
+                    }
+                    content = serializer.serialize(project, new ArrayList<>(), false).toString();
+                } else {
+                    //create clone
+                    project = new Project(oldProject, username);
+                    content = "{\"newProjectId\": \"" + project.getId() + "\"}";
+                }
 
-                FileUtil.writeContentsToFile(
-                        FileSystems.getDefault().getPath(savedDirectory + File.separatorChar + projectId + ".json"),
-                        content);
+                CassandraDataPlugin.getInstance().getProjectDao().persistProject(project);
 
                 logger.info("/project PUT");
                 logger.info(content);
@@ -117,26 +167,118 @@ public class WebServer {
             return content;
         });
 
-        post("/upload", (req, res) -> {
+        post("/upload/:projectid", (req, res) -> {
             String code = req.body();
+            String projectId = req.params(":projectId");
+
             String returnMessage = "";
             String hex = null;
 
-            if (code != null && code.length() > 10) {
-                Files.write(Paths.get(arduinoProjectFile), code.getBytes());
-                String executable = "pio run -d  " + pioExecutable;
+            if (code != null && code.length() > 10 && projectId != null) {
+                Path projectPath = Paths.get(pioDir, projectId);
+                Path arduinoFilePath = Paths.get(pioDir, projectId, "src", "blockuino.ino");
+
+                if (!Files.exists(projectPath)) {
+                    Files.createDirectories(projectPath);
+                    String initCommand = "pio init -b uno -d " + projectPath.toAbsolutePath().toString();
+                    returnMessage = executeCommandAndReturnResult(initCommand);
+                }
+
+                Files.write(arduinoFilePath, code.getBytes());
+                String executable = "pio run -d  " + projectPath.toAbsolutePath().toString();
                 returnMessage = executeCommandAndReturnResult(executable);
-                hex = getFileContent(pioDir + File.separatorChar + ".pioenvs/uno", "firmware.hex");
+                hex = getFileContent(projectPath.toAbsolutePath().toString() + "/.pioenvs/uno", "firmware.hex");
             }
 
             return hex;
         });
 
-        get("/hexfile", (req, res) -> {
-            String hexfileContents =getFileContent("/srv/piotest/.pioenvs/uno", "firmware.hex");
+        get("/hexfile/:projectId", (req, res) -> {
+            String projectId = req.params(":projectId");
+            Path projectPath = Paths.get(pioDir, projectId);
+
+            String hexfileContents = getFileContent(projectPath.toAbsolutePath().toString() + "/.pioenvs/uno", "firmware.hex");
 
             return hexfileContents;
         });
+
+        post("/login", (req, res) -> {
+            String httpBody = req.body();
+            boolean authenticated = false;
+
+            Session newSession = new Session();
+
+            if (httpBody != null && httpBody.length() > 8) {
+                Credentials creds = new Gson().fromJson(httpBody, Credentials.class);
+                StormpathAccount sa = ConticiousStormpath.getInstance("kodegenet").authenticateUser(creds.getUsername(), creds.getPassword());
+                authenticated =  sa != null && sa.getEmail() != null && sa.getEmail().length() > 0;
+
+                newSession.setAuthenticated(authenticated);
+                if (authenticated) {
+                    newSession.setId(UUID.randomUUID().toString().replace("-", "").substring(0, 12));
+                    newSession.setUsername(sa.getEmail());
+                    sessions.put(newSession.getId(), newSession);
+                }
+            }
+
+            if (authenticated) {
+                HyrrokkinSerializer serializer = new RestSerializer();
+                return serializer.serialize(newSession);
+            } else {
+                return ("ERROR");
+            }
+        });
+
+        get("/currSession", (req, res) -> {
+            String sessionId = req.cookie("uuid");
+            Session session = null;
+
+            if (sessionId != null) {
+                session = sessions.get(sessionId);
+            }
+
+            if (session != null) {
+                HyrrokkinSerializer serializer = new RestSerializer();
+                return serializer.serialize(session);
+            } else {
+                return "";
+            }
+
+        });
+
+        get("*", (request, response) -> renderContent("index.html"));
+    }
+
+    private static Session getSessionFromId(String cookieId) {
+        Session session = null;
+
+        if (cookieId != null) {
+            session = sessions.get(cookieId);
+        }
+
+        return session;
+    }
+
+    private static String getUsernameFromId(String cookieId) {
+        Session session = getSessionFromId(cookieId);
+        String username = null;
+
+        if (session != null) {
+            username = session.getUsername();
+        }
+        return username;
+    }
+
+    private static String renderContent(String htmlFile) {
+        try {
+            // Return a String which has all
+            // the contents of the file.
+            Path path = Paths.get(System.getProperty("blockuino.webappDir") + "/index.html");
+            return new String(Files.readAllBytes(path), Charset.defaultCharset());
+        } catch (IOException ioe) {
+            // Add your own exception handlers here.
+        }
+        return null;
     }
 
     private static List<Project> getAllProjects(String directory) {

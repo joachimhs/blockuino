@@ -1,10 +1,30 @@
 <div class="row">
     <div class="col-md-offset-2 col-md-8">
         <h1>Lagrede prosjekter</h1>
-      {{#each model.projects as |project|}}
-        {{#link-to "index" (query-params projectId=project.id)}}
-            <div>{{project.id}} - {{project.name}}</div>
-        {{/link-to}}
-      {{/each}}
+
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>Prosjekt ID</th>
+          <th>Navn</th>
+          <th>Opprettet</th>
+          <th>Laget av</th>
+          <th>Remix av</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {{#each model.projects as |project|}}
+          <tr>
+            <td>{{#link-to "index" (query-params projectId=project.id)}}{{project.id}}{{/link-to}}</td>
+            <td>{{#link-to "index" (query-params projectId=project.id)}}{{project.name}}{{/link-to}}</td>
+            <td>{{moment-from-now project.createdDateMs}}</td>
+            <td>{{email-obfuscator project.username}}</td>
+            <td>{{#link-to "index" (query-params projectId=project.remixOf)}}{{project.remixOf}}{{/link-to}}</td>
+          </tr>
+        {{/each}}
+
+        </tbody>
+      </table>
     </div>
 </div>

@@ -12,7 +12,8 @@ console.log('loaded...');
 
 chrome.runtime.onMessageExternal.addListener(
   function (request, sender, sendResponse) {
-      console.log("Message Recived");   
+      console.log("Message Recived: ");   
+	  console.log(request);
 	  console.log(request.hex);
 	  
 	  if (request.hex) {
@@ -29,6 +30,10 @@ chrome.runtime.onMessageExternal.addListener(
 		    }
 		  });
 	  };
+	  
+	  if (request.action === "initialize") {
+		  sendResponse("initialized");
+	  }
   }
 );
 }).call(this,require("buffer").Buffer)

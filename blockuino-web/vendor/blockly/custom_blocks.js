@@ -10,6 +10,12 @@ Blockly.Blocks.hardware = {
 Blockly.Blocks.structure = {
   HUE: 320
 };
+Blockly.Blocks.tools = {
+  HUE: 210
+};
+Blockly.Blocks.customFunction = {
+  HUE: 65
+};
 
 Blockly.Blocks['arduino_blink'] = {
   init: function() {
@@ -21,7 +27,7 @@ Blockly.Blocks['arduino_blink'] = {
       .appendField(Blockly.Msg.ARDUINO_BLINK_TIMES);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.hardware.HUE);
+    this.setColour(Blockly.Blocks.tools.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_BLINK_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -38,6 +44,25 @@ Blockly.Arduino['arduino_blink'] = function (block) {
   code += 'delay(' + ms + ');';
   code += 'digitalWrite(' + dropdown_pin + ', LOW);';
   code += 'delay(' + ms + ');';
+  return code;
+};
+
+Blockly.Blocks['comment'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ARDUINO_COMMENT_LABEL)
+      .appendField(new Blockly.FieldTextInput(Blockly.Msg.ARDUINO_COMMENT_DEFINE ), "COMMENT");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip(Blockly.Msg.ARDUINO_COMMENT_TOOLTIP);
+    this.setHelpUrl('');
+  }
+};
+
+Blockly.Arduino['comment'] = function(block) {
+  var text_comment = block.getFieldValue('COMMENT');
+  // TODO: Assemble JavaScript into code variable.
+  var code = '\n//' + text_comment + '\n';
   return code;
 };
 
@@ -291,6 +316,7 @@ Blockly.Blocks['arduino_map'] = {
       .appendField(Blockly.Msg.ARDUINO_MAP_MAX_TO);
     this.setInputsInline(false);
     this.setOutput(true);
+    this.setColour(Blockly.Blocks.tools.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -321,9 +347,11 @@ Blockly.Blocks['arduino_tone_ms'] = {
       .appendField(Blockly.Msg.ARDUINO_TONE_MS_MS);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
+    this.setColour(Blockly.Blocks.hardware.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_TONE_MS_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
+
 };
 
 Blockly.Arduino['arduino_tone_ms'] = function(block) {
@@ -332,6 +360,55 @@ Blockly.Arduino['arduino_tone_ms'] = function(block) {
   var value_ms = Blockly.Arduino.getValueForVariable(block, 'MS', Blockly.Arduino.ORDER_ATOMIC);
   // TODO: Assemble JavaScript into code variable.
   var code = 'tone(' + value_pin + ', ' + value_frequency + ', ' + value_ms + ');';
+  return code;
+};
+
+Blockly.Blocks['arduino_tone'] = {
+  init: function() {
+    this.appendValueInput("PIN")
+      .setCheck(null)
+      .appendField(Blockly.Msg.ARDUINO_TONE_MS_DECLARE)
+      .appendField(Blockly.Msg.ARDUINO_TONE_MS_PIN);
+    this.appendValueInput("FREQUENCY")
+      .setCheck(null)
+      .appendField(Blockly.Msg.ARDUINO_TONE_MS_FREQ);
+    this.setInputsInline(true);
+    this.setColour(230);
+    this.setTooltip(Blockly.Msg.ARDUINO_TONE_TOOLTIP);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setHelpUrl('');
+  }
+};
+
+Blockly.Arduino['arduino_tone'] = function(block) {
+  var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
+  var value_frequency = Blockly.Arduino.statementToCode(block, 'FREQUENCY', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'tone(' + value_pin + ', ' + value_frequency + ');';
+  return code;
+};
+
+Blockly.Blocks['arduino_no_tone'] = {
+  init: function() {
+  this.appendValueInput("PIN")
+    .setCheck(null)
+    .appendField(Blockly.Msg.ARDUINO_NO_TONE_MS_DECLARE)
+    .appendField(Blockly.Msg.ARDUINO_TONE_MS_PIN);
+  this.setInputsInline(true);
+  this.setPreviousStatement(true, null);
+  this.setNextStatement(true, null);
+  this.setTooltip(Blockly.Msg.ARDUINO_NO_TONE_TOOLTIP);
+  this.setColour(230);
+  this.setTooltip('');
+  this.setHelpUrl('');
+}
+};
+
+Blockly.Arduino['arduino_no_tone'] = function(block) {
+  var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'notone(' + value_pin + ');';
   return code;
 };
 
@@ -400,6 +477,31 @@ Blockly.Blocks['arduino_delay'] = {
 
 Blockly.Arduino['arduino_delay'] = function (block) {
   var value_delay = block.getFieldValue('delay');
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'delay(' + value_delay + ');';
+  return code;
+};
+
+Blockly.Blocks['arduino_delay_variable'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ARDUINO_DELAY_DEFINE);
+    this.appendValueInput("delay")
+      .setCheck(null);
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ARDUINO_DELAY_MS);
+    this.setInputsInline(true);
+    this.setColour(56);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setTooltip(Blockly.Msg.ARDUINO_DELAY_TOOLTIP);
+    this.setHelpUrl('');
+  }
+};
+
+Blockly.Arduino['arduino_delay_variable'] = function(block) {
+  var value_delay = Blockly.Arduino.getValueForVariable(block, "delay");
+
   // TODO: Assemble JavaScript into code variable.
   var code = 'delay(' + value_delay + ');';
   return code;
@@ -565,7 +667,7 @@ Blockly.Blocks['arduino_variable'] = {
     var labelInput = this.getInput("labelInput");
     var variableName = this.getFieldValue('VAR');
     console.log('valiableName: ' + variableName);
-    if (variableName === 'element') {
+    if (variableName === 'element' || variableName == 'item') {
       labelInput.setVisible(true);
     } else {
       labelInput.setVisible(false);
@@ -711,11 +813,12 @@ Blockly.Blocks['arduino_pulse_in'] = {
     this.appendDummyInput()
       .appendField("Puls Inn: ");
     this.appendValueInput("PIN")
-      .appendField("fra Pin:");
+      .appendField(Blockly.Msg.ARDUINO_TONE_MS_PIN);
     this.appendValueInput("VALUE")
       .appendField("Verdi: ");
     this.setInputsInline(true);
     this.setOutput(true);
+    this.setColour(Blockly.Blocks.tools.HUE);
     this.setTooltip('');
     this.setHelpUrl('http://www.example.com/');
   }
@@ -731,13 +834,17 @@ Blockly.Arduino['arduino_pulse_in'] = function(block) {
 
 Blockly.Blocks['arduino_declare_function'] = {
   init: function() {
-    this.appendStatementInput("NAME")
-      .setCheck(null)
+    this.appendDummyInput()
       .appendField(Blockly.Msg.ARDUINO_DECLARE_FUNCTION_VALUE)
-      .appendField(new Blockly.FieldVariable("function"), "FUNCTION")
+      .appendField(new Blockly.FieldVariable("function"), "FUNCTION");
+    this.appendDummyInput()
       .appendField(Blockly.Msg.ARDUINO_DECLARE_FUNCTION_RETURNS)
       .appendField(new Blockly.FieldDropdown([["void", "void"], ["int", "int"], ["string", "string"], ["double", "double"], ["boolean", "boolean"]]), "TYPE");
+    this.appendStatementInput("CODE");
     this.setColour(267);
+    this.setInputsInline(false);
+    this.setPreviousStatement(false, null);
+    this.setNextStatement(false, null);
     this.setTooltip(Blockly.Msg.ARDUINO_DECLARE_FUNCTION_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   },
@@ -762,9 +869,33 @@ Blockly.Blocks['arduino_declare_function'] = {
 Blockly.Arduino['arduino_declare_function'] = function(block) {
   var text_funktion = block.getFieldValue('FUNCTION');
   var dropdown_type = block.getFieldValue('TYPE');
-  var statements_name = Blockly.Arduino.statementToCode(block, 'NAME');
+  var statements_name = Blockly.Arduino.statementToCode(block, 'CODE');
   // TODO: Assemble JavaScript into code variable.
-  var code = dropdown_type + " " + text_funktion + "() { " + statements_name + "}";
+  var code = '\n' + dropdown_type + " " + text_funktion + "() { " + statements_name + "}";
+  return code;
+};
+
+Blockly.Blocks['function_return'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ARDUINO_FUNCTION_RETURN_LABEL);
+    this.appendValueInput("retVal")
+      .setCheck(null);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(267);
+    this.setTooltip(Blockly.Msg.ARDUINO_FUNCTION_RETURN_TOOLTIP);
+    this.setHelpUrl('');
+  }
+};
+
+Blockly.Arduino['function_return'] = function(block) {
+  var value_retVal = Blockly.Arduino.getValueForVariable(block, "retVal");
+
+
+  // TODO: Assemble JavaScript into code variable.
+  var code = 'return ' + value_retVal + ';';
   return code;
 };
 
@@ -842,8 +973,8 @@ Blockly.Blocks['arduino_for'] = {
 };
 
 Blockly.Arduino['arduino_for'] = function(block) {
-  var value_from = Blockly.Arduino.getValueForVariable(block, 'FROM', Blockly.Arduino.ORDER_ATOMIC);
-  var value_to = Blockly.Arduino.getValueForVariable(block, 'TO', Blockly.Arduino.ORDER_ATOMIC);
+  var value_from = Blockly.Arduino.getValueForVariable(block, 'FROM', Blockly.Arduino.ORDER_NONE);
+  var value_to = Blockly.Arduino.getValueForVariable(block, 'TO', Blockly.Arduino.ORDER_NONE);
   var dropdown_type = block.getFieldValue('VAR');
 
   var isNumbers = true;
@@ -854,9 +985,11 @@ Blockly.Arduino['arduino_for'] = function(block) {
 
   var incrementSymbol = "++";
   var compareSymbol = "<";
-  if (isNumbers && value_to < value_from) {
+  if (isNumbers && parseInt(value_to) < parseInt(value_from)) {
     incrementSymbol = "--";
     compareSymbol = ">";
+  } else if (!isNumbers) {
+    compareSymbol = "<=";
   }
 
   var statements_statement = Blockly.Arduino.statementToCode(block, 'STATEMENT');
@@ -989,6 +1122,7 @@ Blockly.Blocks['arduino_pixel_strip'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1012,6 +1146,7 @@ Blockly.Blocks['arduino_pixel_strip_begin'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_BEGIN_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1030,6 +1165,7 @@ Blockly.Blocks['arduino_pixel_strip_show'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_SHOW_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1048,6 +1184,7 @@ Blockly.Blocks['arduino_pixel_strip_include'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_INCLUDE_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1070,7 +1207,8 @@ Blockly.Blocks['arduino_pixel_strip_color'] = {
     this.appendValueInput("BLUE")
       .appendField(Blockly.Msg.ARDUINO_LED_STRIP_COLOR_BLUE);
     this.setInputsInline(true);
-    this.setPreviousStatement(true, null);
+    this.setPreviousStatement(true, null)
+    this.setColour(Blockly.Blocks.customFunction.HUE);;
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_COLOR_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
@@ -1275,7 +1413,7 @@ Blockly.Blocks['arduino_car_variables'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_INIT_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1383,7 +1521,7 @@ Blockly.Blocks['arduino_car_setup'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_SETUP_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1407,7 +1545,7 @@ Blockly.Blocks['arduino_car_stop'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_STOP_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1427,7 +1565,7 @@ Blockly.Blocks['arduino_car_forwards'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_FORWARDS_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1447,7 +1585,7 @@ Blockly.Blocks['arduino_car_backwards'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_BACKARDS_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1466,7 +1604,7 @@ Blockly.Blocks['arduino_car_rotate_right'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_ROTATE_RIGHT_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1485,7 +1623,7 @@ Blockly.Blocks['arduino_bil_rotate_left'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_ROTATE_LEFT_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1512,7 +1650,7 @@ Blockly.Blocks['arduino_car_analog_speed'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_SPEED_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1535,7 +1673,7 @@ Blockly.Blocks['arduino_car_set_speed'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_SPEED_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1588,7 +1726,7 @@ Blockly.Blocks['ultrasonic_init'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.ULTRASONIC_INITIALIZE_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1601,7 +1739,7 @@ Blockly.Blocks['ultrasonic_setup'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.ULTRASONIC_SETUP_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1620,7 +1758,7 @@ Blockly.Blocks['ultrasonic_distance'] = {
       .appendField(Blockly.Msg.ULTRASONIC_DISTANCE);
     this.setInputsInline(false);
     this.setOutput(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.ULTRASONIC_DISTANCE_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1640,7 +1778,7 @@ Blockly.Blocks['servo_include'] = {
       .appendField(Blockly.Msg.SERVO_INCLUDE);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.SERVO_INCLUDE_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1663,7 +1801,7 @@ Blockly.Blocks['servo_attach'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.SERVO_ATTACH_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   },
@@ -1705,7 +1843,7 @@ Blockly.Blocks['servo_write'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.SERVO_WRITE_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1727,7 +1865,7 @@ Blockly.Blocks['oled_include'] = {
   init: function() {
     this.appendDummyInput()
       .appendField(Blockly.Msg.OLED_INCLUDE);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.OLED_INCLUDE_TOOLTIP);
@@ -1751,7 +1889,7 @@ Blockly.Blocks['oled_setup'] = {
   init: function() {
     this.appendDummyInput()
       .appendField(Blockly.Msg.OLED_SETUP);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.OLED_SETUP_TOOLTIP);
@@ -1785,7 +1923,7 @@ Blockly.Blocks['oled_draw_pixel'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.OLED_DRAW_PIXEL_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1815,7 +1953,7 @@ Blockly.Blocks['oled_set_cursor'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.OLED_SET_CURSOR_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1839,7 +1977,7 @@ Blockly.Blocks['oled_print'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.OLED_PRINT_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1859,7 +1997,7 @@ Blockly.Blocks['oled_update_display'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.OLED_UPDATE_DISPLAY_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1878,7 +2016,7 @@ Blockly.Blocks['oled_clear_display'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.OLED_CLEAR_DISPLAY_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1901,7 +2039,7 @@ Blockly.Blocks['eeprom_include'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.EEPROM_INCLUDE_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1913,16 +2051,6 @@ Blockly.Arduino['eeprom_include'] = function(block) {
   return code;
 };
 
-Blockly.Msg.EEPROM_INCLUDE= "Inkluder EEPROM biblioteket";
-Blockly.Msg.EEPROM_INCLUDE_TOOLTIP = "Bruk denne klossen for å inkludere EEPROM biblioteket";
-Blockly.Msg.EEPROM_WRITE= "Lagre til EEPROM";
-Blockly.Msg.EEPROM_WRITE_ADDRESS = "Addresse:";
-Blockly.Msg.EEPROM_WRITE_VALUE = "Verdi:";
-Blockly.Msg.EEPROM_WRITE_TOOLTIP= "Bruk denne klossen for å skrive en verdi til EEPROM addressen angitt";
-Blockly.Msg.EEPROM_UPDATE= "Oppdater EEPROM Verdi";
-Blockly.Msg.EEPROM_WRITE_ADDRESS = "Addresse:";
-Blockly.Msg.EEPROM_WRITE_VALUE = "Verdi:";
-Blockly.Msg.EEPROM_UPDATE_TOOLTIP= "Bruk denne klossen for å oppdatere en verdi til EEPROM addressen angitt";
 
 Blockly.Blocks['eeprom_write'] = {
   init: function() {
@@ -1939,7 +2067,7 @@ Blockly.Blocks['eeprom_write'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.EEPROM_WRITE_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1968,7 +2096,7 @@ Blockly.Blocks['eeprom_update'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.EEPROM_UPDATE_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1992,7 +2120,7 @@ Blockly.Blocks['eeprom_read'] = {
       .appendField(Blockly.Msg.EEPROM_READ_ADDRESS);
     this.setInputsInline(false);
     this.setOutput(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.EEPROM_READ_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2012,7 +2140,7 @@ Blockly.Blocks['eeprom_length'] = {
       .appendField(Blockly.Msg.EEPROM_LENGTH);
     this.setInputsInline(false);
     this.setOutput(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.EEPROM_LENGTH_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2041,7 +2169,7 @@ Blockly.Blocks['dht11_init'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.DHT_INIT_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2065,7 +2193,7 @@ Blockly.Blocks['dht11_setup'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.DHT_SETUP_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2084,7 +2212,7 @@ Blockly.Blocks['dht11_read_temp'] = {
       .appendField(Blockly.Msg.DHT_TEMP);
     this.setInputsInline(false);
     this.setOutput(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.DHT_TEMP_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2103,7 +2231,7 @@ Blockly.Blocks['dht11_read_humidity'] = {
       .appendField(Blockly.Msg.DHT_HUMIDITY);
     this.setInputsInline(false);
     this.setOutput(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
     this.setTooltip(Blockly.Msg.DHT_HUMIDITY_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2126,7 +2254,8 @@ Blockly.Blocks['arduino_raw_thermistor_to_temp_function'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(65);
+    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.tools.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_RAW_THERMISTOR_FUNCTION_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2161,6 +2290,7 @@ Blockly.Blocks['arduino_raw_thermistor_to_temp'] = {
     this.setInputsInline(false);
     this.setOutput(true, null);
     this.setColour(267);
+    this.setColour(Blockly.Blocks.tools.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_RAW_THERMISTOR_TEMP_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }

@@ -20,7 +20,7 @@
 <div class="programming-area">
     <div class="row">
         <div class="{{if codeVisible 'col-md-6' 'col-md-12'}}">
-          {{blockly-comp codeVisible=codeVisible workspace=workspace generatedCode=blocklyCode generatedXML=generatedXML}}
+          {{blockly-comp lang=session.lang codeVisible=codeVisible workspace=workspace generatedCode=blocklyCode generatedXML=generatedXML}}
         </div>
         <div class="{{if codeVisible 'col-md-6' 'col-md-2'}}">
           {{#if codeVisible}}
