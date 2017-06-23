@@ -1,3 +1,10 @@
-no/blockuino/pi/WebServer.class
+no/blockuino/pi/util/IntegerParser.class
+no/blockuino/pi/cassandra/CassandraAccessor.class
+no/blockuino/pi/models/JniResult.class
 no/blockuino/pi/util/FileUtil.class
+no/blockuino/pi/WebServer.class
 no/blockuino/pi/models/Project.class
+no/blockuino/pi/models/Credentials.class
+no/blockuino/pi/cassandra/dao/ProjectDao.class
+no/blockuino/pi/cassandra/CassandraDataPlugin.class
+no/blockuino/pi/models/Session.class

@@ -23,6 +23,9 @@ export default Ember.Component.extend({
   compMotors: "Motorer!",
   compServo: "Servo Motorer",
   compDisplay: "Display!",
+  compStepper: "Stepper Motors",
+  compRF433: "433 MHz Radiomoduler",
+  compUltrasonic: "Ultrasonic Sensor",
 
   actions: {
     generateCode: function () {
@@ -37,6 +40,9 @@ export default Ember.Component.extend({
   didInsertElement: function () {
     this._super();
     this.createWorkspace();
+    Ember.run.later(function() {
+      Blockly.fireUiEvent(window, 'resize');
+    }), 500;
   },
 
   langChange: function () {
@@ -65,6 +71,9 @@ export default Ember.Component.extend({
       this.set('compMotors', "Motors");
       this.set('compServo', "Servo Motors");
       this.set('compDisplay', "Display");
+      this.set('compStepper', "Stepper Motors");
+      this.set('compRF433','433 MHz Radio modules');
+      this.set('compUltrasonic','Ultrasonic Sensor');
     } else if (this.get('lang') === 'no') {
       this.set('compStructure', "Struktur");
       this.set('compSetup', "Oppsett (Setup");
@@ -83,6 +92,9 @@ export default Ember.Component.extend({
       this.set('compMotors', "Motorer");
       this.set('compServo', "Servo Motorer");
       this.set('compDisplay', "Display");
+      this.set('compStepper', "Stepper Motors");
+      this.set('compRF433','433 MHz Radiomoduler');
+      this.set('compUltrasonic','Ultralydsensor');
     }
   }.observes('lang'),
 

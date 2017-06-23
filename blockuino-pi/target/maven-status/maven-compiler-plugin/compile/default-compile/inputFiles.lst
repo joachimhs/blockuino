@@ -1,3 +1,10 @@
+/Users/joachimhaagenskeie/Projects/blockuino/blockuino-pi/src/main/java/no/blockuino/pi/util/IntegerParser.java
+/Users/joachimhaagenskeie/Projects/blockuino/blockuino-pi/src/main/java/no/blockuino/pi/cassandra/CassandraDataPlugin.java
+/Users/joachimhaagenskeie/Projects/blockuino/blockuino-pi/src/main/java/no/blockuino/pi/models/Session.java
 /Users/joachimhaagenskeie/Projects/blockuino/blockuino-pi/src/main/java/no/blockuino/pi/util/FileUtil.java
 /Users/joachimhaagenskeie/Projects/blockuino/blockuino-pi/src/main/java/no/blockuino/pi/models/Project.java
+/Users/joachimhaagenskeie/Projects/blockuino/blockuino-pi/src/main/java/no/blockuino/pi/cassandra/dao/ProjectDao.java
+/Users/joachimhaagenskeie/Projects/blockuino/blockuino-pi/src/main/java/no/blockuino/pi/models/JniResult.java
 /Users/joachimhaagenskeie/Projects/blockuino/blockuino-pi/src/main/java/no/blockuino/pi/WebServer.java
+/Users/joachimhaagenskeie/Projects/blockuino/blockuino-pi/src/main/java/no/blockuino/pi/cassandra/CassandraAccessor.java
+/Users/joachimhaagenskeie/Projects/blockuino/blockuino-pi/src/main/java/no/blockuino/pi/models/Credentials.java

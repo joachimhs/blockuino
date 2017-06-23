@@ -89,7 +89,11 @@
     <block type="arduino_set_variable"></block>
     <block type="arduino_variable"></block>
     <block type="arduino_variable_value"></block>
+    <block type="variable_increment"></block>
+    <block type="variable_decrement"></block>
     <block type="logic_boolean"></block>
+    <block type="extract_from_array"></block>
+    <block type="char_to_int"></block>
   </category>
 
   <category name="{{compConstants}}" colour="10">
@@ -111,7 +115,7 @@
 
 
   <category name="{{compSensors}}" colour="65">
-    <category name="Ultrasonic Sensor" colour="65">
+    <category name="{{compUltrasonic}}" colour="65">
       <block type="ultrasonic_init"></block>
       <block type="ultrasonic_setup"></block>
       <block type="ultrasonic_distance"></block>
@@ -121,6 +125,13 @@
       <block type="dht11_setup"></block>
       <block type="dht11_read_temp"></block>
       <block type="dht11_read_humidity"></block>
+    </category>
+    <category name="{{compRF433}}" colour="65">
+      <block type="rf_receiver433_init"></block>
+      <block type="rf_receiver433_setup"></block>
+      <block type="rf_receiver433_read"></block>
+      <block type="rf_sender433_init"></block>
+      <block type="rf_sender433_send"></block>
     </category>
   </category>
 
@@ -141,6 +152,13 @@
       <block type="servo_include"></block>
       <block type="servo_attach"></block>
       <block type="servo_write"></block>
+    </category>
+
+    <category name="{{compStepper}}" colour="65">
+      <block type="initialize_28byj"></block>
+      <block type="setup_28byj"></block>
+      <block type="stepper_function"></block>
+      <block type="call_step_28byj"></block>
     </category>
   </category>
 

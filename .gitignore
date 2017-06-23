@@ -6,3 +6,6 @@ bower_components
 node_modules
 *.iml
 target
+*.zip
+release-builds
+target

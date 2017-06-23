@@ -232,7 +232,7 @@ export default Ember.Controller.extend({
 
   convertFromXml: function() {
     var self = this;
-    if (!Blockly.mainWorkspace) {
+    //if (!Blockly.mainWorkspace) {
       Ember.run.later(function() {
         Blockly.mainWorkspace.clear();
         var workspace = self.get('workspace');
@@ -241,7 +241,7 @@ export default Ember.Controller.extend({
         var dom = Blockly.Xml.textToDom(xml);
         Blockly.Xml.domToWorkspace(workspace, dom);
       }, 500);
-    }
+    //}
   },
 
   generatedXmlObserver: function () {

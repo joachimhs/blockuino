@@ -16,14 +16,19 @@
       </div>
     {{/if}}
 
-    {{#if chromeAppInstalled}}
+    {{#if appInstalled}}
       <div class="pull-right header-save-link" {{action "sendToPi"}}>Send til Arduino</div>
+      <div class="pull-right header-save-link" {{action "serialMonitor"}}>Seriellovervåker</div>
     {{/if}}
 
     {{#if (eq session.lang "no")}}
       <div class="pull-right header-save-link" {{action "chooseEnglish"}}>English</div>
     {{else}}
       <div class="pull-right header-save-link" {{action "chooseNorwegian"}}>Norsk</div>
+    {{/if}}
+
+    {{#if electronAppInstalled}}
+      <div class="pull-right header-save-link" {{action "testElectron"}}>Test Electron</div>
     {{/if}}
 
   </div>

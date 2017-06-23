@@ -1,8 +1,15 @@
+import config from 'blockuino-web/config/environment';
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
   indexController: Ember.inject.controller('index'),
   session: Ember.inject.service('session'),
+  chromeAppKey: config.chromeAppKey,
+  showUploadToArduinoModal: false,
+  uploadStarted: false,
+  electronAppInstalled: false,
+  chromeAppInstalled: false,
+  selectedArduino: 'uno',
 
   actions: {
     doNews: function() {
@@ -14,21 +21,167 @@ export default Ember.Controller.extend({
     },
 
     sendToPi: function() {
+      this.set('showUploadToArduinoModal', true);
+      this.set('uploadStarted', false);
+      this.set('compileStatus', null);
+      this.set('uploadResponseMessage', null);
+      this.set('uploadUsbPort', null);
+      this.set('uploadError', null);
+
+      Ember.run.later(function() {
+        Ember.$("#uploadProjectModal").modal('show');
+      });
+    },
+
+    serialMonitor: function() {
+      this.set('showSerialMonitorModal', true);
+      this.set('serialStarted', false);
+      this.set('streamSerial', false);
+      this.set('serialDataRead', "");
+      this.set('selectedSerialPort', null);
+
+      Ember.run.later(function() {
+        Ember.$("#serialMonitorModal").modal('show');
+      });
+
+      this.set('serialStarted', true);
+      var self = this;
+
+      if (self.get('electronAppInstalled')) {
+        Ember.$.ajax({
+            type: "POST",
+            url: "http://localhost:12344",
+            dataType: "JSON",
+            data: JSON.stringify({action: "serialports_list"}),
+            success: function (response) {
+              console.log("ELECTRON RESPONSE: ");
+              console.log(response);
+              self.set('serialPortsAvailable', response);
+            }
+          });
+      } else if (this.get('chromeAppInstalled') && window.chrome) {
+        chrome.runtime.sendMessage(this.get('chromeAppKey'), {action: "serialports_list"},
+          function (response) {
+            console.log("RESPONSE: ");
+            console.log(response);
+            var responseJson = JSON.parse(response);
+            self.set('serialPortsAvailable', responseJson);
+
+          });
+      }
+    },
+
+    openSerialMonitor: function() {
+      console.log('opening Serial Port:');
+      console.log(this.get('openSerialMonitor'));
+      self = this;
+
+      if (this.get('electronAppInstalled')) {
+        Ember.$.ajax({
+          type: "POST",
+          url: "http://localhost:12344",
+          dataType: "JSON",
+          data: JSON.stringify({action: "serialports_open", "port": this.get('selectedSerialPort')}),
+          success: function (response) {
+            console.log("ELECTRON RESPONSE: ");
+            console.log(response);
+
+            self.set('streamSerial', true);
+          }
+        });
+      } else if (this.get('chromeAppInstalled') && window.chrome) {
+        chrome.runtime.sendMessage(this.get('chromeAppKey'), {action: "serialports_open", "port": this.get('selectedSerialPort')},
+          function (response) {
+            console.log("RESPONSE: ");
+            console.log(response);
+
+            self.set('streamSerial', true);
+          });
+      }
+    },
+
+    hideSerialMonitor: function() {
+      Ember.$("#serialMonitorModal").modal('hide');
+
+      if (window.chrome) {
+        chrome.runtime.sendMessage(this.get('chromeAppKey'), {action: "serialports_close", "port": this.get('selectedSerialPort')},
+          function (response) {
+            console.log("RESPONSE: ");
+            console.log(response);
+
+            self.set('streamSerial', true);
+          });
+      }
+
+      var self = this;
+      Ember.run.later(function() {
+        self.set('showSerialMonitorModal', false);
+        self.set('serialStarted', false);
+        self.set('streamSerial', false);
+        self.set('serialDataRead', "");
+        self.set('selectedSerialPort', null);
+      }, 500);
+    },
+
+    doUploadToArduino() {
+      var self = this;
+      this.set('uploadStarted', true);
+      this.set('compileStatus', null);
+      this.set('uploadResponseMessage', null);
+      this.set('uploadUsbPort', null);
+      this.set('uploadError', null);
+
       var highligted = this.get('indexController').getGeneratedCode();
-
       var projectId = this.get('model.project.id');
+      var selectedArduino = this.get('selectedArduino');
 
-      Ember.$.post( "/upload/" + projectId, highligted, function( data ) {
+      Ember.$.post( "/upload/" + projectId + "/arduino/" + selectedArduino, highligted, function( data ) {
         console.log("UPLOAD RESULT:" + data);
 
-        if (window.chrome) {
-          chrome.runtime.sendMessage("ekbpmcpbckbdpbjhdchoniihflnmabie", {hex: data},
-            function (response) {
-              console.log("RESPONSE: ");
+        var result = JSON.parse(data);
+        self.set('compileStatus', result.exitStatus !== 0 ? 'Kompilering feilet. Sjekk etter feil i koden' : 'Kompilering OK');
+        self.set('uploadResponseMessage', result.returnMessage ? result.returnMessage.replace('---', '\n---').replace('===', '\n===').replace('.', '\n.') : "Ingen logg...");
+
+        if (self.get('electronAppInstalled')) {
+          Ember.$.ajax({
+            type: "POST",
+            url: "http://localhost:12344",
+            dataType: "JSON",
+            data: JSON.stringify({hex: result.hex, arduino: selectedArduino}),
+            success: function(response) {
+              console.log('ELECTRON RESPONSE UPLOAD:');
               console.log(response);
-            });
+
+
+              self.set('uploadUsbPort', response.usbPort ? response.usbPort : 'Fant ingen Arduino!');
+              self.set('uploadError', response.error ? response.error : 'OK');
+            }
+          });
+        } else if (result.exitStatus === 0) {
+          if (self.get('chromeAppInstalled') && window.chrome) {
+            chrome.runtime.sendMessage(self.get('chromeAppKey'), {hex: result.hex},
+              function (response) {
+                console.log("CHROME APP RESPONSE: ");
+                console.log(response);
+                var responseJson = JSON.parse(response);
+
+                self.set('uploadUsbPort', responseJson.usbPort ? responseJson.usbPort : 'Fant ingen Arduino!');
+                self.set('uploadError', responseJson.error ? responseJson.error : 'OK');
+
+              });
+          }
         }
       });
+    },
+
+    closeUploadPanel() {
+      Ember.$("#uploadProjectModal").modal('hide');
+
+      var self = this;
+      Ember.run.later(function() {
+        self.set('showUploadToArduinoModal', false);
+        self.set('uploadStarted', false);
+      }, 500);
     },
 
     doLogIn: function() {
@@ -60,7 +213,7 @@ export default Ember.Controller.extend({
       var self = this;
       Ember.run.later(function() {
         self.set('showSaveProjectModal', false);
-      });
+      }, 500);
     },
 
     doSaveProject: function() {
@@ -113,6 +266,55 @@ export default Ember.Controller.extend({
       this.transitionToRoute('saved-projects');
       Blockly.fireUiEvent(window, 'resize');
     }
+  },
+
+  serialStreamer: function() {
+    console.log('---<<<>>>---');
+    console.log('serialStreamer');
+    this.doSerialStreamer();
+  }.observes('streamSerial').on('init'),
+
+  doSerialStreamer: function() {
+    var self = this;
+    if (this.get('streamSerial') === true) {
+
+      if (self.get('electronAppInstalled')) {
+        Ember.$.ajax({
+          type: "POST",
+          url: "http://localhost:12344",
+          dataType: "JSON",
+          data: JSON.stringify({action: "serialports_read_serial"}),
+          success: function(response) {
+            console.log('ELECTRON RESPONSE SERIAL READ:');
+            console.log(response);
+
+            self.set('serialDataRead', self.get('serialDataRead') + response.data);
+            var textarea = document.getElementById('serialMonitorOutput');
+            if (textarea) {
+              textarea.scrollTop = textarea.scrollHeight;
+            }
+          }
+        });
+      } else {
+        if (window.chrome) {
+          chrome.runtime.sendMessage(self.get('chromeAppKey'), {action: 'serialports_read_serial'},
+            function (response) {
+              console.log("RESPONSE: ");
+              console.log(response);
+              var responseJson = JSON.parse(response);
+              self.set('serialDataRead', self.get('serialDataRead') + responseJson.data);
+              var textarea = document.getElementById('serialMonitorOutput');
+              if (textarea) {
+                textarea.scrollTop = textarea.scrollHeight;
+              }
+            });
+        }
+      }
+    }
+
+    Ember.run.later(function() {
+      self.doSerialStreamer();
+    }, 500);
   },
 
   generateUuidIsh: function(a){

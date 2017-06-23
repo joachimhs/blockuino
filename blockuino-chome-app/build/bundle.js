@@ -2,42 +2,114 @@
 (function (Buffer){
 var Avrgirl = require('avrgirl-arduino');
 var intel_hex = require('intel-hex');
+var SerialPort = require("browser-serialport").SerialPort
 
 var avrgirl = new Avrgirl({
-  board: 'uno',
-  debug: true
+    board: 'uno',
+    debug: true
 });
- 
+
 console.log('loaded...');
+console.log(avrgirl);
+window.avrgirl1 = avrgirl;
+window.serialDataCache = "";
+window.selectedSerialPort = null;
 
 chrome.runtime.onMessageExternal.addListener(
-  function (request, sender, sendResponse) {
-      console.log("Message Recived: ");   
-	  console.log(request);
-	  console.log(request.hex);
-	  
-	  if (request.hex) {
-		  var hexfileascii = intel_hex.parse(request.hex).data;
-				  
-		  console.log('uploading...');
-		  console.log(hexfileascii);
-		  
-		  avrgirl.flash(new Buffer(request.hex), function (error) {
-		    if (error) {
-		      console.error(error);
-		    } else {
-		      console.info('done.');
-		    }
-		  });
-	  };
-	  
-	  if (request.action === "initialize") {
-		  sendResponse("initialized");
-	  }
-  }
+    function (request, sender, sendResponse) {
+        if (request.hex) {
+            var hexfileascii = intel_hex.parse(request.hex).data;
+
+            console.log('uploading...');
+            console.log(hexfileascii);
+
+            var responseMessage = {
+                usbPort: null,
+                error: null
+            };
+
+            avrgirl.flash(new Buffer(request.hex), function (error) {
+                if (error) {
+                    console.error(JSON.stringify(error));
+                    console.error(JSON.stringify(error.message));
+                    console.error(JSON.stringify(error.name));
+                    responseMessage.error = error.message;
+                } else {
+                    console.info('done.');
+                    responseMessage.usbPort = window.avrgirl1.protocol.serialPort.path;
+                }
+
+                sendResponse(JSON.stringify(responseMessage));
+            });
+
+        } else if (request.action === "initialize") {
+            sendResponse("initialized");
+        } else if (request.action === "serialports_list") {
+            console.log('serialdata_list');
+
+            var portsReturn = [];
+
+            avrgirl.list(function (err, ports) {
+                console.log(ports);
+                ports.forEach(function (port) {
+                    var board = port.manufacturer;
+
+                    if (port && port.vendorId === '0x2341' && port.productId === '0x43') {
+                        board = 'Arduino Uno'
+                    }
+
+                    portsReturn.push({
+                        comName: port.comName,
+                        pnpId: port.pnpId,
+                        manufacturer: board
+                    });
+                });
+
+                sendResponse(JSON.stringify(portsReturn));
+            });
+        } else if (request.action === "serialports_open") {
+            console.log('serialdata_open');
+            console.log('port: ' + request.port);
+
+            if (request.port) {
+                var serialPort = new SerialPort(request.port, {
+                    baudrate: 9600
+                }, false); // this is the openImmediately flag [default is true]
+
+                window.selectedSerialPort = serialPort;
+                serialPort.open(function (error) {
+                    if (error) {
+                        console.log('failed to open: ' + error);
+                    } else {
+                        console.log('open');
+                        serialPort.on('data', function (data) {
+                            console.log('data received: ' + data);
+                            window.serialDataCache = window.serialDataCache.concat(data);
+                        });
+                    }
+                });
+            }
+
+            sendResponse('{}');
+        } else if (request.action === "serialports_read_serial") {
+            var returnObj = {
+                data: window.serialDataCache
+            };
+            window.serialDataCache = "";
+
+            sendResponse(JSON.stringify(returnObj));
+        } else if (request.action === "serialports_close") {
+            if (window.selectedSerialPort) {
+                window.selectedSerialPort.close();
+            }
+            sendResponse(JSON.stringify('{}'));
+        }
+
+        return true;
+    }
 );
 }).call(this,require("buffer").Buffer)
-},{"avrgirl-arduino":2,"buffer":42,"intel-hex":28}],2:[function(require,module,exports){
+},{"avrgirl-arduino":2,"browser-serialport":15,"buffer":43,"intel-hex":29}],2:[function(require,module,exports){
 var boards = require('./boards');
 var Connection = require('./lib/connection');
 var protocols = require('./lib/protocols');
@@ -358,7 +430,7 @@ module.exports = {
 }
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":42}],4:[function(require,module,exports){
+},{"buffer":43}],4:[function(require,module,exports){
 var AVR109 = require('chip.avr.avr109');
 var colors = require('colors');
 var fs = require('graceful-fs');
@@ -497,7 +569,7 @@ Avr109.prototype._reset = function(callback) {
 
 module.exports = Avr109;
 
-},{"./protocol":6,"async":11,"chip.avr.avr109":16,"colors":21,"graceful-fs":40,"serialport":14,"util":67}],5:[function(require,module,exports){
+},{"./protocol":6,"async":11,"chip.avr.avr109":17,"colors":22,"graceful-fs":41,"serialport":12,"util":68}],5:[function(require,module,exports){
 var Serialport = require('serialport');
 var async = require('async');
 var awty = require('awty');
@@ -713,7 +785,7 @@ Connection.prototype._listPorts = function(callback) {
 
 module.exports = Connection;
 
-},{"async":11,"awty":13,"serialport":14}],6:[function(require,module,exports){
+},{"async":11,"awty":14,"serialport":12}],6:[function(require,module,exports){
 /**
  * Generic Protocol for other protocols to inherit from
  *
@@ -831,7 +903,7 @@ Stk500v1.prototype._reset = function(callback) {
 module.exports = Stk500v1;
 
 }).call(this,{"isBuffer":require("../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":47,"./protocol":6,"./tools":10,"colors":21,"stk500":34,"util":67}],9:[function(require,module,exports){
+},{"../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":48,"./protocol":6,"./tools":10,"colors":22,"stk500":35,"util":68}],9:[function(require,module,exports){
 (function (Buffer){
 var STK2 = require('stk500-v2');
 var async = require('async');
@@ -902,7 +974,7 @@ Stk500v2.prototype._upload = function(file, callback) {
 module.exports = Stk500v2;
 
 }).call(this,{"isBuffer":require("../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":47,"./protocol":6,"./tools":10,"async":11,"colors":21,"stk500-v2":30,"util":67}],10:[function(require,module,exports){
+},{"../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":48,"./protocol":6,"./tools":10,"async":11,"colors":22,"stk500-v2":31,"util":68}],10:[function(require,module,exports){
 var fs = require('graceful-fs');
 var intelhex = require('intel-hex');
 
@@ -930,7 +1002,7 @@ tools._parseHex = function(file) {
 
 module.exports = tools;
 
-},{"graceful-fs":40,"intel-hex":28}],11:[function(require,module,exports){
+},{"graceful-fs":41,"intel-hex":29}],11:[function(require,module,exports){
 (function (process,global){
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -6223,129 +6295,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 })));
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":50}],12:[function(require,module,exports){
-module.exports = function doubler(start, n) {
-  var i = 0;
-  while (i++ < n) {
-    start = start * 2;
-  }
-  return start;
-};
-
-},{}],13:[function(require,module,exports){
-var isval = require('isval')
-  , doubler = require('./doubler');
-
-module.exports = function awty(poll) {
-  if (!arguments.length) {
-    throw new SyntaxError('must supply a polling function');
-  }
-
-  if (!isval(poll, 'function')) {
-    throw new TypeError('poll must be a function');
-  }
-
-  return (function() {
-    var times = Infinity
-      , incr = false
-      , every = 1000
-      , interval = null
-      , counter = 0
-      , instance
-      , done;
-
-    function run() {
-      var result = poll(next);
-
-      if (poll.length === 0) {
-        next(result);
-      }
-    }
-
-    function next(result) {
-      var timeout = every
-        , fin = done;
-
-      counter += 1;
-
-      if (result || counter >= times) {
-        if (done) {
-          done = null;
-          fin(!!result);
-        }
-        return;
-      }
-
-      if (incr) {
-        if (incr === true) {
-          timeout = doubler(timeout, counter);
-        } else {
-          timeout += (counter * incr);
-        }
-      }
-
-      interval = setTimeout(run, timeout);
-    }
-
-    instance = function pollInstance(cb) { 
-      if (interval) {
-        clearTimeout(interval);
-        interval = null; 
-        if (done) {
-          done(false);
-        } 
-        done = null;
-        counter = 0;
-      } 
-      
-      if (arguments.length) {
-        if (!isval(cb, 'function')) {
-          throw new TypeError('done callback must be a function');
-        } 
-        done = cb;
-      }
-
-      interval = setTimeout(run, every);
-    };
-
-    instance.ask = function pollAsk(n) {
-      if (interval) {
-        throw new SyntaxError('can not set ask limit during polling');
-      } else if (!isval(n, 'number')) {
-        throw new TypeError('ask limit must be a number');
-      } 
-      times = n; 
-      return instance;
-    };
-
-    instance.every = function pollEvery(ms) { 
-      if (interval) {
-        throw new SyntaxError('can not set timeout during polling');
-      } else if (!isval(ms, 'number')) {
-        throw new TypeError('timout must be a number');
-      } 
-      every = ms; 
-      return instance;
-    };
-
-    instance.incr = function pollIncr(ms) {
-      if (interval) {
-        throw new SyntexError('can not set increment during polling');
-      } else if (!arguments.length || isval(ms, 'boolean')) {
-        incr = !!ms;
-      } else if (isval(ms, 'number')) {
-        incr = ms;
-      } else {
-        throw new TypeError('increment must be a boolean or number');
-      } 
-      return instance;
-    };
-
-    return instance;
-  })();
-};
-
-},{"./doubler":12,"isval":29}],14:[function(require,module,exports){
+},{"_process":51}],12:[function(require,module,exports){
 (function (process,Buffer){
 'use strict';
 
@@ -6767,7 +6717,556 @@ SerialPort.used = [];
 module.exports = SerialPort;
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":50,"buffer":42,"events":44,"util":67}],15:[function(require,module,exports){
+},{"_process":51,"buffer":43,"events":45,"util":68}],13:[function(require,module,exports){
+module.exports = function doubler(start, n) {
+  var i = 0;
+  while (i++ < n) {
+    start = start * 2;
+  }
+  return start;
+};
+
+},{}],14:[function(require,module,exports){
+var isval = require('isval')
+  , doubler = require('./doubler');
+
+module.exports = function awty(poll) {
+  if (!arguments.length) {
+    throw new SyntaxError('must supply a polling function');
+  }
+
+  if (!isval(poll, 'function')) {
+    throw new TypeError('poll must be a function');
+  }
+
+  return (function() {
+    var times = Infinity
+      , incr = false
+      , every = 1000
+      , interval = null
+      , counter = 0
+      , instance
+      , done;
+
+    function run() {
+      var result = poll(next);
+
+      if (poll.length === 0) {
+        next(result);
+      }
+    }
+
+    function next(result) {
+      var timeout = every
+        , fin = done;
+
+      counter += 1;
+
+      if (result || counter >= times) {
+        if (done) {
+          done = null;
+          fin(!!result);
+        }
+        return;
+      }
+
+      if (incr) {
+        if (incr === true) {
+          timeout = doubler(timeout, counter);
+        } else {
+          timeout += (counter * incr);
+        }
+      }
+
+      interval = setTimeout(run, timeout);
+    }
+
+    instance = function pollInstance(cb) { 
+      if (interval) {
+        clearTimeout(interval);
+        interval = null; 
+        if (done) {
+          done(false);
+        } 
+        done = null;
+        counter = 0;
+      } 
+      
+      if (arguments.length) {
+        if (!isval(cb, 'function')) {
+          throw new TypeError('done callback must be a function');
+        } 
+        done = cb;
+      }
+
+      interval = setTimeout(run, every);
+    };
+
+    instance.ask = function pollAsk(n) {
+      if (interval) {
+        throw new SyntaxError('can not set ask limit during polling');
+      } else if (!isval(n, 'number')) {
+        throw new TypeError('ask limit must be a number');
+      } 
+      times = n; 
+      return instance;
+    };
+
+    instance.every = function pollEvery(ms) { 
+      if (interval) {
+        throw new SyntaxError('can not set timeout during polling');
+      } else if (!isval(ms, 'number')) {
+        throw new TypeError('timout must be a number');
+      } 
+      every = ms; 
+      return instance;
+    };
+
+    instance.incr = function pollIncr(ms) {
+      if (interval) {
+        throw new SyntexError('can not set increment during polling');
+      } else if (!arguments.length || isval(ms, 'boolean')) {
+        incr = !!ms;
+      } else if (isval(ms, 'number')) {
+        incr = ms;
+      } else {
+        throw new TypeError('increment must be a boolean or number');
+      } 
+      return instance;
+    };
+
+    return instance;
+  })();
+};
+
+},{"./doubler":13,"isval":30}],15:[function(require,module,exports){
+(function (process,Buffer){
+'use strict';
+
+var EE = require('events').EventEmitter;
+var util = require('util');
+
+var DATABITS = [7, 8];
+var STOPBITS = [1, 2];
+var PARITY = ['none', 'even', 'mark', 'odd', 'space'];
+var FLOWCONTROLS = ['RTSCTS'];
+
+var _options = {
+  baudrate: 9600,
+  parity: 'none',
+  rtscts: false,
+  databits: 8,
+  stopbits: 1,
+  buffersize: 256
+};
+
+function convertOptions(options){
+  switch (options.dataBits) {
+    case 7:
+      options.dataBits = 'seven';
+      break;
+    case 8:
+      options.dataBits = 'eight';
+      break;
+  }
+
+  switch (options.stopBits) {
+    case 1:
+      options.stopBits = 'one';
+      break;
+    case 2:
+      options.stopBits = 'two';
+      break;
+  }
+
+  switch (options.parity) {
+    case 'none':
+      options.parity = 'no';
+      break;
+  }
+
+  return options;
+}
+
+function SerialPort(path, options, openImmediately, callback) {
+
+  EE.call(this);
+
+  var self = this;
+
+  var args = Array.prototype.slice.call(arguments);
+  callback = args.pop();
+  if (typeof(callback) !== 'function') {
+    callback = null;
+  }
+
+  options = (typeof options !== 'function') && options || {};
+
+  openImmediately = (openImmediately === undefined || openImmediately === null) ? true : openImmediately;
+
+  callback = callback || function (err) {
+    if (err) {
+      self.emit('error', err);
+    }
+  };
+
+  var err;
+
+  options.baudRate = options.baudRate || options.baudrate || _options.baudrate;
+
+  options.dataBits = options.dataBits || options.databits || _options.databits;
+  if (DATABITS.indexOf(options.dataBits) === -1) {
+    err = new Error('Invalid "databits": ' + options.dataBits);
+    callback(err);
+    return;
+  }
+
+  options.stopBits = options.stopBits || options.stopbits || _options.stopbits;
+  if (STOPBITS.indexOf(options.stopBits) === -1) {
+    err = new Error('Invalid "stopbits": ' + options.stopbits);
+    callback(err);
+    return;
+  }
+
+  options.parity = options.parity || _options.parity;
+  if (PARITY.indexOf(options.parity) === -1) {
+    err = new Error('Invalid "parity": ' + options.parity);
+    callback(err);
+    return;
+  }
+
+  if (!path) {
+    err = new Error('Invalid port specified: ' + path);
+    callback(err);
+    return;
+  }
+
+  options.rtscts = _options.rtscts;
+
+  if (options.flowControl || options.flowcontrol) {
+    var fc = options.flowControl || options.flowcontrol;
+
+    if (typeof fc === 'boolean') {
+      options.rtscts = true;
+    } else {
+      var clean = fc.every(function (flowControl) {
+        var fcup = flowControl.toUpperCase();
+        var idx = FLOWCONTROLS.indexOf(fcup);
+        if (idx < 0) {
+          var err = new Error('Invalid "flowControl": ' + fcup + '. Valid options: ' + FLOWCONTROLS.join(', '));
+          callback(err);
+          return false;
+        } else {
+
+          // "XON", "XOFF", "XANY", "DTRDTS", "RTSCTS"
+          switch (idx) {
+            case 0: options.rtscts = true; break;
+          }
+          return true;
+        }
+      });
+      if(!clean){
+        return;
+      }
+    }
+  }
+
+  options.bufferSize = options.bufferSize || options.buffersize || _options.buffersize;
+
+  // defaults to chrome.serial if no options.serial passed
+  // inlined instead of on _options to allow mocking global chrome.serial for optional options test
+  options.serial = options.serial || (typeof chrome !== 'undefined' && chrome.serial);
+
+  if (!options.serial) {
+    throw new Error('No access to serial ports. Try loading as a Chrome Application.');
+  }
+
+  this.options = convertOptions(options);
+
+  this.options.serial.onReceiveError.addListener(function(info){
+
+    switch (info.error) {
+
+      case 'disconnected':
+      case 'device_lost':
+      case 'system_error':
+        err = new Error('Disconnected');
+        // send notification of disconnect
+        if (self.options.disconnectedCallback) {
+          self.options.disconnectedCallback(err);
+        } else {
+          self.emit('disconnect', err);
+        }
+        if(self.connectionId >= 0){
+          self.close();
+        }
+        break;
+      case 'timeout':
+        break;
+    }
+
+  });
+
+  this.path = path;
+
+  if (openImmediately) {
+    process.nextTick(function () {
+      self.open(callback);
+    });
+  }
+}
+
+util.inherits(SerialPort, EE);
+
+SerialPort.prototype.connectionId = -1;
+
+SerialPort.prototype.open = function (callback) {
+  var options = {
+    bitrate: parseInt(this.options.baudRate, 10),
+    dataBits: this.options.dataBits,
+    parityBit: this.options.parity,
+    stopBits: this.options.stopBits,
+    ctsFlowControl: this.options.rtscts
+  };
+
+  this.options.serial.connect(this.path, options, this.proxy('onOpen', callback));
+};
+
+SerialPort.prototype.onOpen = function (callback, openInfo) {
+  if(chrome.runtime.lastError){
+    if(typeof callback === 'function'){
+      callback(chrome.runtime.lastError);
+    }else{
+      this.emit('error', chrome.runtime.lastError);
+    }
+    return;
+  }
+
+  this.connectionId = openInfo.connectionId;
+
+  if (this.connectionId === -1) {
+    this.emit('error', new Error('Could not open port.'));
+    return;
+  }
+
+  this.emit('open', openInfo);
+
+  this._reader = this.proxy('onRead');
+
+  this.options.serial.onReceive.addListener(this._reader);
+
+  if(typeof callback === 'function'){
+    callback(chrome.runtime.lastError, openInfo);
+  }
+};
+
+SerialPort.prototype.onRead = function (readInfo) {
+  if (readInfo && this.connectionId === readInfo.connectionId) {
+
+    if (this.options.dataCallback) {
+      this.options.dataCallback(toBuffer(readInfo.data));
+    } else {
+      this.emit('data', toBuffer(readInfo.data));
+    }
+
+  }
+};
+
+SerialPort.prototype.write = function (buffer, callback) {
+  if (this.connectionId < 0) {
+    var err = new Error('Serialport not open.');
+    if(typeof callback === 'function'){
+      callback(err);
+    }else{
+      this.emit('error', err);
+    }
+    return;
+  }
+
+  if (typeof buffer === 'string') {
+    buffer = str2ab(buffer);
+  }
+
+  //Make sure its not a browserify faux Buffer.
+  if (buffer instanceof ArrayBuffer === false) {
+    buffer = buffer2ArrayBuffer(buffer);
+  }
+
+  this.options.serial.send(this.connectionId, buffer, function(info) {
+    if (typeof callback === 'function') {
+      callback(chrome.runtime.lastError, info);
+    }
+  });
+};
+
+
+SerialPort.prototype.close = function (callback) {
+  if (this.connectionId < 0) {
+    var err = new Error('Serialport not open.');
+    if(typeof callback === 'function'){
+      callback(err);
+    }else{
+      this.emit('error', err);
+    }
+    return;
+  }
+
+  this.options.serial.disconnect(this.connectionId, this.proxy('onClose', callback));
+};
+
+SerialPort.prototype.onClose = function (callback, result) {
+  this.connectionId = -1;
+  this.emit('close');
+
+  this.removeAllListeners();
+  if(this._reader){
+    this.options.serial.onReceive.removeListener(this._reader);
+    this._reader = null;
+  }
+
+  if (typeof callback === 'function') {
+    callback(chrome.runtime.lastError, result);
+  }
+};
+
+SerialPort.prototype.flush = function (callback) {
+  if (this.connectionId < 0) {
+    var err = new Error('Serialport not open.');
+    if(typeof callback === 'function'){
+      callback(err);
+    }else{
+      this.emit('error', err);
+    }
+    return;
+  }
+
+  var self = this;
+
+  this.options.serial.flush(this.connectionId, function(result) {
+    if (chrome.runtime.lastError) {
+      if (typeof callback === 'function') {
+        callback(chrome.runtime.lastError, result);
+      } else {
+        self.emit('error', chrome.runtime.lastError);
+      }
+      return;
+    } else {
+      callback(null, result);
+    }
+  });
+};
+
+SerialPort.prototype.drain = function (callback) {
+  if (this.connectionId < 0) {
+    var err = new Error('Serialport not open.');
+    if(typeof callback === 'function'){
+      callback(err);
+    }else{
+      this.emit('error', err);
+    }
+    return;
+  }
+
+  if (typeof callback === 'function') {
+    callback();
+  }
+};
+
+
+SerialPort.prototype.proxy = function () {
+  var self = this;
+  var proxyArgs = [];
+
+  //arguments isnt actually an array.
+  for (var i = 0; i < arguments.length; i++) {
+      proxyArgs[i] = arguments[i];
+  }
+
+  var functionName = proxyArgs.splice(0, 1)[0];
+
+  var func = function() {
+    var funcArgs = [];
+    for (var i = 0; i < arguments.length; i++) {
+        funcArgs[i] = arguments[i];
+    }
+    var allArgs = proxyArgs.concat(funcArgs);
+
+    self[functionName].apply(self, allArgs);
+  };
+
+  return func;
+};
+
+SerialPort.prototype.set = function (options, callback) {
+  this.options.serial.setControlSignals(this.connectionId, options, function(result){
+    callback(chrome.runtime.lastError, result);
+  });
+};
+
+SerialPort.prototype.isOpen = function () {
+  return this.connectionId > -1;
+};
+
+function SerialPortList(callback) {
+  if (typeof chrome != 'undefined' && chrome.serial) {
+    chrome.serial.getDevices(function(ports) {
+      var portObjects = new Array(ports.length);
+      for (var i = 0; i < ports.length; i++) {
+        portObjects[i] = {
+          comName: ports[i].path,
+          manufacturer: ports[i].displayName,
+          serialNumber: '',
+          pnpId: '',
+          locationId:'',
+          vendorId: '0x' + (ports[i].vendorId||0).toString(16),
+          productId: '0x' + (ports[i].productId||0).toString(16)
+        };
+      }
+      callback(chrome.runtime.lastError, portObjects);
+    });
+  } else {
+    callback(new Error('No access to serial ports. Try loading as a Chrome Application.'), null);
+  }
+}
+
+// Convert string to ArrayBuffer
+function str2ab(str) {
+  var buf = new ArrayBuffer(str.length);
+  var bufView = new Uint8Array(buf);
+  for (var i = 0; i < str.length; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
+
+// Convert buffer to ArrayBuffer
+function buffer2ArrayBuffer(buffer) {
+  var buf = new ArrayBuffer(buffer.length);
+  var bufView = new Uint8Array(buf);
+  for (var i = 0; i < buffer.length; i++) {
+    bufView[i] = buffer[i];
+  }
+  return buf;
+}
+
+function toBuffer(ab) {
+  var buffer = new Buffer(ab.byteLength);
+  var view = new Uint8Array(ab);
+  for (var i = 0; i < buffer.length; ++i) {
+      buffer[i] = view[i];
+  }
+  return buffer;
+}
+
+module.exports = {
+  SerialPort: SerialPort,
+  list: SerialPortList,
+  buffer2ArrayBuffer: buffer2ArrayBuffer,
+  used: [] //TODO: Populate this somewhere.
+};
+
+}).call(this,require('_process'),require("buffer").Buffer)
+},{"_process":51,"buffer":43,"events":45,"util":68}],16:[function(require,module,exports){
 var Buffer = require('buffer').Buffer; // for use with browserify
 
 module.exports = function (a, b) {
@@ -6783,7 +7282,7 @@ module.exports = function (a, b) {
     return true;
 };
 
-},{"buffer":42}],16:[function(require,module,exports){
+},{"buffer":43}],17:[function(require,module,exports){
 (function (process,Buffer){
 var
   intelHex = require('intel-hex'),
@@ -7037,7 +7536,7 @@ out.init = function(serialport, options, fn) {
 };
 
 }).call(this,require('_process'),require("buffer").Buffer)
-},{"_process":50,"buffer":42,"intel-hex":28,"stream":62,"util":67}],17:[function(require,module,exports){
+},{"_process":51,"buffer":43,"intel-hex":29,"stream":63,"util":68}],18:[function(require,module,exports){
 /*
 
 The MIT License (MIT)
@@ -7225,7 +7724,7 @@ for (var map in colors.maps) {
 }
 
 defineProps(colors, init());
-},{"./custom/trap":18,"./custom/zalgo":19,"./maps/america":22,"./maps/rainbow":23,"./maps/random":24,"./maps/zebra":25,"./styles":26,"./system/supports-colors":27}],18:[function(require,module,exports){
+},{"./custom/trap":19,"./custom/zalgo":20,"./maps/america":23,"./maps/rainbow":24,"./maps/random":25,"./maps/zebra":26,"./styles":27,"./system/supports-colors":28}],19:[function(require,module,exports){
 module['exports'] = function runTheTrap (text, options) {
   var result = "";
   text = text || "Run the trap, drop the bass";
@@ -7272,7 +7771,7 @@ module['exports'] = function runTheTrap (text, options) {
 
 }
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // please no
 module['exports'] = function zalgo(text, options) {
   text = text || "   he is here   ";
@@ -7378,7 +7877,7 @@ module['exports'] = function zalgo(text, options) {
   return heComes(text, options);
 }
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var colors = require('./colors');
 
 module['exports'] = function () {
@@ -7492,7 +7991,7 @@ module['exports'] = function () {
   };
 
 };
-},{"./colors":17}],21:[function(require,module,exports){
+},{"./colors":18}],22:[function(require,module,exports){
 var colors = require('./colors');
 module['exports'] = colors;
 
@@ -7505,7 +8004,7 @@ module['exports'] = colors;
 //
 //
 require('./extendStringPrototype')();
-},{"./colors":17,"./extendStringPrototype":20}],22:[function(require,module,exports){
+},{"./colors":18,"./extendStringPrototype":21}],23:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function() {
@@ -7518,7 +8017,7 @@ module['exports'] = (function() {
     }
   }
 })();
-},{"../colors":17}],23:[function(require,module,exports){
+},{"../colors":18}],24:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -7533,7 +8032,7 @@ module['exports'] = (function () {
 })();
 
 
-},{"../colors":17}],24:[function(require,module,exports){
+},{"../colors":18}],25:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = (function () {
@@ -7542,13 +8041,13 @@ module['exports'] = (function () {
     return letter === " " ? letter : colors[available[Math.round(Math.random() * (available.length - 1))]](letter);
   };
 })();
-},{"../colors":17}],25:[function(require,module,exports){
+},{"../colors":18}],26:[function(require,module,exports){
 var colors = require('../colors');
 
 module['exports'] = function (letter, i, exploded) {
   return i % 2 === 0 ? letter : colors.inverse(letter);
 };
-},{"../colors":17}],26:[function(require,module,exports){
+},{"../colors":18}],27:[function(require,module,exports){
 /*
 The MIT License (MIT)
 
@@ -7626,7 +8125,7 @@ Object.keys(codes).forEach(function (key) {
   style.open = '\u001b[' + val[0] + 'm';
   style.close = '\u001b[' + val[1] + 'm';
 });
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 (function (process){
 /*
 The MIT License (MIT)
@@ -7690,7 +8189,7 @@ module.exports = (function () {
   return false;
 })();
 }).call(this,require('_process'))
-},{"_process":50}],28:[function(require,module,exports){
+},{"_process":51}],29:[function(require,module,exports){
 (function (Buffer){
 //Intel Hex record types
 const DATA = 0,
@@ -7827,7 +8326,7 @@ exports.parse = function parseIntelHex(data, bufferSize) {
 	throw new Error("Unexpected end of input: missing or invalid EOF record.");
 };
 }).call(this,require("buffer").Buffer)
-},{"buffer":42}],29:[function(require,module,exports){
+},{"buffer":43}],30:[function(require,module,exports){
 module.exports = function isval(value, type) {
   if (arguments.length === 2 && typeof type === 'undefined') {
     type = 'undefined';
@@ -7898,7 +8397,7 @@ module.exports = function isval(value, type) {
   }
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 (function (Buffer){
 //use strict might have screwed up my this context, or might not have.. 
 
@@ -8301,7 +8800,7 @@ stk500.prototype.bootload = function (chip, hex, done){
 module.exports = stk500;
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/constants-v2.js":31,"./lib/parser-v2.js":32,"async":33,"buffer":42,"buffer-equal":15}],31:[function(require,module,exports){
+},{"./lib/constants-v2.js":32,"./lib/parser-v2.js":33,"async":34,"buffer":43,"buffer-equal":16}],32:[function(require,module,exports){
  
 // STK message constants
 module.exports.MESSAGE_START = 0x1B
@@ -8395,7 +8894,7 @@ module.exports.STATUS_CONTROLLER_INIT   = 0x9F
 // STK answer constants
 module.exports.ANSWER_CKSUM_ERROR = 0xB0
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function (Buffer){
 var c = require('./constants-v2');
 var EventEmitter = require("events").EventEmitter;
@@ -8678,7 +9177,7 @@ function ext(o1,o2){
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./constants-v2":31,"buffer":42,"events":44}],33:[function(require,module,exports){
+},{"./constants-v2":32,"buffer":43,"events":45}],34:[function(require,module,exports){
 (function (process){
 /*!
  * async
@@ -9805,7 +10304,7 @@ function ext(o1,o2){
 }());
 
 }).call(this,require('_process'))
-},{"_process":50}],34:[function(require,module,exports){
+},{"_process":51}],35:[function(require,module,exports){
 (function (Buffer){
 var async = require("async");
 var bufferEqual = require('buffer-equal');
@@ -10145,7 +10644,7 @@ stk500.prototype.bootload = function (stream, hex, opt, done) {
 module.exports = stk500;
 
 }).call(this,require("buffer").Buffer)
-},{"./lib/sendCommand":36,"./lib/statics":37,"async":38,"buffer":42,"buffer-equal":15}],35:[function(require,module,exports){
+},{"./lib/sendCommand":37,"./lib/statics":38,"async":39,"buffer":43,"buffer-equal":16}],36:[function(require,module,exports){
 (function (Buffer){
 var Statics = require('./statics');
 
@@ -10196,7 +10695,7 @@ module.exports = function (stream, timeout, responseLength, callback) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./statics":37,"buffer":42}],36:[function(require,module,exports){
+},{"./statics":38,"buffer":43}],37:[function(require,module,exports){
 (function (Buffer){
 var bufferEqual = require('buffer-equal');
 var receiveData = require('./receiveData');
@@ -10247,7 +10746,7 @@ module.exports = function (stream, opt, callback) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./receiveData":35,"./statics":37,"buffer":42,"buffer-equal":15}],37:[function(require,module,exports){
+},{"./receiveData":36,"./statics":38,"buffer":43,"buffer-equal":16}],38:[function(require,module,exports){
 (function (Buffer){
 var Resp_STK_INSYNC = 0x14;
 var Resp_STK_OK = 0x10;
@@ -10275,9 +10774,9 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":42}],38:[function(require,module,exports){
-arguments[4][33][0].apply(exports,arguments)
-},{"_process":50,"dup":33}],39:[function(require,module,exports){
+},{"buffer":43}],39:[function(require,module,exports){
+arguments[4][34][0].apply(exports,arguments)
+},{"_process":51,"dup":34}],40:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -10393,9 +10892,9 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],40:[function(require,module,exports){
-
 },{}],41:[function(require,module,exports){
+
+},{}],42:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -10507,7 +11006,7 @@ exports.allocUnsafeSlow = function allocUnsafeSlow(size) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"buffer":42}],42:[function(require,module,exports){
+},{"buffer":43}],43:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -12215,7 +12714,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":39,"ieee754":45}],43:[function(require,module,exports){
+},{"base64-js":40,"ieee754":46}],44:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -12326,7 +12825,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":47}],44:[function(require,module,exports){
+},{"../../is-buffer/index.js":48}],45:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -12630,7 +13129,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -12716,7 +13215,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -12741,7 +13240,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -12764,14 +13263,14 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -12818,7 +13317,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":50}],50:[function(require,module,exports){
+},{"_process":51}],51:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -13000,10 +13499,10 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 module.exports = require("./lib/_stream_duplex.js")
 
-},{"./lib/_stream_duplex.js":52}],52:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":53}],53:[function(require,module,exports){
 // a duplex stream is just a stream that is both readable and writable.
 // Since JS doesn't have multiple prototypal inheritance, this class
 // prototypally inherits from Readable, and then parasitically from
@@ -13079,7 +13578,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":54,"./_stream_writable":56,"core-util-is":43,"inherits":46,"process-nextick-args":49}],53:[function(require,module,exports){
+},{"./_stream_readable":55,"./_stream_writable":57,"core-util-is":44,"inherits":47,"process-nextick-args":50}],54:[function(require,module,exports){
 // a passthrough stream.
 // basically just the most minimal sort of Transform stream.
 // Every written chunk gets output as-is.
@@ -13106,7 +13605,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":55,"core-util-is":43,"inherits":46}],54:[function(require,module,exports){
+},{"./_stream_transform":56,"core-util-is":44,"inherits":47}],55:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -14050,7 +14549,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":52,"./internal/streams/BufferList":57,"_process":50,"buffer":42,"buffer-shims":41,"core-util-is":43,"events":44,"inherits":46,"isarray":48,"process-nextick-args":49,"string_decoder/":63,"util":40}],55:[function(require,module,exports){
+},{"./_stream_duplex":53,"./internal/streams/BufferList":58,"_process":51,"buffer":43,"buffer-shims":42,"core-util-is":44,"events":45,"inherits":47,"isarray":49,"process-nextick-args":50,"string_decoder/":64,"util":41}],56:[function(require,module,exports){
 // a transform stream is a readable/writable stream where you do
 // something with the data.  Sometimes it's called a "filter",
 // but that's not a great name for it, since that implies a thing where
@@ -14233,7 +14732,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":52,"core-util-is":43,"inherits":46}],56:[function(require,module,exports){
+},{"./_stream_duplex":53,"core-util-is":44,"inherits":47}],57:[function(require,module,exports){
 (function (process){
 // A bit simpler than readable streams.
 // Implement an async ._write(chunk, encoding, cb), and it'll handle all
@@ -14790,7 +15289,7 @@ function CorkedRequest(state) {
   };
 }
 }).call(this,require('_process'))
-},{"./_stream_duplex":52,"_process":50,"buffer":42,"buffer-shims":41,"core-util-is":43,"events":44,"inherits":46,"process-nextick-args":49,"util-deprecate":64}],57:[function(require,module,exports){
+},{"./_stream_duplex":53,"_process":51,"buffer":43,"buffer-shims":42,"core-util-is":44,"events":45,"inherits":47,"process-nextick-args":50,"util-deprecate":65}],58:[function(require,module,exports){
 'use strict';
 
 var Buffer = require('buffer').Buffer;
@@ -14855,10 +15354,10 @@ BufferList.prototype.concat = function (n) {
   }
   return ret;
 };
-},{"buffer":42,"buffer-shims":41}],58:[function(require,module,exports){
+},{"buffer":43,"buffer-shims":42}],59:[function(require,module,exports){
 module.exports = require("./lib/_stream_passthrough.js")
 
-},{"./lib/_stream_passthrough.js":53}],59:[function(require,module,exports){
+},{"./lib/_stream_passthrough.js":54}],60:[function(require,module,exports){
 (function (process){
 var Stream = (function (){
   try {
@@ -14878,13 +15377,13 @@ if (!process.browser && process.env.READABLE_STREAM === 'disable' && Stream) {
 }
 
 }).call(this,require('_process'))
-},{"./lib/_stream_duplex.js":52,"./lib/_stream_passthrough.js":53,"./lib/_stream_readable.js":54,"./lib/_stream_transform.js":55,"./lib/_stream_writable.js":56,"_process":50}],60:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":53,"./lib/_stream_passthrough.js":54,"./lib/_stream_readable.js":55,"./lib/_stream_transform.js":56,"./lib/_stream_writable.js":57,"_process":51}],61:[function(require,module,exports){
 module.exports = require("./lib/_stream_transform.js")
 
-},{"./lib/_stream_transform.js":55}],61:[function(require,module,exports){
+},{"./lib/_stream_transform.js":56}],62:[function(require,module,exports){
 module.exports = require("./lib/_stream_writable.js")
 
-},{"./lib/_stream_writable.js":56}],62:[function(require,module,exports){
+},{"./lib/_stream_writable.js":57}],63:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15013,7 +15512,7 @@ Stream.prototype.pipe = function(dest, options) {
   return dest;
 };
 
-},{"events":44,"inherits":46,"readable-stream/duplex.js":51,"readable-stream/passthrough.js":58,"readable-stream/readable.js":59,"readable-stream/transform.js":60,"readable-stream/writable.js":61}],63:[function(require,module,exports){
+},{"events":45,"inherits":47,"readable-stream/duplex.js":52,"readable-stream/passthrough.js":59,"readable-stream/readable.js":60,"readable-stream/transform.js":61,"readable-stream/writable.js":62}],64:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -15236,7 +15735,7 @@ function base64DetectIncompleteChar(buffer) {
   this.charLength = this.charReceived ? 3 : 0;
 }
 
-},{"buffer":42}],64:[function(require,module,exports){
+},{"buffer":43}],65:[function(require,module,exports){
 (function (global){
 
 /**
@@ -15307,16 +15806,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],65:[function(require,module,exports){
-arguments[4][46][0].apply(exports,arguments)
-},{"dup":46}],66:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
+arguments[4][47][0].apply(exports,arguments)
+},{"dup":47}],67:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],67:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -15906,4 +16405,4 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":66,"_process":50,"inherits":65}]},{},[1]);
+},{"./support/isBuffer":67,"_process":51,"inherits":66}]},{},[1]);

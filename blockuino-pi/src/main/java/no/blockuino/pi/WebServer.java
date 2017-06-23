@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import no.blockuino.pi.cassandra.CassandraDataPlugin;
 import no.blockuino.pi.cassandra.dao.ProjectDao;
 import no.blockuino.pi.models.Credentials;
+import no.blockuino.pi.models.JniResult;
 import no.blockuino.pi.models.Project;
 import no.blockuino.pi.models.Session;
 import no.blockuino.pi.util.FileUtil;
@@ -94,6 +95,7 @@ public class WebServer {
             return projectJson;
         });
 
+
         post("/blockuino/projects", (req, res) -> {
             String content = req.body();
 
@@ -167,30 +169,91 @@ public class WebServer {
             return content;
         });
 
-        post("/upload/:projectid", (req, res) -> {
+        post("/upload/:projectid/arduino/:arduino", (req, res) -> {
             String code = req.body();
             String projectId = req.params(":projectId");
+            String arduino = req.params(":arduino");
+            JniResult commandResult = null;
 
-            String returnMessage = "";
-            String hex = null;
+            if (arduino.equals("uno") || arduino.equals("nanoatmega328")) {
+                String hex = null;
 
-            if (code != null && code.length() > 10 && projectId != null) {
-                Path projectPath = Paths.get(pioDir, projectId);
-                Path arduinoFilePath = Paths.get(pioDir, projectId, "src", "blockuino.ino");
+                if (code != null && code.length() > 10 && projectId != null) {
+                    Path projectPath = Paths.get(pioDir, projectId);
+                    Path arduinoFilePath = Paths.get(pioDir, projectId, "src", "blockuino.ino");
 
-                if (!Files.exists(projectPath)) {
-                    Files.createDirectories(projectPath);
-                    String initCommand = "pio init -b uno -d " + projectPath.toAbsolutePath().toString();
-                    returnMessage = executeCommandAndReturnResult(initCommand);
+                    if (!Files.exists(projectPath)) {
+                        Files.createDirectories(projectPath);
+                    }
+
+                    String initCommand = "pio init -b " + arduino + " -d " + projectPath.toAbsolutePath().toString();
+                    JniResult initCommandResult = executeCommandAndReturnResult(initCommand);
+
+                    //If NeoPixels are needed. Install library
+                    if (initCommandResult.getExitStatus() == 0 && code.indexOf("#include <Adafruit_NeoPixel.h>") != -1) {
+                        String libCommand = "pio lib --storage-dir " + projectPath.toAbsolutePath().toString() + "/lib install 28";
+                        JniResult neopixelCommandResult = executeCommandAndReturnResult(libCommand);
+                        initCommandResult.addJniResult(neopixelCommandResult);
+                    }
+
+                    //If DHT11 are needed. Install library
+                    if (initCommandResult.getExitStatus() == 0 && code.indexOf("#include <DHT.h>") != -1) {
+                        String libCommand = "pio lib --storage-dir " + projectPath.toAbsolutePath().toString() + "/lib install 19";
+                        JniResult neopixelCommandResult = executeCommandAndReturnResult(libCommand);
+                        initCommandResult.addJniResult(neopixelCommandResult);
+                    }
+
+                    //If Adafruit GFX are needed. Install library
+                    if (initCommandResult.getExitStatus() == 0 && code.indexOf("#include <Adafruit_GFX.h>") != -1) {
+                        String libCommand = "pio lib --storage-dir " + projectPath.toAbsolutePath().toString() + "/lib install 13";
+                        JniResult neopixelCommandResult = executeCommandAndReturnResult(libCommand);
+                        initCommandResult.addJniResult(neopixelCommandResult);
+                    }
+
+                    //If Adafruit_SSD1306 are needed. Install library
+                    if (initCommandResult.getExitStatus() == 0 && code.indexOf("#include <Adafruit_SSD1306.h>") != -1) {
+                        String libCommand = "pio lib --storage-dir " + projectPath.toAbsolutePath().toString() + "/lib install 135";
+                        JniResult neopixelCommandResult = executeCommandAndReturnResult(libCommand);
+                        initCommandResult.addJniResult(neopixelCommandResult);
+                    }
+
+                    //If RFReceiver.h are needed. Install library
+                    if (initCommandResult.getExitStatus() == 0 && code.indexOf("#include <RFReceiver.h>") != -1) {
+                        String libCommand = "pio lib --storage-dir " + projectPath.toAbsolutePath().toString() + "/lib install 1500";
+                        JniResult neopixelCommandResult = executeCommandAndReturnResult(libCommand);
+                        initCommandResult.addJniResult(neopixelCommandResult);
+                    }
+
+                    //If RFTransmitter.h are needed. Install library
+                    if (initCommandResult.getExitStatus() == 0 && code.indexOf("#include <RFTransmitter.h>") != -1) {
+                        String libCommand = "pio lib --storage-dir " + projectPath.toAbsolutePath().toString() + "/lib install 1501";
+                        JniResult neopixelCommandResult = executeCommandAndReturnResult(libCommand);
+                        initCommandResult.addJniResult(neopixelCommandResult);
+                    }
+
+                    //If PinChangeInterruptHandler.h are needed. Install library
+                    if (initCommandResult.getExitStatus() == 0 && code.indexOf("#include <PinChangeInterruptHandler.h>") != -1) {
+                        String libCommand = "pio lib --storage-dir " + projectPath.toAbsolutePath().toString() + "/lib install 1499";
+                        JniResult neopixelCommandResult = executeCommandAndReturnResult(libCommand);
+                        initCommandResult.addJniResult(neopixelCommandResult);
+                    }
+
+                    Files.write(arduinoFilePath, code.getBytes());
+                    String executable = "pio run -d  " + projectPath.toAbsolutePath().toString();
+                    JniResult compileCommandResult = executeCommandAndReturnResult(executable);
+                    hex = getFileContent(projectPath.toAbsolutePath().toString() + "/.pioenvs/" + arduino, "firmware.hex");
+
+                    initCommandResult.setExitStatus(compileCommandResult.getExitStatus());
+                    initCommandResult.addJniResult(compileCommandResult);
+
+                    commandResult = initCommandResult;
+                    commandResult.setHex(hex);
                 }
 
-                Files.write(arduinoFilePath, code.getBytes());
-                String executable = "pio run -d  " + projectPath.toAbsolutePath().toString();
-                returnMessage = executeCommandAndReturnResult(executable);
-                hex = getFileContent(projectPath.toAbsolutePath().toString() + "/.pioenvs/uno", "firmware.hex");
+                return new Gson().toJson(commandResult).toString();
+            } else {
+                return "{}";
             }
-
-            return hex;
         });
 
         get("/hexfile/:projectId", (req, res) -> {
@@ -328,7 +391,7 @@ public class WebServer {
 
     }
 
-    private static String executeCommandAndReturnResult(String command) throws IOException, InterruptedException {
+    private static JniResult executeCommandAndReturnResult(String command) throws IOException, InterruptedException {
         String returnMessage = null;
 
         logger.info("Executing command: " + command);
@@ -346,7 +409,7 @@ public class WebServer {
             currentLine= bufferedReader.readLine();
             while(currentLine !=null)
             {
-                stringBuilder.append(currentLine);
+                stringBuilder.append(currentLine).append("\n");
                 currentLine = bufferedReader.readLine();
             }
 
@@ -355,7 +418,7 @@ public class WebServer {
             currentLine= bufferedErrorReader.readLine();
             while(currentLine !=null)
             {
-                stringBuilder.append(currentLine);
+                stringBuilder.append(currentLine).append("\n");
                 currentLine = bufferedReader.readLine();
             }
 
@@ -364,7 +427,8 @@ public class WebServer {
 
         logger.info("command return: " + returnMessage.toString());
 
-        return returnMessage;
+
+        return new JniResult(exitStatus, returnMessage);
     }
 
     private static void readProperties() throws IOException {

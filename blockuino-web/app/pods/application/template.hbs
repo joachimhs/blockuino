@@ -6,47 +6,155 @@
   doSavedProjects="doSavedProjects"
   doLogIn="doLogIn"
   doLogOut="doLogOut"
+  serialMonitor="serialMonitor"
   onPi=model.onPi.onPi
   session=session
   project=model.project
+  electronAppInstalled=electronAppInstalled
+  chromeAppInstalled=chromeAppInstalled
 }}
 
 {{outlet}}
 
 {{#if showSaveProjectModal}}
-    <div id="saveProjectModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title text-center">Lagre Prosjektet</h4>
-                </div>
-                <div class="modal-body">
-                    <div>Her kan du lagre prosjektet ditt ved å gi prosjektet et navn</div>
-                    <div class="text-center" style="margin-top: 20px;">
-                      <div>
-                        {{input type="text" value=model.project.name}}
-                          {{#if projectSaving}}
-                            <i class="fa fa-spinner fa-spin"></i>
-                          {{/if}}
-                          {{#if projectSaveSuccess}}
-                              <span class="label label-success"><i class="fa fa-check"></i> Lagret</span>
-                          {{/if}}
-                          {{#if projectSaveFailed}}
-                              <span class="label label-danger"><i class="fa fa-times"></i> Klarte ikke lagre</span>
-                          {{/if}}
-                      </div>
-                      <div>
-                          <button class="btn btn-primary" style="margin-top: 20px;" {{action "doSaveProject"}}>Lagre</button>
-                      </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" {{action "hideSaveProject"}}>Ferdig</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
+  <div id="saveProjectModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center">Lagre Prosjektet</h4>
         </div>
-        <!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+        <div class="modal-body">
+          <div>Her kan du lagre prosjektet ditt ved å gi prosjektet et navn</div>
+          <div class="text-center" style="margin-top: 20px;">
+            <div>
+              {{input type="text" value=model.project.name}}
+              {{#if projectSaving}}
+                <i class="fa fa-spinner fa-spin"></i>
+              {{/if}}
+              {{#if projectSaveSuccess}}
+                <span class="label label-success"><i class="fa fa-check"></i> Lagret</span>
+              {{/if}}
+              {{#if projectSaveFailed}}
+                <span class="label label-danger"><i class="fa fa-times"></i> Klarte ikke lagre</span>
+              {{/if}}
+            </div>
+            <div>
+              <button class="btn btn-primary" style="margin-top: 20px;" {{action "doSaveProject"}}>Lagre</button>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" {{action "hideSaveProject"}}>Ferdig</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+{{/if}}
+
+{{#if showUploadToArduinoModal}}
+  <div id="uploadProjectModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center">Last opp prosjektet</h4>
+        </div>
+        <div class="modal-body">
+          Velg en Arduino:
+          <select onchange={{action (mut selectedArduino) value="target.value"}}>
+            <option value="uno">Arduino Uno</option>
+            <option value="nanoatmega328">Arduino Nano 328</option>
+          </select>
+
+          <button class="btn btn-info pull-right" {{action "doUploadToArduino"}}>Start opplasting</button>
+
+          {{#if uploadStarted}}
+            <table class="table">
+              <tbody>
+
+              {{#if compileStatus}}
+                <tr>
+                  <td>Kompileringsstatus:</td>
+                  <td>{{compileStatus}}</td>
+                </tr>
+              {{/if}}
+
+              {{#if uploadResponseMessage}}
+                <tr>
+                  <td colspan="2">Kompileringslogg: <br/>
+                    {{textarea value=uploadResponseMessage classNames="loggArea"}}</td>
+                </tr>
+              {{/if}}
+
+
+              {{#if uploadError}}
+                <tr>
+                  <td>Opplastingsstatus:</td>
+                  <td>{{uploadError}}</td>
+                </tr>
+              {{/if}}
+
+              {{#if uploadUsbPort}}
+                <tr>
+                  <td>USB Port:</td>
+                  <td>{{uploadUsbPort}}</td>
+                </tr>
+              {{/if}}
+
+              </tbody>
+            </table>
+          {{/if}}
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" {{action "closeUploadPanel"}}>Ferdig</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+{{/if}}
+
+{{#if showSerialMonitorModal}}
+  <div id="serialMonitorModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center">Seriellovervåker</h4>
+        </div>
+        <div class="modal-body">
+          {{#if serialStarted}}
+            <table class="table">
+              <tr>
+                <td>Port:</td>
+                <td>
+                  <select onchange={{action (mut selectedSerialPort) value="target.value"}}>
+                  <option value="-1">Velg en port...</option>
+                    {{#each serialPortsAvailable as |sp|}}
+                      <option value={{sp.comName}} selected={{eq sp selectedSerialPort}}>{{sp.comName}}
+                        - {{sp.manufacturer}}</option>
+                    {{/each}}
+                  </select>
+                </td>
+                <td>
+                  <button class="btn btn-primary" {{action "openSerialMonitor"}}>Start Seriell overvåker</button>
+                </td>
+              </tr>
+            </table>
+
+            <div>{{textarea id="serialMonitorOutput" value=serialDataRead classNames="loggArea"}}</div>
+          {{/if}}
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" {{action "hideSerialMonitor"}}>Ferdig</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 {{/if}}

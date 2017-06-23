@@ -9,6 +9,7 @@ var avrgirl = new Avrgirl({
 });
  
 console.log('loaded...');
+console.log(avrgirl);
 
 chrome.runtime.onMessageExternal.addListener(
   function (request, sender, sendResponse) {

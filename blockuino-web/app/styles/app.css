@@ -27,6 +27,11 @@
   margin-left: 60px;
 }
 
+.loggArea {
+  width: 100%;
+  height: 200px;
+}
+
 .vertical-menu-bar {
   position: absolute;
 

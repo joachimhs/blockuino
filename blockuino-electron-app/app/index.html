@@ -1,4 +1,18 @@
 <meta charset='utf-8'>
 <link rel="stylesheet" type="text/css" href="style.css">
 <h1>Blockuino HEX Uploader</h1>
+<button id="test" onclick="quit()">Quit Blockuino Electron App</button>
+<script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="bundle.js"></script>
+<script type="text/javascript">
+    const {ipcRenderer} = require('electron');
+
+    ipcRenderer.on('asynchronous-reply', (event, arg) => {
+        alert(arg); // prints "pong"
+    });
+
+    function quit() {
+        alert('quitting');
+        ipcRenderer.send('asynchronous-message', 'doQuit');
+    }
+</script>

@@ -1,7 +1,9 @@
+import config from 'blockuino-web/config/environment';
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  chromeAppInstalled: false,
+  chromeAppKey: config.chromeAppKey,
+
   lang: 'no',
 
   actions: {
@@ -23,6 +25,10 @@ export default Ember.Component.extend({
       });
     },
 
+    testElectron() {
+
+    },
+
     doNews: function() {
       this.set('showingHamburger', false);
       this.sendAction('doNews')
@@ -35,6 +41,10 @@ export default Ember.Component.extend({
 
     sendToPi: function() {
       this.sendAction('sendToPi');
+    },
+
+    serialMonitor: function() {
+      this.sendAction('serialMonitor');
     },
 
     saveProject: function() {
@@ -59,7 +69,7 @@ export default Ember.Component.extend({
     runHex: function() {
       // The ID of the extension we want to talk to.
       var editorExtensionId = "Blockly.Msg.ARDUINO_DECLARE_FUNCTION_TOOLTIP";
-
+      var self = this;
       // Make a simple request:
       Ember.$.get( "hexfile", function( data ) {
         console.log('got HEX from Blockuino-pi!');
@@ -67,8 +77,10 @@ export default Ember.Component.extend({
 
         /*window.postMessage({ type: "FROM_BLOCKUINO", text: "Hello from the webpage!", hex: data }, "*");*/
 
+        //dev: iobkdcnmnbcjhdnlglhplmjonobkmipo
+        //prod: ekbpmcpbckbdpbjhdchoniihflnmabie
         if (window.chrome) {
-          chrome.runtime.sendMessage("ekbpmcpbckbdpbjhdchoniihflnmabie", {hex: data},
+          chrome.runtime.sendMessage(self.get('chromeAppKey'), {hex: data},
             function (response) {
               console.log("RESPONSE: ");
               console.log(response);
@@ -98,7 +110,7 @@ export default Ember.Component.extend({
       Ember.$("#headerHamburger").hide();
 
       if (window.chrome) {
-        chrome.runtime.sendMessage("ekbpmcpbckbdpbjhdchoniihflnmabie", {action: "initialize"},
+        chrome.runtime.sendMessage(self.get('chromeAppKey'), {action: "initialize"},
           function (response) {
             console.log("RESPONSE INIT: ");
             console.log(response);
@@ -108,7 +120,24 @@ export default Ember.Component.extend({
           });
       }
     });
+
+    var payload = {
+      action: "initialize"
+    };
+
+    Ember.$.post( "http://localhost:12344", JSON.stringify(payload), function( returnData ) {
+      console.log('------> PAYLOAD INIT:');
+      console.log(returnData.result);
+
+      if (returnData && returnData.result === 'initialized') {
+        self.set('electronAppInstalled', true);
+      }
+    });
   },
+
+  appInstalled: function() {
+    return this.get('chromeAppInstalled') === true || this.get('electronAppInstalled') === true;
+  }.property('chromeAppInstalled', 'electronAppInstalled'),
 
   projectIsOwn: function() {
     console.log('----<<<>>>------');
