@@ -17,6 +17,8 @@
   {{vertical-menu-item icon="fa fa-2x fa-twitter-square" text="Besøk oss på Twitter" link="http://twitter.com/kodegenet"}}
   {{vertical-menu-item icon="fa fa-2x fa-facebook-square" text="Besøk oss på Facebook" link="http://facebook.com/kodegenet"}}
 </div>
+
+{{#if (eq editor 'blocks')}}
 <div class="programming-area">
     <div class="row">
         <div class="{{if codeVisible 'col-md-6' 'col-md-12'}}">
@@ -39,6 +41,18 @@
         </div>
     </div>
 </div>
+{{/if}}
+
+{{#if (eq editor 'sketch')}}
+  <div class="programming-area">
+    <div class="row">
+      <div class="col-md-12">
+        {{ivy-codemirror options=(hash lineNumbers=true mode="text/x-csrc" matchClosing=true) value=model.project.content.content valueUpdated=(action (mut model.project.content.content))}}
+      </div>
+    </div>
+  </div>
+
+{{/if}}
 
 {{#if showUploadModal}}
     <div id="uploadXmlModal" class="modal fade">

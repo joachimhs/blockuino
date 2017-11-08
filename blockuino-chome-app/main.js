@@ -7,6 +7,11 @@ var avrgirl = new Avrgirl({
     debug: true
 });
 
+var avrgirlNano = new Avrgirl({
+    board: "nano",
+    debug: true
+});
+
 console.log('loaded...');
 console.log(avrgirl);
 window.avrgirl1 = avrgirl;
@@ -17,6 +22,7 @@ chrome.runtime.onMessageExternal.addListener(
     function (request, sender, sendResponse) {
         if (request.hex) {
             var hexfileascii = intel_hex.parse(request.hex).data;
+            var arduino = request.arduino;
 
             console.log('uploading...');
             console.log(hexfileascii);
@@ -26,7 +32,15 @@ chrome.runtime.onMessageExternal.addListener(
                 error: null
             };
 
-            avrgirl.flash(new Buffer(request.hex), function (error) {
+            var useAvrgirl = avrgirl;
+
+            if (arduino === 'uno') {
+                useAvrgirl = avrgirl;
+            } else if (arduino === 'nanoatmega328') {
+                useAvrgirl = avrgirlNano;
+            }
+
+            useAvrgirl.flash(new Buffer(request.hex), function (error) {
                 if (error) {
                     console.error(JSON.stringify(error));
                     console.error(JSON.stringify(error.message));
@@ -41,7 +55,7 @@ chrome.runtime.onMessageExternal.addListener(
             });
 
         } else if (request.action === "initialize") {
-            sendResponse("initialized");
+            sendResponse('initialized');
         } else if (request.action === "serialports_list") {
             console.log('serialdata_list');
 

@@ -82,6 +82,10 @@ public class WebServer {
             Project project = CassandraDataPlugin.getInstance().getProjectDao().getProjectFromId(projectId);
 
             if (project != null) {
+                if (project.getContent() == null) {
+                    project.setContent("");
+                }
+
                 RestSerializer serializer = new RestSerializer();
                 projectJson = serializer.serialize(project).toString();
             }
@@ -154,6 +158,10 @@ public class WebServer {
                     if (project.getCreatedDate() == null) {
                         project.setCreatedDate("" + (System.currentTimeMillis() / 1000));
                     }
+
+                    if (project.getContent() == null) {
+                        project.setContent("");
+                    }
                     content = serializer.serialize(project, new ArrayList<>(), false).toString();
                 } else {
                     //create clone
@@ -175,7 +183,7 @@ public class WebServer {
             String arduino = req.params(":arduino");
             JniResult commandResult = null;
 
-            if (arduino.equals("uno") || arduino.equals("nanoatmega328")) {
+            if (arduino.equals("uno") || arduino.equals("nanoatmega328") || arduino.equals("bbcmicrobit")) {
                 String hex = null;
 
                 if (code != null && code.length() > 10 && projectId != null) {
@@ -188,6 +196,12 @@ public class WebServer {
 
                     String initCommand = "pio init -b " + arduino + " -d " + projectPath.toAbsolutePath().toString();
                     JniResult initCommandResult = executeCommandAndReturnResult(initCommand);
+
+                    if (arduino.equals("bbcmicrobit")) {
+                        String libCommand = "pio lib --storage-dir " + projectPath.toAbsolutePath().toString() + "/lib install 361";
+                        JniResult neopixelCommandResult = executeCommandAndReturnResult(libCommand);
+                        initCommandResult.addJniResult(neopixelCommandResult);
+                    }
 
                     //If NeoPixels are needed. Install library
                     if (initCommandResult.getExitStatus() == 0 && code.indexOf("#include <Adafruit_NeoPixel.h>") != -1) {
@@ -239,7 +253,11 @@ public class WebServer {
                     }
 
                     Files.write(arduinoFilePath, code.getBytes());
-                    String executable = "pio run -d  " + projectPath.toAbsolutePath().toString();
+                    String executable = "pio run -s -d  " + projectPath.toAbsolutePath().toString();
+
+                    if (arduino.equals("bbcmicrobit")) {
+                        executable += " -e bbcmicrobit";
+                    }
                     JniResult compileCommandResult = executeCommandAndReturnResult(executable);
                     hex = getFileContent(projectPath.toAbsolutePath().toString() + "/.pioenvs/" + arduino, "firmware.hex");
 
@@ -392,43 +410,25 @@ public class WebServer {
     }
 
     private static JniResult executeCommandAndReturnResult(String command) throws IOException, InterruptedException {
-        String returnMessage = null;
-
         logger.info("Executing command: " + command);
         Process process = Runtime.getRuntime().exec(command);
         int exitStatus = process.waitFor();
 
-
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        BufferedReader bufferedErrorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
-        String currentLine=null;
-
-        StringBuilder stringBuilder = new StringBuilder();
-        if (exitStatus == 0) {
-            currentLine= bufferedReader.readLine();
-            while(currentLine !=null)
-            {
-                stringBuilder.append(currentLine).append("\n");
-                currentLine = bufferedReader.readLine();
-            }
-
-            returnMessage = stringBuilder.toString();
-        } else {
-            currentLine= bufferedErrorReader.readLine();
-            while(currentLine !=null)
-            {
-                stringBuilder.append(currentLine).append("\n");
-                currentLine = bufferedReader.readLine();
-            }
-
-            returnMessage = stringBuilder.toString();
-        }
+        String returnMessage =  getInputAsString(process.getInputStream());
+        String errorMessage =  getInputAsString(process.getErrorStream());
 
         logger.info("command return: " + returnMessage.toString());
+        logger.info("command error: " + errorMessage.toString());
 
+        return new JniResult(exitStatus, returnMessage, errorMessage);
+    }
 
-        return new JniResult(exitStatus, returnMessage);
+    private static String getInputAsString(InputStream is)
+    {
+        try(java.util.Scanner s = new java.util.Scanner(is))
+        {
+            return s.useDelimiter("\\A").hasNext() ? s.next() : "";
+        }
     }
 
     private static void readProperties() throws IOException {

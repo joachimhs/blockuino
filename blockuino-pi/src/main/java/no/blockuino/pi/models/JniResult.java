@@ -6,6 +6,7 @@ package no.blockuino.pi.models;
 public class JniResult {
     private int exitStatus;
     private String returnMessage;
+    private String errorMessage;
     private String hex;
 
     public JniResult() {
@@ -16,9 +17,19 @@ public class JniResult {
         this.returnMessage = returnMessage;
     }
 
+    public JniResult(int exitStatus, String returnMessage, String errorMessage) {
+        this.exitStatus = exitStatus;
+        this.returnMessage = returnMessage;
+        this.errorMessage = errorMessage;
+    }
+
     public void addJniResult(JniResult jniResult) {
         if (jniResult != null && jniResult.getReturnMessage() != null) {
             this.returnMessage += jniResult.returnMessage;
+        }
+
+        if (jniResult != null && jniResult.getErrorMessage() != null) {
+            this.errorMessage += jniResult.getErrorMessage();
         }
     }
 
@@ -36,6 +47,14 @@ public class JniResult {
 
     public void setReturnMessage(String returnMessage) {
         this.returnMessage = returnMessage;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public String getHex() {

@@ -66,6 +66,25 @@ export default Ember.Component.extend({
       this.sendAction('doLogOut');
     },
 
+    newBlockProject: function() {
+      this.set('showingHamburger', false);
+      this.sendAction('newBlockProject');
+    },
+
+    newTextProject: function() {
+      this.set('showingHamburger', false);
+      this.sendAction('newTextProject');
+    },
+
+    selectSketchMode: function() {
+      this.sendAction('selectSketchMode');
+    },
+
+    selectBlocksMode: function() {
+      this.sendAction('selectBlocksMode');
+    },
+
+
     runHex: function() {
       // The ID of the extension we want to talk to.
       var editorExtensionId = "Blockly.Msg.ARDUINO_DECLARE_FUNCTION_TOOLTIP";
@@ -100,7 +119,6 @@ export default Ember.Component.extend({
 
     }
   },
-
 
   didInsertElement: function () {
     this._super();

@@ -7,7 +7,10 @@
   doLogIn="doLogIn"
   doLogOut="doLogOut"
   serialMonitor="serialMonitor"
+  selectBlocksMode="selectBlocksMode"
+  selectSketchMode="selectSketchMode"
   onPi=model.onPi.onPi
+  editor=indexController.editor
   session=session
   project=model.project
   electronAppInstalled=electronAppInstalled
@@ -66,6 +69,7 @@
           <select onchange={{action (mut selectedArduino) value="target.value"}}>
             <option value="uno">Arduino Uno</option>
             <option value="nanoatmega328">Arduino Nano 328</option>
+            <option value="bbcmicrobit">BBC micro:bit</option>
           </select>
 
           <button class="btn btn-info pull-right" {{action "doUploadToArduino"}}>Start opplasting</button>
@@ -76,7 +80,14 @@
 
               {{#if compileStatus}}
                 <tr>
-                  <td>Kompileringsstatus:</td>
+                  <td>
+                    {{#if compileError}}
+                      {{fa-icon "close" size=2 border=false style="color: red;"}}
+                    {{else}}
+                      {{fa-icon "check" size=2 border=false style="color: green;"}}
+                    {{/if}}
+                    Kompileringsstatus:
+                  </td>
                   <td>{{compileStatus}}</td>
                 </tr>
               {{/if}}
@@ -91,7 +102,15 @@
 
               {{#if uploadError}}
                 <tr>
-                  <td>Opplastingsstatus:</td>
+                  <td>
+                    {{#if uploadErrorStatus}}
+                      {{fa-icon "close" size=2 border=false style="color: red;"}}
+                    {{else}}
+                      {{fa-icon "check" size=2 border=false style="color: green;"}}
+                    {{/if}}
+                    Opplastingsstatus:
+
+                  </td>
                   <td>{{uploadError}}</td>
                 </tr>
               {{/if}}

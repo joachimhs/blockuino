@@ -1,6 +1,12 @@
 .header-area {
 }
 
+.CodeMirror {
+  border: 1px solid #eee;
+  height: 85vh;
+  width: 95vw;
+}
+
 .generated-code {
   max-height: 85vh;
   min-height: 85vh;

@@ -27,11 +27,12 @@
       <div class="pull-right header-save-link" {{action "chooseNorwegian"}}>Norsk</div>
     {{/if}}
 
-    {{#if electronAppInstalled}}
-      <div class="pull-right header-save-link" {{action "testElectron"}}>Test Electron</div>
-    {{/if}}
-
+    <div class="btn-group btn-group-lg" role="group" aria-label="Type editor">
+      <button type="button" class="{{if (eq editor 'blocks') 'btn btn-primary' 'btn btn-default'}}" {{action "selectBlocksMode"}}>Blokker</button>
+      <button type="button" class="{{if (eq editor 'sketch') 'btn btn-primary' 'btn btn-default'}}" {{action "selectSketchMode"}}>Tekst (C-kode)</button>
+    </div>
   </div>
+
   <div class="col-sm-2">
     <div class="menu-button" {{action "toggleHamburger"}}>
       {{fa-icon "cog" spin=showingHamburger size=2}}
@@ -59,12 +60,12 @@
           {{fa-icon "home" size=2 border=true}}
           <div>Forsiden</div>
         </div>
-        {{#if session.session.username}}
+
           <div class="menu-item" {{action "doSavedProjects"}}>
             {{fa-icon "list-alt" size=2 border=true}}
             <div>Lagrede prosjekter</div>
           </div>
-        {{/if}}
+
         <div class="menu-item" {{action "doNews"}}>
           {{fa-icon "newspaper-o" size=2 border=true}}
           <div>Nyheter</div>

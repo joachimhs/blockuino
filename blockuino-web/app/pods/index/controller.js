@@ -7,13 +7,27 @@ export default Ember.Controller.extend({
   showXml: false,
   workspace: null,
   xml: "",
-  queryParams: ['projectId'],
+  queryParams: ['projectId', 'editor'],
   //queryParams: 'xml',
   codeVisible: true,
 
   init: function() {
     this._super();
     var self = this;
+    Ember.run.later(function() {
+      if (!self.get('editor')) {
+        self.set('editor', 'blocks');
+      }
+    });
+
+    CodeMirror.addMINEkeyword = function(mime, data) {
+      CodeMirror.mimeModes[mime].keywords = data;
+    };
+
+    var obj = {}, words = "pinMode digitalWrite delay analogWrite HIGH LOW OUTPUT INPUT INPUT_PULLUP".split(" ");
+    for (var i = 0; i < words.length; ++i) obj[words[i]] = true;
+
+    CodeMirror.addMINEkeyword("text/x-csrc", obj);
   },
 
   actions: {
@@ -136,23 +150,28 @@ export default Ember.Controller.extend({
   },
 
   getGeneratedCode: function() {
-    var highligted = js_beautify(this.get('blocklyCode'));
-    //highligted = hljs.highlight('javascript', highligted).value;
+    if (this.get('editor') === 'blocks') {
+      var highligted = js_beautify(this.get('blocklyCode'));
+      //highligted = hljs.highlight('javascript', highligted).value;
 
-    highligted = this.replaceAll(highligted, "#\n  ", "#");
-    highligted = this.replaceAll(highligted, "< ", "<");
-    highligted = this.replaceAll(highligted, " >", ">");
-    highligted = this.replaceAll(highligted, "    #", "#");
-    highligted = this.replaceAll(highligted, "  #", "#");
-    highligted = this.replaceAll(highligted, "&nbsp;&nbsp;#", "#");
-    highligted = this.replaceAll(highligted, "# ", "#");
-    highligted = this.replaceAll(highligted, "    #include", "#include");
-    highligted = this.replaceAll(highligted, " &gt;", ">");
-    highligted = this.replaceAll(highligted, "&lt; ", "<");
-    highligted = this.replaceAll(highligted, "&gt;", ">");
-    highligted = this.replaceAll(highligted, "&lt;", "<");
+      highligted = this.replaceAll(highligted, "#\n  ", "#");
+      highligted = this.replaceAll(highligted, "< ", "<");
+      highligted = this.replaceAll(highligted, " >", ">");
+      highligted = this.replaceAll(highligted, "    #", "#");
+      highligted = this.replaceAll(highligted, "  #", "#");
+      highligted = this.replaceAll(highligted, "&nbsp;&nbsp;#", "#");
+      highligted = this.replaceAll(highligted, "# ", "#");
+      highligted = this.replaceAll(highligted, "    #include", "#include");
+      highligted = this.replaceAll(highligted, " &gt;", ">");
+      highligted = this.replaceAll(highligted, "&lt; ", "<");
+      highligted = this.replaceAll(highligted, "&gt;", ">");
+      highligted = this.replaceAll(highligted, "&lt;", "<");
 
-    return highligted;
+      return highligted;
+    } else if (this.get('editor') === 'sketch') {
+      return this.get('model.project.content.content');
+    }
+
   },
 
   blocklyCol: function() {
@@ -234,12 +253,14 @@ export default Ember.Controller.extend({
     var self = this;
     //if (!Blockly.mainWorkspace) {
       Ember.run.later(function() {
-        Blockly.mainWorkspace.clear();
-        var workspace = self.get('workspace');
+        if (self.get('editor') === 'blocks') {
+          Blockly.mainWorkspace.clear();
+          var workspace = self.get('workspace');
 
-        var xml = self.get('generatedXML');
-        var dom = Blockly.Xml.textToDom(xml);
-        Blockly.Xml.domToWorkspace(workspace, dom);
+          var xml = self.get('generatedXML');
+          var dom = Blockly.Xml.textToDom(xml);
+          Blockly.Xml.domToWorkspace(workspace, dom);
+        }
       }, 500);
     //}
   },
@@ -267,12 +288,13 @@ export default Ember.Controller.extend({
     var project = this.get('model.project');
 
     if (project && project.get('xml')) {
-
         console.log('setting generatedXML to projectXML: ');
         console.log(project.get('xml'));
         self.set('generatedXML', project.get('xml'));
         self.convertFromXml();
-
+    } else {
+      self.set('generatedXML', '');
+      self.convertFromXml();
     }
   }.observes('model.project.id').on('init'),
 

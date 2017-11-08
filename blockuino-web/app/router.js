@@ -12,6 +12,7 @@ Router.map(function() {
   this.route('docs');
   this.route('saved-projects');
   this.route('login');
+  this.route('sketch');
 });
 
 export default Router;

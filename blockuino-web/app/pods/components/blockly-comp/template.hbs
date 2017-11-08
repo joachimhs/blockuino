@@ -27,6 +27,7 @@
     </block>
     <block type="arduino_repeat"></block>
     <block type="arduino_for"></block>
+    <block type="controls_whileUntil"></block>
   </category>
 
   <category name="{{compOperators}}" colour="118">
@@ -54,6 +55,13 @@
     <category name="{{compSerialCommunication}}" colour="230">
       <block type="arduino_serial_begin"></block>
       <block type="arduino_serial_print"></block>
+      <block type="arduino_serial_available"></block>
+      <block type="arduino_serial_read"></block>
+      <block type="arduino_software_serial_include"></block>
+      <block type="arduino_software_serial_begin"></block>
+      <block type="arduino_software_serial_available"></block>
+      <block type="arduino_software_serial_write"></block>
+      <block type="arduino_software_serial_read"></block>
     </category>
     <category name="{{compSound}}" colour="230">
       <block type="arduino_tone_ms"></block>
@@ -72,6 +80,7 @@
     <block type="arduino_pulse_in"></block>
     <block type="arduino_raw_thermistor_to_temp_function"></block>
     <block type="arduino_raw_thermistor_to_temp"></block>
+    <block type="array_element"></block>
   </category>
 
   <category name="{{compCustomFunctions}}" colour="267">
@@ -93,7 +102,9 @@
     <block type="variable_decrement"></block>
     <block type="logic_boolean"></block>
     <block type="extract_from_array"></block>
+    <block type="array_length"></block>
     <block type="char_to_int"></block>
+    <block type="arduino_variable_char"></block>
   </category>
 
   <category name="{{compConstants}}" colour="10">
@@ -146,6 +157,7 @@
       <block type="arduino_bil_rotate_left"></block>
       <block type="arduino_car_set_speed"></block>
       <block type="arduino_car_analog_speed"></block>
+      <block type="arduino_car_rf_speed"></block>
     </category>
 
     <category name="{{compServo}}" colour="65">

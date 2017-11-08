@@ -20,6 +20,32 @@ export default Ember.Controller.extend({
       this.transitionToRoute('docs');
     },
 
+    /*newBlockProject: function() {
+      console.log('application.newBlockProject');
+      var uuidIsh = this.generateUuidIsh();
+      console.log('uuidIsh: ' + uuidIsh);
+      this.set('indexController.projectId', uuidIsh);
+    },
+
+    newTextProject: function() {
+      Blockly.fireUiEvent(window, 'resize');
+      this.transitionToRoute('sketch');
+    },*/
+
+    selectBlocksMode: function () {
+      this.set('indexController.editor', 'blocks');
+      Ember.run.later(function() {
+        Blockly.fireUiEvent(window, 'resize');
+      });
+    },
+
+    selectSketchMode: function () {
+      this.set('indexController.editor', 'sketch');
+      Ember.run.later(function() {
+        Blockly.fireUiEvent(window, 'resize');
+      });
+    },
+
     sendToPi: function() {
       this.set('showUploadToArduinoModal', true);
       this.set('uploadStarted', false);
@@ -130,6 +156,7 @@ export default Ember.Controller.extend({
       this.set('uploadResponseMessage', null);
       this.set('uploadUsbPort', null);
       this.set('uploadError', null);
+      this.set('compileError', null);
 
       var highligted = this.get('indexController').getGeneratedCode();
       var projectId = this.get('model.project.id');
@@ -139,10 +166,24 @@ export default Ember.Controller.extend({
         console.log("UPLOAD RESULT:" + data);
 
         var result = JSON.parse(data);
-        self.set('compileStatus', result.exitStatus !== 0 ? 'Kompilering feilet. Sjekk etter feil i koden' : 'Kompilering OK');
-        self.set('uploadResponseMessage', result.returnMessage ? result.returnMessage.replace('---', '\n---').replace('===', '\n===').replace('.', '\n.') : "Ingen logg...");
 
-        if (self.get('electronAppInstalled')) {
+        if (result.exitStatus !== 0) {
+          self.set('compileStatus', 'Kompilering feilet. Sjekk etter feil i koden');
+          self.set('compileError', true);
+          console.log(result);
+          self.set('uploadResponseMessage', result.errorMessage ? result.errorMessage.replace('---', '\n---').replace('===', '\n===').replace('.', '\n.') : "Ingen logg...");
+        } else {
+          self.set('compileStatus', result.exitStatus !== 0 ? 'Kompilering feilet. Sjekk etter feil i koden' : 'Kompilering OK');
+          self.set('compileError', false);
+          self.set('uploadResponseMessage', result.returnMessage ? result.returnMessage.replace('---', '\n---').replace('===', '\n===').replace('.', '\n.') : "Ingen logg...");
+        }
+
+        if (selectedArduino === 'bbcmicrobit') {
+            var filename = 'microbit.hex';
+
+            var blob = new Blob([result.hex], {type: "application/octet-stream"});
+            saveAs(blob, filename);
+        } else if (self.get('electronAppInstalled')) {
           Ember.$.ajax({
             type: "POST",
             url: "http://localhost:12344",
@@ -159,11 +200,13 @@ export default Ember.Controller.extend({
           });
         } else if (result.exitStatus === 0) {
           if (self.get('chromeAppInstalled') && window.chrome) {
-            chrome.runtime.sendMessage(self.get('chromeAppKey'), {hex: result.hex},
+            chrome.runtime.sendMessage(self.get('chromeAppKey'), {hex: result.hex, arduino: selectedArduino},
               function (response) {
                 console.log("CHROME APP RESPONSE: ");
                 console.log(response);
                 var responseJson = JSON.parse(response);
+
+                self.set('uploadErrorStatus', responseJson.error);
 
                 self.set('uploadUsbPort', responseJson.usbPort ? responseJson.usbPort : 'Fant ingen Arduino!');
                 self.set('uploadError', responseJson.error ? responseJson.error : 'OK');
