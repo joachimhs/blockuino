@@ -1,4 +1,10 @@
-var { app, ipcMain, globalShortcut, Menu } = require('electron');
+const setupEvents = require('./installers/setupEvents')
+ if (setupEvents.handleSquirrelEvent()) {
+    // squirrel event handled and app will exit in 1000ms, so don't do anything else
+    return;
+ }
+ 
+ var { app, ipcMain, globalShortcut, Menu } = require('electron');
 var menubar = require('menubar');
 var mb = menubar({ dir: __dirname + '/app', width: 440, height: 270, icon: __dirname + '/app/icon.png', preloadWindow: true, windowPosition: 'topRight' });
 var isDev = require('electron-is-dev');
