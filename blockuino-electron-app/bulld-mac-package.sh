@@ -2,4 +2,4 @@
 
 npm run package-mac
 
-electron-installer-dmg ./release-builds/Electron\ tutorial\ app-darwin-x64/Electron\ tutorial\ app.app electron-tutorial-app
+electron-installer-dmg ./release-builds/Blockuino-Electron-darwin-x64/Blockuino-Electron.app blockuino-electron-app --out=release-builds --overwrite --icon=app/icon.png
