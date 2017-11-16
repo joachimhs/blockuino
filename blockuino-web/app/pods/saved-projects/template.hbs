@@ -14,13 +14,13 @@
         </thead>
         <tbody>
 
-        {{#each model.projects as |project|}}
+        {{#each sortedProjects as |project|}}
           <tr>
-            <td>{{#link-to "index" (query-params projectId=project.id)}}{{project.id}}{{/link-to}}</td>
-            <td>{{#link-to "index" (query-params projectId=project.id)}}{{project.name}}{{/link-to}}</td>
+            <td>{{#link-to "index" (query-params projectId=project.id editor="blocks")}}{{project.id}}{{/link-to}}</td>
+            <td>{{#link-to "index" (query-params projectId=project.id editor="blocks")}}{{project.name}}{{/link-to}}</td>
             <td>{{moment-from-now project.createdDateMs}}</td>
             <td>{{email-obfuscator project.username}}</td>
-            <td>{{#link-to "index" (query-params projectId=project.remixOf)}}{{project.remixOf}}{{/link-to}}</td>
+            <td>{{#link-to "index" (query-params projectId=project.remixOf editor="blocks")}}{{project.remixOf}}{{/link-to}}</td>
           </tr>
         {{/each}}
 

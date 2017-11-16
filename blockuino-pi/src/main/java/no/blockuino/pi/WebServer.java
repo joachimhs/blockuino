@@ -8,8 +8,7 @@ import no.blockuino.pi.models.JniResult;
 import no.blockuino.pi.models.Project;
 import no.blockuino.pi.models.Session;
 import no.blockuino.pi.util.FileUtil;
-import no.haagensoftware.conticious.stormpath.ConticiousStormpath;
-import no.haagensoftware.conticious.stormpath.data.StormpathAccount;
+import no.haagensoftware.hyrrokkin.base.HyrrokkinDeserializer;
 import no.haagensoftware.hyrrokkin.base.HyrrokkinSerializer;
 import no.haagensoftware.hyrrokkin.deserializer.RestDeserializer;
 import no.haagensoftware.hyrrokkin.serializer.RestSerializer;
@@ -283,6 +282,22 @@ public class WebServer {
             return hexfileContents;
         });
 
+        post("/generateToken", (req, res) -> {
+            String httpBody = req.body();
+            String restResponse = "{}";
+
+            if (httpBody != null && httpBody.length() > 8) {
+                Credentials creds = new Gson().fromJson(httpBody, Credentials.class);
+
+                String jsonPayload = "{ \"username\": \"" + creds.getUsername() + "\"}";
+
+                RestHelper rh = new RestHelper();
+                restResponse = rh.postJsonContent("https://kodegenet.no/kodegenet/auth/token", jsonPayload);
+            }
+
+            return restResponse;
+        });
+
         post("/login", (req, res) -> {
             String httpBody = req.body();
             boolean authenticated = false;
@@ -291,14 +306,21 @@ public class WebServer {
 
             if (httpBody != null && httpBody.length() > 8) {
                 Credentials creds = new Gson().fromJson(httpBody, Credentials.class);
-                StormpathAccount sa = ConticiousStormpath.getInstance("kodegenet").authenticateUser(creds.getUsername(), creds.getPassword());
-                authenticated =  sa != null && sa.getEmail() != null && sa.getEmail().length() > 0;
 
-                newSession.setAuthenticated(authenticated);
-                if (authenticated) {
-                    newSession.setId(UUID.randomUUID().toString().replace("-", "").substring(0, 12));
-                    newSession.setUsername(sa.getEmail());
+                String jsonPayload = "{ \"username\": \"" + creds.getUsername() + "\", \"password\": \"" + creds.getPassword() + "\"}";
+
+                RestHelper rh = new RestHelper();
+                String restResponse = rh.postJsonContent("https://kodegenet.no/kodegenet/auth/login", jsonPayload);
+
+                HyrrokkinDeserializer deserializer = new RestDeserializer();
+                Session hlokkSession = deserializer.deserialize(restResponse, Session.class);
+
+                if (hlokkSession.getAuthenticated().booleanValue()) {
+                    newSession.setAuthenticated(hlokkSession.getAuthenticated());
+                    newSession.setUsername(creds.getUsername());
+                    newSession.setId(hlokkSession.getId().replace("-", "").substring(0, 12));
                     sessions.put(newSession.getId(), newSession);
+                    authenticated = true;
                 }
             }
 

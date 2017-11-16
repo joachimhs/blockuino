@@ -60,14 +60,19 @@
             <version>0.7.9</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.3.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.juniversalchardet</groupId>
+            <artifactId>juniversalchardet</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
-        </dependency>
-        <dependency>
-            <groupId>no.haagensoftware</groupId>
-            <artifactId>conticious-stormpath</artifactId>
-            <version>0.2</version>
         </dependency>
     </dependencies>
 

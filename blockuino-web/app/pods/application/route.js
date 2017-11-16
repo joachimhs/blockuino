@@ -3,6 +3,11 @@ import SessionData from '../session/sessionData';
 
 export default Ember.Route.extend({
   session: Ember.inject.service('session'),
+  i18n: Ember.inject.service(),
+
+  afterModel: function(user) {
+    this.set('i18n.locale', 'no');
+  },
 
   beforeModel(params){
     console.log('APPLICATION ROUTE BEFORE MODEL:');
@@ -33,6 +38,8 @@ export default Ember.Route.extend({
   },
 
   model: function() {
+    console.log('appRoute model:');
+    console.log(this.get('projectId'));
     if (this.get('projectId')) {
       return Ember.RSVP.hash({
         project: this.store.find('project', this.get('projectId')),

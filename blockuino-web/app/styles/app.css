@@ -192,13 +192,17 @@
   width: 100%;
   min-width: 100%;
   height: 85vh;
-  min-height: 400px;
+  min-height: 400px;v
+}
+
+.small-margin-left {
+  margin-left: 25px;
 }
 
 .logo {
   text-align: center;
   max-height: 8vh;
-  max-width: 90%;
+  max-width: 20vw;
   margin-top: 15px;
   margin-bottom: 15px;
   margin-right: 50px;

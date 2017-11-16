@@ -9,17 +9,18 @@ getInstallerConfig()
  });
 
 function getInstallerConfig () {
-    console.log('creating windows installer')
+    console.log('creating windows installer: ');
     const rootPath = path.join('./')
     const outPath = path.join(rootPath, 'release-builds')
 
+	console.log(path.join(rootPath, 'app', 'icon.ico'));
     return Promise.resolve({
-       appDirectory: path.join(outPath, 'Blockuino-Electron-win32-x64/'),
+       appDirectory: path.join(outPath, 'blockuino-electron-app-win32-ia32/'),
        authors: 'Joachim Haagen Skeie',
-       noMsi: true,
+       noMsi: false,
        outputDirectory: path.join(outPath, 'windows-installer'),
-       exe: 'Blockuino-Electron.exe',
+       exe: 'blockuino-electron-app.exe',
        setupExe: 'BlockuinoElectronInstaller.exe',
-       setupIcon: path.join(rootPath, 'app', 'icon.ico')
+       setupIcon: path.join('./', 'app', 'icon.ico')
    })
 }

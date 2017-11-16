@@ -4,35 +4,53 @@
       <img src="/blockuino_logo.png" class="logo">
     {{/link-to}}
 
-    {{#if session.session.username}}
-      <div class="pull-right header-save-link" {{action "saveProject"}}>
+    <div class="btn-group btn-group-sm" role="group" aria-label="Type editor">
+      <button type="button" class="{{if (eq editor 'blocks') 'btn btn-primary' 'btn btn-default'}}" {{action
+        "selectBlocksMode"}}>{{fa-icon "puzzle-piece" size=2 border=false}}<br /> {{t "common.header.blocks"}}
+      </button>
+      <button type="button" class="{{if (eq editor 'sketch') 'btn btn-primary' 'btn btn-default'}}" {{action
+        "selectSketchMode"}}>{{fa-icon "code" size=2 border=false}}<br />{{t "common.header.textCode"}}
+      </button>
+    </div>
 
-        {{#if projectIsOwn}}
-          Lagre prosjektet
-        {{else}}
-          Remiks prosjektet
-        {{/if}}
+    <div class="btn-group btn-group-sm small-margin-left" role="group" aria-label="Type editor">
+      <button type="button" class="btn btn-default" {{action "newBlockProject"}}>{{fa-icon "file-text-o" size=2 border=false}}<br />
+        {{t "common.header.new"}}
+      </button>
 
-      </div>
-    {{/if}}
+      {{#if session.session.username}}
+        <button type="button" class="btn btn-default" {{action "saveProject"}}>
+          {{fa-icon "save" size=2 border=false}}<br />
+          {{#if projectIsOwn}}
+            {{t "common.header.new"}}
+          {{else}}
+            {{t "common.header.remix"}}
+          {{/if}}
+        </button>
+      {{/if}}
 
-    {{#if appInstalled}}
-      <div class="pull-right header-save-link" {{action "sendToPi"}}>Send til Arduino</div>
-      <div class="pull-right header-save-link" {{action "serialMonitor"}}>Seriellovervåker</div>
-    {{/if}}
+      {{#if appInstalled}}
+        <button type="button" class="btn btn-default" {{action "sendToPi"}}>{{fa-icon "upload" size=2 border=false}}<br /> {{t "common.header.upload"}}
+        </button>
+        <button type="button"  class="btn btn-default" {{action "serialMonitor"}}>{{fa-icon "exchange" size=2 border=false}}<br />
+          {{t "common.header.serialMonitor"}}
+        </button>
+      {{else}}
+        <button type="button" class="btn btn-default" {{action "doShowDownloadModal"}}>{{fa-icon "upload" size=2 border=false}}<br /> {{t "common.header.upload"}}
+        </button>
+      {{/if}}
 
-    {{#if (eq session.lang "no")}}
-      <div class="pull-right header-save-link" {{action "chooseEnglish"}}>English</div>
-    {{else}}
-      <div class="pull-right header-save-link" {{action "chooseNorwegian"}}>Norsk</div>
-    {{/if}}
-
-    <div class="btn-group btn-group-lg" role="group" aria-label="Type editor">
-      <button type="button" class="{{if (eq editor 'blocks') 'btn btn-primary' 'btn btn-default'}}" {{action "selectBlocksMode"}}>Blokker</button>
-      <button type="button" class="{{if (eq editor 'sketch') 'btn btn-primary' 'btn btn-default'}}" {{action "selectSketchMode"}}>Tekst (C-kode)</button>
+      {{#if (eq session.lang "no")}}
+        <button type="button"  class="btn btn-default" {{action "chooseEnglish"}}>{{fa-icon "globe" size=2 border=false}}<br />
+          {{t "common.english"}}
+        </button>
+      {{else}}
+        <button type="button"  class="btn btn-default" {{action "chooseNorwegian"}}>{{fa-icon "globe" size=2 border=false}}<br />
+          {{t "common.norwegian"}}
+        </button>
+      {{/if}}
     </div>
   </div>
-
   <div class="col-sm-2">
     <div class="menu-button" {{action "toggleHamburger"}}>
       {{fa-icon "cog" spin=showingHamburger size=2}}
@@ -61,10 +79,10 @@
           <div>Forsiden</div>
         </div>
 
-          <div class="menu-item" {{action "doSavedProjects"}}>
-            {{fa-icon "list-alt" size=2 border=true}}
-            <div>Lagrede prosjekter</div>
-          </div>
+        <div class="menu-item" {{action "doSavedProjects"}}>
+          {{fa-icon "list-alt" size=2 border=true}}
+          <div>Lagrede prosjekter</div>
+        </div>
 
         <div class="menu-item" {{action "doNews"}}>
           {{fa-icon "newspaper-o" size=2 border=true}}

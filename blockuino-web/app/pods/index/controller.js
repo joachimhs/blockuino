@@ -11,16 +11,17 @@ export default Ember.Controller.extend({
   //queryParams: 'xml',
   codeVisible: true,
 
-  init: function() {
+  init: function () {
     this._super();
     var self = this;
-    Ember.run.later(function() {
-      if (!self.get('editor')) {
+    Ember.run.later(function () {
+      console.log('--------_> Editor: ' + self.get('editor'));
+      if (self.get('editor') === undefined || !self.get('editor') === 'sketch') {
         self.set('editor', 'blocks');
       }
-    });
+    }, 1000);
 
-    CodeMirror.addMINEkeyword = function(mime, data) {
+    CodeMirror.addMINEkeyword = function (mime, data) {
       CodeMirror.mimeModes[mime].keywords = data;
     };
 
@@ -36,92 +37,92 @@ export default Ember.Controller.extend({
       this.set('showXml', false);
     },
 
-    hideCodeArea: function() {
+    hideCodeArea: function () {
       this.set('codeVisible', false);
       Blockly.fireUiEvent(window, 'resize');
     },
 
-    showCodeArea: function() {
+    showCodeArea: function () {
       this.set('codeVisible', true);
       Blockly.fireUiEvent(window, 'resize');
     },
 
-    showDownloadXmlModal: function() {
+    showDownloadXmlModal: function () {
       this.set('showDownloadModal', true);
       var self = this;
-      Ember.run.later(function() {
+      Ember.run.later(function () {
         Ember.$("#downloadXmlModal").modal('show');
       });
     },
 
-    hideDownloadXmlModal: function() {
+    hideDownloadXmlModal: function () {
       Ember.$("#downloadXmlModal").modal('hide');
 
       var self = this;
-      Ember.run.later(function() {
+      Ember.run.later(function () {
         self.set('showDownloadModal', false);
       });
     },
 
-    showUploadXmlModal: function() {
+    showUploadXmlModal: function () {
       this.set('showUploadModal', true);
       var self = this;
-      Ember.run.later(function() {
+      Ember.run.later(function () {
         Ember.$("#uploadXmlModal").modal('show');
 
-        Ember.run.later(function() {
-            self.uploadXmlListener();
+        Ember.run.later(function () {
+          self.uploadXmlListener();
         });
       });
     },
 
-    showClipboardModal: function() {
+    showClipboardModal: function () {
       this.set('showClipboardModal', true);
 
       var self = this;
-      Ember.run.later(function() {
+      Ember.run.later(function () {
         Ember.$("#clipboardModal").modal('show');
       });
     },
 
-    hideClipboardModal: function() {
+    hideClipboardModal: function () {
       Ember.$("#clipboardModal").modal('hide');
 
       var self = this;
-      Ember.run.later(function() {
+      Ember.run.later(function () {
         self.set('showClipboardModal', false);
       });
     },
 
-    copyArduino: function() {
+    copyArduino: function () {
       var highligted = this.getGeneratedCode();
 
       var $temp = $("<textarea>");
-        $("body").append($temp);
-        $temp.val(highligted).select();
-        document.execCommand("copy");
-        $temp.remove();
+      $("body").append($temp);
+      $temp.val(highligted).select();
+      document.execCommand("copy");
+      $temp.remove();
 
-      alert('Arduinokoden er kopiert til utklippstavlen');
+      Ember.$("#clipboardModal").modal('hide');
     },
 
-    copyXml: function() {
+    copyXml: function () {
       var sourceCode = this.get('generatedXML');
 
-        var $temp = $("<textarea>")
-        $("body").append($temp);
-        $temp.val(sourceCode).select();
-        document.execCommand("copy");
-        $temp.remove();
+      var $temp = $("<textarea>");
+      $("body").append($temp);
+      $temp.val(sourceCode).select();
+      document.execCommand("copy");
+      $temp.remove();
 
       alert('XML koden er kopiert til utklippstavlen');
     },
 
-    hideUploadXmlModal: function() {
+    hideUploadXmlModal: function () {
       Ember.$("#uploadXmlModal").modal('hide');
 
       var self = this;
-      Ember.run.later(function() {
+      Ember.run.later(function () {
         self.set('showUploadModal', false);
       });
     },
@@ -149,7 +150,7 @@ export default Ember.Controller.extend({
     }
   },
 
-  getGeneratedCode: function() {
+  getGeneratedCode: function () {
     if (this.get('editor') === 'blocks') {
       var highligted = js_beautify(this.get('blocklyCode'));
       //highligted = hljs.highlight('javascript', highligted).value;
@@ -171,10 +172,9 @@ export default Ember.Controller.extend({
     } else if (this.get('editor') === 'sketch') {
       return this.get('model.project.content.content');
     }
-
   },
 
-  blocklyCol: function() {
+  blocklyCol: function () {
     if (this.get('codeVisible') === true) {
       return "col-md-6";
     } else {
@@ -182,7 +182,7 @@ export default Ember.Controller.extend({
     }
   }.property('codeVisible'),
 
-  codeCol: function() {
+  codeCol: function () {
     if (this.get('codeVisible') === true) {
       return "col-md-5";
     } else {
@@ -190,78 +190,84 @@ export default Ember.Controller.extend({
     }
   }.property('codeVisible'),
 
-  projectObserver: function() {
+  projectIdObserver: function () {
     var self = this;
-
-    console.log('projectObserver!');
 
     var projectId = this.get('projectId');
-    var modelProjectId = this.get('model.projectId');
+    var project = this.get('model.project');
+    var model = this.get('model');
+
+    if (!model || (model && projectId !== project.get('id'))) {
+      Ember.run.later(function() {
+        self.set('model.project', self.store.find('project', projectId));
+      }, 500);
+    }
+  }.observes('projectId'),
+
+  modelProjectIdObserver: function () {
+    var self = this;
     var project = this.get('model.project');
 
-    console.log(projectId);
-    console.log(project);
-
-    if (project != null && project.get('id') != null) {
-      if (projectId == null || projectId !== project.get('id')) {
-        Ember.run.later(function() {
-          self.set('projectId', project.get('id'));
-        }, 1000);
-
-      }
+    if (project && project.get('xml')) {
+      console.log('setting generatedXML to projectXML: ');
+      console.log(project.get('xml'));
+      self.set('generatedXML', project.get('xml'));
+      self.convertFromXml();
+    } else {
+      self.set('generatedXML', '');
+      self.convertFromXml();
     }
+  }.observes('model.project.xml').on('init'),
 
-  }.observes('model.project', 'model.projectId'),
-
-  uploadXmlListener: function() {
+  uploadXmlListener: function () {
     var self = this;
 
-      var fileChooser = document.getElementById('xmlFileChooser');
-      fileChooser.addEventListener('change', function (event) {
-        var f = event.target.files[0];
+    var fileChooser = document.getElementById('xmlFileChooser');
+    fileChooser.addEventListener('change', function (event) {
+      var f = event.target.files[0];
 
-        if (f) {
-          var r = new FileReader();
-          r.onload = function(e) {
-            var contents = e.target.result;
-            self.set('generatedXML', contents);
-            self.convertFromXml();
-          };
+      if (f) {
+        var r = new FileReader();
+        r.onload = function (e) {
+          var contents = e.target.result;
+          self.set('generatedXML', contents);
+          self.convertFromXml();
+        };
 
-          r.readAsText(f);
-        } else {
-          alert("Failed to load file");
-        }
-      });
+        r.readAsText(f);
+      } else {
+        alert("Failed to load file");
+      }
+    });
   },
 
   /*xmlObserver: function () {
-    var compressed = this.get('xml');
-    var generatedXml = this.get('generatedXML');
+   var compressed = this.get('xml');
+   var generatedXml = this.get('generatedXML');
 
-    if (compressed && !generatedXml) {
-      var xml = LZString.decompressFromBase64(compressed);
+   if (compressed && !generatedXml) {
+   var xml = LZString.decompressFromBase64(compressed);
 
-      if (xml) {
-        this.set('generatedXML', xml);
-      }
-    }
+   if (xml) {
+   this.set('generatedXML', xml);
+   }
+   }
 
-  }.observes('xml', 'generatedXML').on('init'),*/
+   }.observes('xml', 'generatedXML').on('init'),*/
 
-  convertFromXml: function() {
+  convertFromXml: function () {
     var self = this;
     //if (!Blockly.mainWorkspace) {
-      Ember.run.later(function() {
-        if (self.get('editor') === 'blocks') {
-          Blockly.mainWorkspace.clear();
-          var workspace = self.get('workspace');
+    Ember.run.later(function () {
+      if (self.get('editor') === 'blocks' && self.get('generatedXML')) {
+        Blockly.mainWorkspace.clear();
+        var workspace = self.get('workspace');
 
-          var xml = self.get('generatedXML');
-          var dom = Blockly.Xml.textToDom(xml);
-          Blockly.Xml.domToWorkspace(workspace, dom);
-        }
-      }, 500);
+        var xml = self.get('generatedXML');
+        var dom = Blockly.Xml.textToDom(xml);
+        Blockly.Xml.domToWorkspace(workspace, dom);
+      }
+    }, 500);
     //}
   },
 
@@ -281,31 +287,5 @@ export default Ember.Controller.extend({
 
   replaceAll: function (str, find, replace) {
     return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
-  },
-
-  modelProjectIdObserver: function() {
-    var self = this;
-    var project = this.get('model.project');
-
-    if (project && project.get('xml')) {
-        console.log('setting generatedXML to projectXML: ');
-        console.log(project.get('xml'));
-        self.set('generatedXML', project.get('xml'));
-        self.convertFromXml();
-    } else {
-      self.set('generatedXML', '');
-      self.convertFromXml();
-    }
-  }.observes('model.project.id').on('init'),
-
-  projectIdObserver: function() {
-    console.log('projectIdObserver... ');
-    var projectId = this.get('projectId');
-    var model = this.get('model');
-
-    if (projectId && model) {
-      this.set('model.project', this.store.find('project', this.get('projectId')));
-    }
-
-  }.observes('projectId', 'model')
+  }
 });

@@ -20,17 +20,29 @@ export default Ember.Controller.extend({
       this.transitionToRoute('docs');
     },
 
-    /*newBlockProject: function() {
+    doShowDownloadModal: function() {
+      console.log('doShowDownloadModal');
+      this.set('showDownloadModal', true);
+      Ember.run.later(function() {
+        Ember.$("#downloadModal").modal('show');
+      });
+    },
+
+    hideDownloadModal: function()  {
+      Ember.$("#downloadModal").modal('hide');
+
+      var self = this;
+      Ember.run.later(function() {
+        self.set('showDownloadModal', false);
+      }, 500);
+    },
+
+    newBlockProject: function() {
       console.log('application.newBlockProject');
       var uuidIsh = this.generateUuidIsh();
       console.log('uuidIsh: ' + uuidIsh);
       this.set('indexController.projectId', uuidIsh);
     },
-
-    newTextProject: function() {
-      Blockly.fireUiEvent(window, 'resize');
-      this.transitionToRoute('sketch');
-    },*/
 
     selectBlocksMode: function () {
       this.set('indexController.editor', 'blocks');
@@ -238,6 +250,10 @@ export default Ember.Controller.extend({
       Blockly.fireUiEvent(window, 'resize');
     },
 
+    dRemixProject: function() {
+
+    },
+
     saveProject: function() {
       this.set('showSaveProjectModal', true);
       this.set('projectSaving', false);
@@ -259,50 +275,12 @@ export default Ember.Controller.extend({
       }, 500);
     },
 
+    doRemixProject: function() {
+      this.saveProject(true);
+    },
+
     doSaveProject: function() {
-      var project = this.get('model.project');
-      var xml = this.get('indexController.generatedXML');
-      project.set('xml', xml);
-
-      this.set('projectSaving', true);
-      this.set('projectSaveSuccess', false);
-      this.set('projectSaveFailed', false);
-
-      var self = this;
-
-      if ( project.get('username') && project.get('username') !== this.get('session.session.username')) {
-        var newProject = this.store.createRecord('project',
-          {
-            id: this.generateUuidIsh(),
-            username: this.get('session.session.username'),
-            xml: xml,
-            name: project.get('name'),
-            title: project.get('title'),
-            remixOf: project.get('id')
-          }
-        );
-
-        newProject.save().then(function(data) {
-          self.set('projectSaving', false);
-          self.set('projectSaveSuccess', true);
-          self.set('projectSaveFailed', false);
-
-          console.log('setting projectId: ' + newProject.get('id'));
-          alert("Blockuino har laget en remiks av det opprinnelige prosjektet og lagret en kopi på din konto. Det nye prosjektet får prosjekt id " + newProject.get('id') + ".");
-          self.set('indexController.projectId', newProject.get('id'));
-        });
-      } else {
-        project.get('content').save().then(function(data) {
-          self.set('projectSaving', false);
-          self.set('projectSaveSuccess', true);
-          self.set('projectSaveFailed', false);
-        }, function(data) {
-          self.set('projectSaving', false);
-          self.set('projectSaveSuccess', false);
-          self.set('projectSaveFailed', true);
-        });
-      }
-
+      this.saveProject(false);
     },
 
     doSavedProjects: function() {
@@ -362,5 +340,56 @@ export default Ember.Controller.extend({
 
   generateUuidIsh: function(a){
     return a?(0|Math.random()*16).toString(16):(""+1e10).replace(/1|0/g,this.generateUuidIsh)
+  },
+
+  saveProject: function(remix) {
+    var project = this.get('model.project');
+    var xml = this.get('indexController.generatedXML');
+    project.set('xml', xml);
+
+    this.set('projectSaving', true);
+    this.set('projectSaveSuccess', false);
+    this.set('projectSaveFailed', false);
+
+    var self = this;
+
+    if (remix || (project.get('username') && project.get('username') !== this.get('session.session.username'))) {
+      var newProject = this.store.createRecord('project',
+        {
+          id: this.generateUuidIsh(),
+          username: this.get('session.session.username'),
+          xml: xml,
+          name: project.get('name'),
+          content: project.get('content'),
+          title: project.get('title'),
+          remixOf: project.get('id')
+        }
+      );
+
+      console.log(project);
+      project.get('content').rollbackAttributes();
+
+      newProject.save().then(function(data) {
+        self.set('projectSaving', false);
+        self.set('projectSaveSuccess', true);
+        self.set('projectSaveFailed', false);
+
+        console.log('setting projectId: ' + newProject.get('id'));
+        alert("Blockuino har laget en remiks av det opprinnelige prosjektet og lagret en kopi på din konto. Det nye prosjektet får prosjekt id " + newProject.get('id') + ".");
+        self.set('indexController.projectId', newProject.get('id'));
+
+
+      });
+    } else {
+      project.get('content').save().then(function(data) {
+        self.set('projectSaving', false);
+        self.set('projectSaveSuccess', true);
+        self.set('projectSaveFailed', false);
+      }, function(data) {
+        self.set('projectSaving', false);
+        self.set('projectSaveSuccess', false);
+        self.set('projectSaveFailed', true);
+      });
+    }
   }
 });

@@ -1,21 +1,21 @@
 <div class="vertical-menu-bar">
-  {{vertical-menu-item icon="fa fa-2x fa-clipboard" text="Kopier koden til  utklippstavlen" clickAction="showClipboardModal"}}
-  {{vertical-menu-item icon="fa fa-2x fa-download" text="Last ned til datamaskinen" clickAction="showDownloadXmlModal"}}
-  {{vertical-menu-item icon="fa fa-2x fa-upload" text="Last opp fra datamasinen" clickAction="showUploadXmlModal"}}
+  {{vertical-menu-item icon="fa fa-2x fa-clipboard" translationKey="common.index.copyToClipboard" clickAction="showClipboardModal"}}
+  {{vertical-menu-item icon="fa fa-2x fa-download"translationKey="common.index.downloadToComputer" clickAction="showDownloadXmlModal"}}
+  {{vertical-menu-item icon="fa fa-2x fa-upload" translationKey="common.index.uploadFromComputer" clickAction="showUploadXmlModal"}}
 
     <hr class="vertical-menu-separator">
   {{#if codeVisible}}
-    {{vertical-menu-item icon="fa fa-2x fa-arrow-circle-o-right" text="Skjul Arduinokode" clickAction="hideCodeArea"}}
+    {{vertical-menu-item icon="fa fa-2x fa-arrow-circle-o-right" translationKey="common.index.hideArduinoCode" clickAction="hideCodeArea"}}
   {{else}}
-    {{vertical-menu-item icon="fa fa-2x fa-arrow-circle-o-left" text="Vis Arduinokode" clickAction="showCodeArea"}}
+    {{vertical-menu-item icon="fa fa-2x fa-arrow-circle-o-left" translationKey="common.index.showArduinoCode" clickAction="showCodeArea"}}
   {{/if}}
 
     <hr class="vertical-menu-separator">
-  {{vertical-menu-item icon="fa fa-2x fa-home" text="Besøk Kodegenet Kodeklubb" link="http://kodegenet.no"}}
-  {{vertical-menu-item icon="fa fa-2x fa-github" text="Se kildekoden på GitHub" link="https://github.com/joachimhs/blockuino"}}
-  {{vertical-menu-item icon="fa fa-2x fa-instagram" text="Besøk oss på Instagram" link="http://instagram.com/kodegenet"}}
-  {{vertical-menu-item icon="fa fa-2x fa-twitter-square" text="Besøk oss på Twitter" link="http://twitter.com/kodegenet"}}
-  {{vertical-menu-item icon="fa fa-2x fa-facebook-square" text="Besøk oss på Facebook" link="http://facebook.com/kodegenet"}}
+  {{vertical-menu-item icon="fa fa-2x fa-home" translationKey="common.index.visitKodegenet" link="http://kodegenet.no"}}
+  {{vertical-menu-item icon="fa fa-2x fa-github" translationKey="common.index.visitGithub" link="https://github.com/joachimhs/blockuino"}}
+  {{vertical-menu-item icon="fa fa-2x fa-instagram" translationKey="common.index.visitInstagram" link="http://instagram.com/kodegenet"}}
+  {{vertical-menu-item icon="fa fa-2x fa-twitter-square" translationKey="common.index.visitTwitter" link="http://twitter.com/kodegenet"}}
+  {{vertical-menu-item icon="fa fa-2x fa-facebook-square" translationKey="common.index.visitFacebook" link="http://facebook.com/kodegenet"}}
 </div>
 
 {{#if (eq editor 'blocks')}}
@@ -32,8 +32,7 @@
             {{/if}}
 
             {{#if showXml}}
-                <button class="btn btn-primary" {{action "fromXml"}}><i class="fa fa-arrow-circle-o-left"></i> Last inn
-                    XML
+                <button class="btn btn-primary" {{action "fromXml"}}><i class="fa fa-arrow-circle-o-left"></i> Last inn XML
                 </button>
               {{textarea classNames="generated-code" value=generatedXML}}
             {{/if}}
@@ -115,16 +114,13 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title text-center">Kopier kildekode til utklippstavlen</h4>
+                    <h4 class="modal-title text-center">{{t "common.index.copyToClipboard"}}</h4>
                 </div>
                 <div class="modal-body">
-                    <div>Her kan du kopiere kildekoden du har kodet til utklippstavlen. Du kan enten kopiere kildekoden
-                        som du kan lime inn i Arduino IDE, eller XML koden som tegner klossene til programmet ditt.
+                    <div>{{t "common.divs.copyCodeDescription"}}
                     </div>
                     <div class="text-center" style="margin-top: 20px;">
-                        <button class="btn btn-primary" style="margin-top: 20px;" {{action "copyArduino"}}>Kopier
-                            Arduino kildekode
-                        </button>
+                        <button class="btn btn-primary" style="margin-top: 20px;" {{action "copyArduino"}}>{{t "common.index.copyToClipboard"}}</button>
                         <!--button class="btn btn-primary" style="margin-top: 20px;" {{action "copyXml"}}>Kopier XML
                             kildekode
                         </button-->
@@ -132,7 +128,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" {{action "hideClipboardModal"}}>Ferdig</button>
+                    <button type="button" class="btn btn-primary" {{action "hideClipboardModal"}}>{{t "common.done"}}</button>
                 </div>
             </div>
             <!-- /.modal-content -->

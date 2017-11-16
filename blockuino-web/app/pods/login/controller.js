@@ -3,42 +3,74 @@ import SessionData from '../session/sessionData';
 
 export default Ember.Controller.extend({
   session: Ember.inject.service('session'),
+  readyForTokenInput: false,
 
   actions: {
-    doLogIn: function () {
+    doGetToken: function() {
       this.set('errorMessage', null);
 
       var self = this;
       var payload = {
-        username: this.get('model.email'),
-        password: this.get('model.password')
+        username: this.get('model.email')
       };
 
       Ember.$.ajax({
         method: "post",
-        url: "/login",
+        url: "/generateToken",
         contentType: 'application/json',
         data: JSON.stringify(payload),
-      }).then(function(data) {
-        console.log('LOGIN RESULT: ' + data);
+      }).then(function(responsePayload) {
+        var dataObj = JSON.parse(responsePayload);
 
-        if (data === "ERROR") {
-          self.set('errorMessage', 'Klarte ikke logge inn. Vennligst forsøk igjen.');
+        console.log(dataObj.tokenGenerated);
+        console.log(dataObj);
+        if (dataObj.tokenGenerated === true) {
+          self.set('readyForTokenInput', true);
         } else {
-          var dataObj = JSON.parse(data);
+          self.set('readyForTokenInput', false);
+        }
+      });
+    },
 
-          console.log('auth:');
-          console.log(dataObj.session.authenticated);
+    doLogIn: function () {
+      this.set('errorMessage', null);
 
+      var self = this;
+
+      var loginData = {
+        username: this.get('model.email'),
+        password: this.get('token')
+      };
+
+      $.ajax({
+        type: 'POST',
+        url: '/login',
+        data: JSON.stringify(loginData),
+
+        success: function(res, status, xhr) {
+          var dataObj = JSON.parse(res);
           if (dataObj.session.authenticated === true) {
-            var sessionData = SessionData.create({
-              id: dataObj.session.id,
-              username: dataObj.session.username
-            });
+            console.log('SUCCESSFUL LOGIN');
+            console.log(dataObj);
 
-            self.get('session').set('session', sessionData);
-            self.get('session').createCookie('uuid', sessionData.get('id'), 30);
+              var sessionData = SessionData.create({
+                id: dataObj.session.id,
+                username: dataObj.session.username
+              });
+
+              self.get('session').set('session', sessionData);
+              self.get('session').createCookie('uuid', sessionData.get('id'), 30);
+
+            self.set('stormpathLoginError', false);
+          } else {
+            self.set('session.session', null);
+            self.set('stormpathLoginError', true);
+            self.set('errorMessage', 'Klarte ikke logge inn. Vennligst forsøk igjen.');
           }
+        },
+        error: function(xhr, status, err) {
+          console.log("-------------\nerror: " + status + " error: " + err);
+          self.set('stormpathLoginError', true);
         }
       });
     },

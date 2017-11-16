@@ -1,5 +1,6 @@
 <div class="container">
-  <div class="alert alert-info"><i class="glyphicon glyphicon-info-sign"></i> Blockuino bruker samme konto som på kodegenet.no. Dersom du ikke har en Kodegenet konto fra før, kan du opprette en
+  <div class="alert alert-info"><i class="glyphicon glyphicon-info-sign"></i> Blockuino bruker samme konto som på
+    kodegenet.no. Dersom du ikke har en Kodegenet konto fra før, kan du opprette en
     på <a href="https://kodegenet.no/login" target="_blank">kodegenet.no/login</a></div>
 
   {{#if errorMessage}}
@@ -7,20 +8,57 @@
   {{/if}}
 
   {{#if session.session.username}}
-    <div>Du er logget inn med {{session.session.username}}. <button {{action "doLogOut"}}>Logg ut</button></div>
+    <div>Du er logget inn med {{session.session.username}}.
+      <button {{action "doLogOut"}}>Logg ut</button>
+    </div>
   {{else}}
+
+    <div class="clearfix"></div>
+
+    {{#unless readyForTokenInput}}
+      <form {{action "doGetToken" on="submit"}}>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email address</label>
+          {{input type="email" value=model.email class="form-control" id="exampleInputEmail1" placeholder="Email"}}
+        </div>
+
+
+        <div class="text-left">
+          <button class="btn btn-primary">
+            <i class="fa fa-lock"></i> Send innloggingsnøkkel via epost
+          </button>
+        </div>
+      </form>
+    {{/unless}}
+
+
+    {{#if readyForTokenInput}}
     <form {{action "doLogIn" on="submit"}}>
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        {{input type="email" value=model.email class="form-control" id="exampleInputEmail1" placeholder="Email"}}
+      <div class="alert alert-warning">
+        Kodegenet har sendt en epost med en unik innloggingsnøkkel til din epost addresse. Logg inn ved å fylle den inn
+        nedenfor.
       </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        {{input type="password" value=model.password class="form-control" id="exampleInputPassword1"
-                placeholder="Password"}}
+
+      <div class="section label-placeholder">
+        <div class="input-set">
+          <fieldset>
+            {{input elementId="token" type="text" name="token" value=token classNames="input-placeholder" required=""}}
+            <label for="token">Innloggingsnøkkel</label>
+          </fieldset>
+        </div>
       </div>
-      <button type="submit" class="btn btn-default">Submit</button>
+
+      <div class="clearfix"></div>
+
+      <div class="text-left">
+        <button class="btn btn-primary">
+          <i class="fa fa-lock"></i> Login med innloggingsnøkkel fra epost
+        </button>
+      </div>
     </form>
+    {{/if}}
+
+
   {{/if}}
 
 </div>

@@ -3,7 +3,7 @@ import Ember from 'ember';
 
 export default Ember.Component.extend({
   chromeAppKey: config.chromeAppKey,
-
+  i18n: Ember.inject.service(),
   lang: 'no',
 
   actions: {
@@ -15,6 +15,7 @@ export default Ember.Component.extend({
       var self = this;
       Ember.$.getScript('/arduino_en.js', function() {
         self.set('session.lang', 'en');
+        self.set('i18n.locale', 'en');
       });
     },
 
@@ -22,11 +23,16 @@ export default Ember.Component.extend({
       var self = this;
       Ember.$.getScript('/arduino_nb.js', function() {
         self.set('session.lang', 'no');
+        self.set('i18n.locale', 'no');
       });
     },
 
     testElectron() {
 
+    },
+
+    doShowDownloadModal: function() {
+      this.sendAction('doShowDownloadModal');
     },
 
     doNews: function() {
@@ -158,10 +164,6 @@ export default Ember.Component.extend({
   }.property('chromeAppInstalled', 'electronAppInstalled'),
 
   projectIsOwn: function() {
-    console.log('----<<<>>>------');
-    console.log(this.get('project.username'));
-    console.log(this.get('session.session.username'));
-
     var own = this.get('project.username') === undefined || this.get('project.username') === this.get('session.session.username');
     return own;
   }.property('project.username', 'session.session.username'),
