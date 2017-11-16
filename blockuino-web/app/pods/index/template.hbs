@@ -58,18 +58,17 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title text-center">Last opp fil fra Datamaskinen</h4>
+                    <h4 class="modal-title text-center">{{t "common.index.uploadFromComputer"}}</h4>
                 </div>
                 <div class="modal-body">
-                    <div>Her kan du laste opp en XML fil som du har lagret fra Blockuino tidligere. Du kan også dele
-                        Blockuino-prosjekter med andre ved å sende dem den nedlastede XML filen.
+                    <div>{{t "common.divs.uploadXML"}}
                     </div>
                     <div class="text-center" style="margin-top: 20px;">
                         <input id="xmlFileChooser" type="file">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" {{action "hideUploadXmlModal"}}>Ferdig</button>
+                    <button type="button" class="btn btn-primary" {{action "hideUploadXmlModal"}}>{{t "common.done"}}</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -83,24 +82,22 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title text-center">Last ned fil til Datamaskinen</h4>
+                    <h4 class="modal-title text-center">{{t "common.index.downloadToComputer"}}</h4>
                 </div>
                 <div class="modal-body">
-                    <div>Her kan du laste ned Blockuino prosjektet ditt som en XML fil. Denne XML filen kan du senere
-                        laste opp igjen, eller dele med andre ved å sende dem den nedlastede XML filen.
+                    <div>{{t "common.divs.downloadXML"}}
                     </div>
                     <div style="margin-top: 20px;">
-                        Gi filen et navn:
-                      {{input type="text" value=blockuinoFilename classNames="form-control" placeholder="Skriv inn et filnavn"}}
+                      {{t "common.index.nameFile"}}
+                      {{input type="text" value=blockuinoFilename classNames="form-control" placeholder=(t "common.index.typeFileName")}}
                     </div>
                     <div class="text-right">
-                        <button class="btn btn-primary" style="margin-top: 20px;" {{action "downloadXml"}}>Last
-                            Ned {{blockuinoFilename}}</button>
+                        <button class="btn btn-primary" style="margin-top: 20px;" {{action "downloadXml"}}>{{t "common.index.download"}} {{blockuinoFilename}}</button>
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" {{action "hideDownloadXmlModal"}}>Ferdig</button>
+                    <button type="button" class="btn btn-primary" {{action "hideDownloadXmlModal"}}>{{t "common.done"}}</button>
                 </div>
             </div>
             <!-- /.modal-content -->
