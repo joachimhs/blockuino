@@ -1,8 +1,6 @@
 {
   "name": "blockuino-web",
   "dependencies": {
-    "ember": "v2.9.0",
-    "ember-data": "^2.9.0",
     "ember-cli-test-loader": "ember-cli-test-loader#0.1.3",
     "ember-load-initializers": "ember-cli/ember-load-initializers#0.1.5",
     "ember-qunit": "0.4.9",

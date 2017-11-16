@@ -14,7 +14,7 @@ export default {
     "english": "English",
     "done": "Done",
     "header": {
-      "blocks": "blocks",
+      "blocks": "Blocks",
       "textCode": "Text (C-code)",
       "new": "New Project",
       "remix": "Remix Project",
@@ -32,10 +32,15 @@ export default {
       "visitGithub": "View source on Github",
       "visitInstagram": "Visit Kodegenet on Instagram",
       "visitTwitter": "Visit Kodegenet on Twitter",
-      "visitFacebook": "Visit Kodegenet on Facebook"
+      "visitFacebook": "Visit Kodegenet on Facebook",
+      "nameFile": "Please name the file:",
+      "typeFileName": "Type your filename here...",
+      "download": "Download"
     },
     "divs": {
-      "copyCodeDescription": "If you want to upload your code to an Arduino via Arduino IDE or Arduino Create, you need to copy the code to the clipboard first, before pasting it in manually."
+      "copyCodeDescription": "If you want to upload your code to an Arduino via Arduino IDE or Arduino Create, you need to copy the code to the clipboard first, before pasting it in manually.",
+      "downloadXML": "Here you can download your Blockuino project as an XML-file. You can upload it later if you want to work more on it, or you can share the XML-file with others by sending them the file.",
+      "uploadXML": "Here you can upload your XML-files that you have previously saved from Blockuino. You can also share Blockuino projects by sending them your XML-file"
     }
   }
 };
