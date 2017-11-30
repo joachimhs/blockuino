@@ -26,10 +26,10 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title text-center">Lagre Prosjektet</h4>
+          <h4 class="modal-title text-center">{{t "common.header.save"}}</h4>
         </div>
         <div class="modal-body">
-          <div>Her kan du lagre prosjektet ditt ved å gi prosjektet et navn</div>
+          <div>{{t "common.index.projectName"}}</div>
           <div class="text-center" style="margin-top: 20px;">
             <div>
               {{input type="text" value=model.project.name}}
@@ -37,22 +37,22 @@
                 <i class="fa fa-spinner fa-spin"></i>
               {{/if}}
               {{#if projectSaveSuccess}}
-                <span class="label label-success"><i class="fa fa-check"></i> Lagret</span>
+                <span class="label label-success"><i class="fa fa-check"></i> {{t "common.header.saved"}}</span>
               {{/if}}
               {{#if projectSaveFailed}}
-                <span class="label label-danger"><i class="fa fa-times"></i> Klarte ikke lagre</span>
+                <span class="label label-danger"><i class="fa fa-times"></i> {{t "common.header.notSaved"}}</span>
               {{/if}}
             </div>
             <div>
-              <button class="btn btn-primary" style="margin-top: 20px;" {{action "doSaveProject"}}>Lagre</button>
-              <button class="btn btn-primary" style="margin-top: 20px;" {{action "doRemixProject"}}>Lagre som Remiks
+              <button class="btn btn-primary" style="margin-top: 20px;" {{action "doSaveProject"}}>{{t "common.header.save"}}</button>
+              <button class="btn btn-primary" style="margin-top: 20px;" {{action "doRemixProject"}}>{{t "common.index.saveRemix"}}
               </button>
             </div>
           </div>
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" {{action "hideSaveProject"}}>Ferdig</button>
+          <button type="button" class="btn btn-primary" {{action "hideSaveProject"}}>{{t "common.done"}}</button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -66,17 +66,17 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title text-center">Last opp prosjektet</h4>
+          <h4 class="modal-title text-center">{{t "common.index.uploadProject"}}</h4>
         </div>
         <div class="modal-body">
-          Velg en Arduino:
+          {{t "common.index.arduinoSelect"}}
           <select onchange={{action (mut selectedArduino) value="target.value"}}>
             <option value="uno">Arduino Uno</option>
             <option value="nanoatmega328">Arduino Nano 328</option>
             <option value="bbcmicrobit">BBC micro:bit (beta)</option>
           </select>
 
-          <button class="btn btn-info pull-right" {{action "doUploadToArduino"}}>Start opplasting</button>
+          <button class="btn btn-info pull-right" {{action "doUploadToArduino"}}>{{t "common.index.startUpload"}}</button>
 
           {{#if uploadStarted}}
             <table class="table">
@@ -90,7 +90,7 @@
                     {{else}}
                       {{fa-icon "check" size=2 border=false style="color: green;"}}
                     {{/if}}
-                    Kompileringsstatus:
+                    {{t "common.index.compileStatus"}}
                   </td>
                   <td>{{compileStatus}}</td>
                 </tr>
@@ -98,7 +98,7 @@
 
               {{#if uploadResponseMessage}}
                 <tr>
-                  <td colspan="2">Kompileringslogg: <br/>
+                  <td colspan="2">{{t "common.index.compileLog"}}<br/>
                     {{textarea value=uploadResponseMessage classNames="loggArea"}}</td>
                 </tr>
               {{/if}}
@@ -112,7 +112,7 @@
                     {{else}}
                       {{fa-icon "check" size=2 border=false style="color: green;"}}
                     {{/if}}
-                    Opplastingsstatus:
+                    {{t "statusUpload"}}
 
                   </td>
                   <td>{{uploadError}}</td>
@@ -121,7 +121,7 @@
 
               {{#if uploadUsbPort}}
                 <tr>
-                  <td>USB Port:</td>
+                  <td>{{t "common.index.usbPort"}}</td>
                   <td>{{uploadUsbPort}}</td>
                 </tr>
               {{/if}}
@@ -132,7 +132,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" {{action "closeUploadPanel"}}>Ferdig</button>
+          <button type="button" class="btn btn-primary" {{action "closeUploadPanel"}}>{{t "common.done"}}</button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -146,7 +146,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title text-center">Seriellovervåker</h4>
+          <h4 class="modal-title text-center">{{t "common.index.serialMonitor"}}</h4>
         </div>
         <div class="modal-body">
           {{#if serialStarted}}
@@ -155,7 +155,7 @@
                 <td>Port:</td>
                 <td>
                   <select onchange={{action (mut selectedSerialPort) value="target.value"}}>
-                    <option value="-1">Velg en port...</option>
+                    <option value="-1">{{t "common.index.portChoose"}}</option>
                     {{#each serialPortsAvailable as |sp|}}
                       <option value={{sp.comName}} selected={{eq sp selectedSerialPort}}>{{sp.comName}}
                         - {{sp.manufacturer}}</option>
@@ -163,7 +163,7 @@
                   </select>
                 </td>
                 <td>
-                  <button class="btn btn-primary" {{action "openSerialMonitor"}}>Start Seriell overvåker</button>
+                  <button class="btn btn-primary" {{action "openSerialMonitor"}}>{{t "common.index.startSerial"}}</button>
                 </td>
               </tr>
             </table>
@@ -173,7 +173,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" {{action "hideSerialMonitor"}}>Ferdig</button>
+          <button type="button" class="btn btn-primary" {{action "hideSerialMonitor"}}>{{t "common.done"}}</button>
         </div>
       </div>
       <!-- /.modal-content -->
@@ -187,42 +187,39 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title text-center">For å laste opp må du installere et program</h4>
+          <h4 class="modal-title text-center">{{t "common.divs.installProgram"}}</h4>
         </div>
         <div class="modal-body">
           <div>
-            For å laste opp fra Blockuino.no direkte til Arduinoen, må du installere et tilleggsprogram. Kodegenet har
-            utviklet programvare for å støtte Chromebook via en Chrome App, samt Windows og Mac via en egenutviklet
-            Electron applikasjon (beta).
+            {{t "common.divs.installAddProgram"}}
           </div>
 
           <div class="clearfix">&nbsp;</div>
 
           <div>
-            Når tilleggsprogrammet er installert og kjører i bakgrunnen, kan Blockuino laste opp programmer direkte
-            til Arduinoen via USB-inngangen på maskinen.
+            {{t "common.divs.installedAddProgram"}}
           </div>
-          <h1>For Chromebook:</h1>
+          <h1>{{t "common.index.forChromebook"}}</h1>
           <div>
-            Installer Blockuino HEX Uploader: <a
+            {{t "common.index.blockuinoHex"}} <a
             href="https://chrome.google.com/webstore/detail/blockuino-hex-uploader-av/ekbpmcpbckbdpbjhdchoniihflnmabie"
             target="_blank">https://chrome.google.com/webstore/detail/blockuino-hex-uploader-av/ekbpmcpbckbdpbjhdchoniihflnmabie</a>.
           </div>
 
-          <h1>For Windows:</h1>
+          <h1>{{t "common.index.forWindows"}}</h1>
           <div>
-            Installer Blockuino-Electron for Windows: <a
+            {{t "common.index.blockuinoElectron"}} <a
             href="http://blockuino.no/downloads/BlockuinoElectronInstaller.exe" target="_blank">http://blockuino.no/downloads/BlockuinoElectronInstaller.exe</a>.
           </div>
 
           <h1>For Mac:</h1>
           <div>
-            Installer Blockuino-Electron for MacOS X <a href="http://blockuino.no/downloads/blockuino-electron-app.dmg"
+            {{t "common.index.blockuinoElectronIOS"}} <a href="http://blockuino.no/downloads/blockuino-electron-app.dmg"
                                                         target="_blank">http://blockuino.no/downloads/blockuino-electron-app.dmg</a>.
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary" {{action "hideDownloadModal"}}>Ferdig</button>
+          <button type="button" class="btn btn-primary" {{action "hideDownloadModal"}}>{{t "common.done"}}</button>
         </div>
       </div>
       <!-- /.modal-content -->
