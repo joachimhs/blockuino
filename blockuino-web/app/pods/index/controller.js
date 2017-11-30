@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 export default Ember.Controller.extend({
   session: Ember.inject.service('session'),
+  applicationController: Ember.inject.controller('application'),
 
   showCode: true,
   showXml: false,
@@ -18,6 +19,10 @@ export default Ember.Controller.extend({
       console.log('--------_> Editor: ' + self.get('editor'));
       if (self.get('editor') === undefined || !self.get('editor') === 'sketch') {
         self.set('editor', 'blocks');
+      }
+
+      if(self.get('projectId') === undefined) {
+        self.set('projectId', self.get('session').generateUuidIsh());
       }
     }, 1000);
 
@@ -255,6 +260,70 @@ export default Ember.Controller.extend({
 
    }.observes('xml', 'generatedXML').on('init'),*/
 
+  verifyBlocks: function(xml) {
+    var errors = Ember.A();
+
+    //Used for context help
+    this.set('session.hasSetup', xml && xml.indexOf('arduino_setup') !== -1);
+    this.set('session.hasLoop', xml && xml.indexOf('arduino_loop') !== -1);
+    this.set('session.hasNeopixel', xml && xml.indexOf('arduino_pixel') !== -1);
+    this.set('session.hasArduinoCar', xml && xml.indexOf('arduino_car') !== -1);
+
+    if (!this.get('session.hasSetup') || !this.get('session.hasLoop')) {
+      errors.pushObject({ "id": 1, "messageTranslationKey": "common.errors.structureMissing"});
+    }
+
+    //generate error messages
+    if (xml) {
+      if ((xml.match(/arduino_setup/g) || []).length > 1) {
+        errors.pushObject({ "id": 2, "messageTranslationKey": "common.errors.tooManySetup"});
+      }
+      if ((xml.match(/arduino_loop/g) || []).length > 1) {
+        errors.pushObject({ "id": 3, "messageTranslationKey": "common.errors.tooManyLoop"});
+      }
+      if ((xml.match(/x="/g) || []).length > 1) {
+        errors.pushObject({ "id": 4, "messageTranslationKey": "common.errors.codeDisconnected"});
+      }
+
+      if (xml.indexOf('arduino_serial') !== -1 && xml.indexOf('arduino_serial_begin') === -1) {
+        errors.pushObject({ "id": 5, "messageTranslationKey": "common.errors.missingSerialBegin"});
+      }
+
+      if (xml.indexOf('arduino_software_serial') !== -1 && xml.indexOf('arduino_software_serial_begin') === -1) {
+        errors.pushObject({ "id": 6, "messageTranslationKey": "common.errors.missingSoftwareSerialBegin"});
+      }
+
+      if (xml.indexOf('arduino_software_serial') !== -1 && xml.indexOf('arduino_software_serial_include') === -1) {
+        errors.pushObject({ "id": 7, "messageTranslationKey": "common.errors.missingSoftwareSerialInclude"});
+      }
+
+      if (xml.indexOf('<field name="VAR">element</field>') !== -1) {
+        errors.pushObject({ "id": 8, "messageTranslationKey": "common.errors.variableNamedElement"});
+      }
+
+      if (xml.indexOf('<field name="type">Servo</field>') !== -1 && xml.indexOf('servo_include') === -1) {
+        errors.pushObject({ "id": 9, "messageTranslationKey": "common.errors.servoIncludeMissing"});
+      }
+
+      if (xml.indexOf('<field name="type">Servo</field>') !== -1 && xml.indexOf('servo_attach') === -1) {
+        errors.pushObject({ "id": 10, "messageTranslationKey": "common.errors.servoAttachMissing"});
+      }
+    }
+
+    this.set('session.errors', errors);
+  },
+
+  generatedXmlObserver: function () {
+    var xml = this.get('generatedXML');
+    if (xml) {
+      var encodedData = LZString.compressToBase64(xml);
+      this.set('xml', encodedData);
+      this.verifyBlocks(xml);
+    }
+    //var decodedData = window.atob(encodedData); // decode the string
+    //The following used for context-help
+  }.observes('generatedXML').on('init'),
+
   convertFromXml: function () {
     var self = this;
     //if (!Blockly.mainWorkspace) {
@@ -270,16 +339,6 @@ export default Ember.Controller.extend({
     }, 500);
     //}
   },
-
-  generatedXmlObserver: function () {
-    var xml = this.get('generatedXML');
-    if (xml) {
-      var encodedData = LZString.compressToBase64(xml);
-      this.set('xml', encodedData);
-    }
-
-    //var decodedData = window.atob(encodedData); // decode the string
-  }.observes('generatedXML').on('init'),
 
   escapeRegExp: function (str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");

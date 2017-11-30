@@ -8,6 +8,7 @@ module.exports = function(environment) {
     baseURL: '/',
     locationType: 'auto',
 
+
     i18n: {
       defaultLocale: 'zh'
     },

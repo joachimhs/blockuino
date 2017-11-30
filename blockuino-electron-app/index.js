@@ -75,7 +75,7 @@ app.on('ready', function ready () {
   console.log('app ready');
   console.log('creating server...');
     var server = http.createServer(function(req, res) {
-        console.log('>>> Got HTTP Request!');
+        //console.log('>>> Got HTTP Request!');
         //console.log(req);
 
         var allowOrigin = 'http://blockuino.no';
@@ -83,17 +83,17 @@ app.on('ready', function ready () {
             allowOrigin = req.headers.origin;
         }
 
-        console.log(req.headers.origin);
+        //console.log(req.headers.origin);
         req.on('data', function(chunk) {
             body.push(chunk);
             retVal = {};
         }).on('end', function() {
-            console.log('REQUEST BODY');
+            //console.log('REQUEST BODY');
 
             res.writeHead(200, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": allowOrigin});
 
             var content = Buffer.concat(body).toString();
-            console.log(content);
+            //console.log(content);
             body = [];
 
             var action = getAction(content);
@@ -164,6 +164,10 @@ app.on('ready', function ready () {
                     req.pipe(res);
                 });
             } else if (action === "serialports_open") {
+                if (selectedSerialPort) {
+                    selectedSerialPort.close();
+                }
+
                 console.log('serialdata_open');
                 var port = getPort(content);
                 console.log('port: ' + port);
@@ -178,13 +182,11 @@ app.on('ready', function ready () {
                     serialPort.open(function (error) {
                         if (error) {
                             console.log('failed to open: ' + error);
-                        } else {
-                            console.log('open');
-                            serialPort.on('data', function (data) {
-                                //console.log('data received: ' + data);
-                                serialDataCache = serialDataCache.concat(data);
-                            });
                         }
+                    });
+                    serialPort.on('data', function (data) {
+                        //console.log('data received: ' + data);
+                        serialDataCache = serialDataCache.concat(data);
                     });
                 }
 
@@ -198,6 +200,20 @@ app.on('ready', function ready () {
 
                 res.write(JSON.stringify(returnObj));
                 req.pipe(res);
+            } else if (action === 'serialports_write_serial') {
+                var jsonBody = getJsonBody(content);
+
+                if (selectedSerialPort) {
+                    if (jsonBody.serialMessage) {
+                        console.log('Serial write: !' + jsonBody.serialMessage + "!");
+
+                        selectedSerialPort.write(jsonBody.serialMessage + "\r\n", function(err) {
+                            if (err) {
+                                return console.log('Error on write: ', err.message);
+                            }
+                        });
+                    }
+                }
             } else if (action === "serialports_close") {
                 if (selectedSerialPort) {
                     selectedSerialPort.close();

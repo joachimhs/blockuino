@@ -386,6 +386,20 @@ Blockly.Msg.ARDUINO_SERIAL_YES = "Yes";
 Blockly.Msg.ARDUINO_SERIAL_NO = "No";
 Blockly.Msg.ARDUINO_SERIAL_NEW_LINE = "New Line: ";
 Blockly.Msg.ARDUINO_SERIAL_PRINT = "Serial ";
+
+Blockly.Msg.ARDUINO_SOFT_SERIAL = "Include Software Serial";
+Blockly.Msg.ARDUINO_SERIAL_RX_PIN = "RX Pin";
+Blockly.Msg.ARDUINO_SERIAL_TX_PIN = "TX Pin";
+Blockly.Msg.ARDUINO_SOFT_SERIAL_BEGIN = "Start Software Serial";
+Blockly.Msg.ARDUINO_SERIAL_BAUD = "Baud Rate";
+Blockly.Msg.ARDUINO_SOFT_SERIAL_AVAIL = "Software Serial ready";
+Blockly.Msg.ARDUINO_SOFT_SERIAL_WRITE = "Write to Software Serial: ";
+Blockly.Msg.ARDUINO_TEXT = "Text: ";
+Blockly.Msg.ARDUINO_SOFT_SERIAL_READ = "Read from Software Serial";
+
+Blockly.Msg.ARDUINO_COMMENT_LABEL = "Comment: ";
+Blockly.Msg.ARDUINO_COMMENT_DEFINE = "Text: ";
+
 Blockly.Msg.ARDUINO_MAP_DECLARE = "Map from";
 Blockly.Msg.ARDUINO_MAP_VARIABLE = "Variable: ";
 Blockly.Msg.ARDUINO_MAP_MIN_FROM = "From Minimum";

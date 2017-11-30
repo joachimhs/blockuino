@@ -32,5 +32,9 @@ export default Ember.Service.extend({
 
   eraseCookie:function (name) {
     this.createCookie(name, "", -1);
-  }
+  },
+
+  generateUuidIsh: function (a) {
+    return a ? (0 | Math.random() * 16).toString(16) : ("" + 1e10).replace(/1|0/g, this.generateUuidIsh)
+  },
 });

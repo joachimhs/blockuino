@@ -26,6 +26,7 @@ export default Ember.Component.extend({
   compStepper: "Stepper Motors",
   compRF433: "433 MHz Radiomoduler",
   compUltrasonic: "Ultrasonic Sensor",
+  compSoftSerialCommunication: "Software Serial",
 
   actions: {
     generateCode: function () {
@@ -74,6 +75,7 @@ export default Ember.Component.extend({
       this.set('compStepper', "Stepper Motors");
       this.set('compRF433','433 MHz Radio modules');
       this.set('compUltrasonic','Ultrasonic Sensor');
+      this.set('compSoftSerialCommunication','compSoftSerialCommunication');
     } else if (this.get('lang') === 'no') {
       this.set('compStructure', "Struktur");
       this.set('compSetup', "Oppsett (Setup");
@@ -95,6 +97,7 @@ export default Ember.Component.extend({
       this.set('compStepper', "Stepper Motors");
       this.set('compRF433','433 MHz Radiomoduler');
       this.set('compUltrasonic','Ultralydsensor');
+      this.set('compSoftSerialCommunication','compSoftSerialCommunication');
     }
   }.observes('lang'),
 

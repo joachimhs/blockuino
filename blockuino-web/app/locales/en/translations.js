@@ -13,6 +13,8 @@ export default {
     "norwegian": "Norwegian",
     "english": "English",
     "done": "Done",
+    "shopAt": "Buy online at Kodegenet",
+    "readAt": "Read more at Kodegenet",
     "header": {
       "blocks": "Blocks",
       "textCode": "Text (C-code)",
@@ -41,6 +43,15 @@ export default {
       "copyCodeDescription": "If you want to upload your code to an Arduino via Arduino IDE or Arduino Create, you need to copy the code to the clipboard first, before pasting it in manually.",
       "downloadXML": "Here you can download your Blockuino project as an XML-file. You can upload it later if you want to work more on it, or you can share the XML-file with others by sending them the file.",
       "uploadXML": "Here you can upload your XML-files that you have previously saved from Blockuino. You can also share Blockuino projects by sending them your XML-file"
+    },
+    "helpMenu": {
+      "label": "Get help with",
+      "introButton": "What's this?",
+      "neoPixelLabel": "How to use LED Pixels",
+      "arduinoCarLabel": "How to use motor controllers"
+    },
+    "errors": {
+      "structureMissing": "A valid Arduino program must contain both the setup-block and the loop-block"
     }
   }
 };

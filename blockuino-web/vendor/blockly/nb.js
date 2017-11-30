@@ -386,6 +386,20 @@ Blockly.Msg.ARDUINO_SERIAL_YES = "Ja";
 Blockly.Msg.ARDUINO_SERIAL_NO = "Nei";
 Blockly.Msg.ARDUINO_SERIAL_NEW_LINE = "Ny linje: ";
 Blockly.Msg.ARDUINO_SERIAL_PRINT = "Seriell ";
+
+Blockly.Msg.ARDUINO_SOFT_SERIAL = "Inkluder Software Seriell";
+Blockly.Msg.ARDUINO_SERIAL_RX_PIN = "RX Pin";
+Blockly.Msg.ARDUINO_SERIAL_TX_PIN = "TX Pin";
+Blockly.Msg.ARDUINO_SOFT_SERIAL_BEGIN = "Start Software Seriell";
+Blockly.Msg.ARDUINO_SERIAL_BAUD = "Baud Rate";
+Blockly.Msg.ARDUINO_SOFT_SERIAL_AVAIL = "Software Serial klar";
+Blockly.Msg.ARDUINO_SOFT_SERIAL_WRITE = "Skriv til Software Seriell: ";
+Blockly.Msg.ARDUINO_TEXT = "Tekst: ";
+Blockly.Msg.ARDUINO_SOFT_SERIAL_READ = "Les fra Software Seriell";
+
+Blockly.Msg.ARDUINO_COMMENT_LABEL = "Kommentar: ";
+Blockly.Msg.ARDUINO_COMMENT_DEFINE = "Tekst: ";
+
 Blockly.Msg.ARDUINO_MAP_DECLARE = "Oversett fra";
 Blockly.Msg.ARDUINO_MAP_VARIABLE = "Variabel: ";
 Blockly.Msg.ARDUINO_MAP_MIN_FROM = "Fra minimum";
