@@ -17,6 +17,14 @@ Blockly.Blocks.customFunction = {
   HUE: 65
 };
 
+Blockly.Blocks.ledPixelsHue = {
+  HUE: 165
+};
+
+Blockly.Blocks.motorHue = {
+  HUE: 270
+};
+
 Blockly.Blocks['arduino_blink'] = {
   init: function() {
     this.appendDummyInput()
@@ -341,16 +349,6 @@ Blockly.Arduino['arduino_serial_read'] = function(block) {
   return code;
 };
 
-Blockly.Msg.ARDUINO_SOFT_SERIAL = "Inkluder Software Serial";
-Blockly.Msg.ARDUINO_SERIAL_RX_PIN = "RX Pin";
-Blockly.Msg.ARDUINO_SERIAL_TX_PIN = "TX Pin";
-Blockly.Msg.ARDUINO_SOFT_SERIAL_BEGIN = "Soft Serial Begim";
-Blockly.Msg.ARDUINO_SERIAL_BAUD = "Baud Rate";
-Blockly.Msg.ARDUINO_SOFT_SERIAL_AVAIL = "Software Serial klar";
-Blockly.Msg.ARDUINO_SOFT_SERIAL_WRITE = "Skriv til Software Serial: ";
-Blockly.Msg.ARDUINO_TEXT = "Tekst: ";
-Blockly.Msg.ARDUINO_SOFT_SERIAL_READ = "Les fra Software Serial";
-
 Blockly.Blocks['arduino_software_serial_include'] = {
   init: function() {
     this.appendDummyInput()
@@ -380,6 +378,7 @@ Blockly.Blocks['arduino_software_serial_begin'] = {
   init: function() {
     this.appendDummyInput()
       .appendField(Blockly.Msg.ARDUINO_SOFT_SERIAL_BEGIN)
+      .appendField(Blockly.Msg.ARDUINO_SERIAL_BAUD)
       .appendField(new Blockly.FieldDropdown([["9600", "9600"], ["19200", "19200"], ["38400", "38400"], ["57600", "57600"], ["74880", "74880"], ["115200", "115200"]]), "BAUD");
     this.setPreviousStatement(true);
     this.setNextStatement(true);
@@ -1027,8 +1026,8 @@ Blockly.Blocks['arduino_declare_function'] = {
     this.appendStatementInput("CODE");
     this.setColour(267);
     this.setInputsInline(false);
-    this.setPreviousStatement(false, null);
-    this.setNextStatement(false, null);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.ARDUINO_DECLARE_FUNCTION_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   },
@@ -1606,7 +1605,7 @@ Blockly.Blocks['arduino_pixel_strip'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1630,7 +1629,7 @@ Blockly.Blocks['arduino_pixel_strip_begin'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_BEGIN_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1649,7 +1648,7 @@ Blockly.Blocks['arduino_pixel_strip_show'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_SHOW_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1668,7 +1667,7 @@ Blockly.Blocks['arduino_pixel_strip_include'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_INCLUDE_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -1692,7 +1691,7 @@ Blockly.Blocks['arduino_pixel_strip_color'] = {
       .appendField(Blockly.Msg.ARDUINO_LED_STRIP_COLOR_BLUE);
     this.setInputsInline(true);
     this.setPreviousStatement(true, null)
-    this.setColour(Blockly.Blocks.customFunction.HUE);;
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);;
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_COLOR_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
@@ -1897,7 +1896,7 @@ Blockly.Blocks['arduino_car_variables'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.motorHue.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_INIT_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2021,7 +2020,7 @@ Blockly.Blocks['arduino_car_setup'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.motorHue.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_SETUP_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2045,7 +2044,7 @@ Blockly.Blocks['arduino_car_stop'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.motorHue.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_STOP_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2065,7 +2064,7 @@ Blockly.Blocks['arduino_car_forwards'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.motorHue.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_FORWARDS_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2085,7 +2084,7 @@ Blockly.Blocks['arduino_car_backwards'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.motorHue.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_BACKARDS_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2104,7 +2103,7 @@ Blockly.Blocks['arduino_car_rotate_right'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.motorHue.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_ROTATE_RIGHT_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2123,7 +2122,7 @@ Blockly.Blocks['arduino_bil_rotate_left'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.motorHue.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_ROTATE_LEFT_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2150,7 +2149,7 @@ Blockly.Blocks['arduino_car_analog_speed'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.motorHue.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_SPEED_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2184,7 +2183,7 @@ Blockly.Blocks['arduino_car_rf_speed'] = {
     this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.motorHue.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_SPEED_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }
@@ -2207,7 +2206,7 @@ Blockly.Blocks['arduino_car_set_speed'] = {
     this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(Blockly.Blocks.customFunction.HUE);
+    this.setColour(Blockly.Blocks.motorHue.HUE);
     this.setTooltip(Blockly.Msg.MOTOR_SPEED_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
   }

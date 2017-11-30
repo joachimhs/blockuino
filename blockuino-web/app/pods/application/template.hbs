@@ -21,6 +21,23 @@
 
 {{outlet}}
 
+{{#if (eq indexController.editor 'blocks')}}
+  <div class="context-help">
+    {{fa-icon "question-circle" size=1 border=false}} {{t "common.helpMenu.label"}}:
+    <button class="btn btn-default" {{action "doShowIntroHelp"}}>{{t "common.helpMenu.introButton"}}</button>
+
+
+    {{#if session.errors}}
+      <button class="btn btn-danger" {{action "doShowErrorModal"}}>{{fa-icon "exclamation-triangle" size="1" border=false}} {{t "common.errors.codeHas"}} {{session.errors.length}} {{t "common.errors.error"}}</button>
+    {{/if}}
+
+
+    {{#if session.hasArduinoCar}}
+      <button class="btn btn-default btn-car" {{action "showContextHelpCar"}}>{{fa-icon "question-circle" size="1" border=false}} {{t "common.helpMenu.arduinoCarLabel"}}</button>
+    {{/if}}
+  </div>
+{{/if}}
+
 {{#if showSaveProjectModal}}
   <div id="saveProjectModal" class="modal fade">
     <div class="modal-dialog">
@@ -168,7 +185,14 @@
               </tr>
             </table>
 
-            <div>{{textarea id="serialMonitorOutput" value=serialDataRead classNames="loggArea"}}</div>
+            {{#if streamSerial}}
+                <div class="row">
+                  <div class="col-md-10">{{input type="text" value=serialInput placeholder="Skriv til Seriell porten" class="form-control" insert-newline='sendTextToSerial'}}</div>
+                  <div class="col-md-2"><button class="btn btn-default form-control" {{action "sendTextToSerial"}}>Send</button></div>
+                </div>
+                <div>{{textarea id="serialMonitorOutput" value=serialDataRead classNames="loggArea"}}</div>
+            {{/if}}
+
           {{/if}}
 
         </div>
@@ -220,6 +244,93 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" {{action "hideDownloadModal"}}>{{t "common.done"}}</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+{{/if}}
+
+{{#if showContextHelpModal}}
+  <div id="contextHelpModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center">{{t contextHelpHeadlineTranslationKey}}</h4>
+        </div>
+        <div class="modal-body">
+          {{#if contextHelpTextTranslationKey}}
+            <div>
+              {{t contextHelpTextTranslationKey}}
+            </div>
+          {{/if}}
+
+          <div class="clearfix">&nbsp;</div>
+
+          {{#if contextHelpLink}}
+            <div>
+              <a href="{{contextHelpLink}}" target="_blank">{{t "common.readAt"}}</a>
+            </div>
+          {{/if}}
+
+          <div class="clearfix">&nbsp;</div>
+
+          {{#if contextHelpYoutubeId}}
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/{{contextHelpYoutubeId}}" frameborder="0" allowfullscreen></iframe>
+          {{/if}}
+
+          <div class="clearfix">&nbsp;</div>
+
+          {{#if contextHelpPurchaseLink}}
+            <hr width="25%" />
+            <div class="row">
+              <div class="col-md-4">
+                <img src="{{contextHelpPurchaseImage}}" style="width: 100%" />
+              </div>
+              <div class="col-md-8">
+                {{contextHelpPurchaseText}}
+                <br />
+                <br />
+                <a href="{{contextHelpPurchaseLink}}" target="_blank">{{t "common.shopAt"}}</a>
+              </div>
+            </div>
+          {{/if}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" {{action "hideContextModal"}}>{{t "common.done"}}</button>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+{{/if}}
+
+{{#if showErrorModal}}
+  <div id="errorModal" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center">{{t "common.errors.header"}}</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-striped">
+            <tbody>
+            {{#each session.errors as |error|}}
+              <tr>
+                <td>ID: {{error.id}} - {{t error.messageTranslationKey}}</td>
+                <td><img class="error-image" src="/errors/no/{{error.id}}.png" /></td>
+              </tr>
+            {{/each}}
+            </tbody>
+          </table>
+          <ul>
+
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" {{action "hideErrorModal"}}>{{t "common.done"}}</button>
         </div>
       </div>
       <!-- /.modal-content -->

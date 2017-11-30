@@ -11,6 +11,10 @@ module.exports = function(defaults) {
     codemirror: {
       modes: ['clike'],
       themes: ['solarized', 'twilight']
+    },
+
+    fingerprint: {
+      exclude: ['errors']
     }
 
 

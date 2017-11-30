@@ -13,6 +13,8 @@ export default {
     "norwegian": "Norwegian",
     "english": "English",
     "done": "Done",
+    "shopAt": "Buy online at Kodegenet",
+    "readAt": "Read more at Kodegenet",
     "header": {
       "blocks": "Blocks",
       "textCode": "Text (C-code)",
@@ -88,6 +90,16 @@ export default {
       "installAddProgram": "To upload directly from Blockuino.no to an Arduino, you are required to download an additional program. Kodegenet has developed software that supports Chromebook via a Chrome app. We have also developed a Electron application (beta)",
       "accountBlockuino": "Blockuino uses the same account as on kodegenet.no. If you don't have a kodegenet account you can create one here at ",
       "loginKeySent": "You have been sent an email with a unique Login-Key to your email address. Log in by typing the Login-Key you have received down below",
+      "uploadXML": "Here you can upload your XML-files that you have previously saved from Blockuino. You can also share Blockuino projects by sending them your XML-file"
+    },
+    "helpMenu": {
+      "label": "Get help with",
+      "introButton": "What's this?",
+      "neoPixelLabel": "How to use LED Pixels",
+      "arduinoCarLabel": "How to use motor controllers"
+    },
+    "errors": {
+      "structureMissing": "A valid Arduino program must contain both the setup-block and the loop-block"
     }
   }
 };

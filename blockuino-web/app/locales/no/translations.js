@@ -13,6 +13,8 @@ export default {
     "norwegian": "Norsk",
     "english": "Engelsk",
     "done": "Ferdig",
+    "shopAt": "Kjøp hos Kodegenet",
+    "readAt": "Les mer hos Kodegenet",
     "header": {
       "blocks": "Blokker",
       "textCode": "Tekst (C-kode)",
@@ -88,6 +90,29 @@ export default {
       "installAddProgram": "For å laste opp fra Blockuino.no direkte til Arduinoen, må du installere et tilleggsprogram. Kodegenet har utviklet programvare for å støtte Chromebook via en Chrome App, samt Windows og Mac via en egenutviklet Electron applikasjon (beta).",
       "accountBlockuino": "Blockuino bruker samme konto som på kodegenet.no. Dersom du ikke har en Kodegenet bruker kan du opprette en på ",
       "loginKeySent": "Kodegenet har sendt en epost med en unik innloggingsnøkkel til din epost addresse. Logg inn ved å fylle den inn nedenfor",
+    },
+    "helpMenu": {
+      "label": "Få hjelp til",
+      "introButton": "Hva er dette?",
+      "neoPixelLabel": "Hvordan bruke LED Pixels",
+      "arduinoCarLabel": "Hvordan bruke motorkontroller",
+      "arduinoCarText": "Arduino Bil-prosjektet benytter en helt vanlig L293D motorkontroller. Denne kan styres ved hjelp av fire digitale pinner på Arduinoen. Arduino Bil-klossene hjelper deg på vei ved å gjøre programmeringen mye enklere!",
+      "introText": "Hjelpemenyen nederst på skjermen vil alltid vise feilmeldinger, tips og triks basert på de kodeklossene som er i bruk i programmet ditt. Her vil du både finne gode feilmeldinger på koden din, samt tips for hvordan enkelte av klossene fungerer."
+    },
+    "errors": {
+      "codeHas": "Koden har",
+      "error": "feil",
+      "header": "Feilmeldinger",
+      "structureMissing": "Et gyldig Arduino program inneholder både setup-klossen og loop-klossen",
+      "codeDisconnected": "Alle klossene må henge sammen. du har en eller flere klosser som ikke henger sammen",
+      "tooManySetup": "Det kan ikke være mer enn 1 setup-kloss",
+      "tooManyLoop": "Det kan ikke være mer enn 1 loop-kloss",
+      "missingSerialBegin": "For å skrive til Seriell porten, må du ha med Start Seriell kommmunikasjon-klossen i setup",
+      "missingSoftwareSerialBegin": "For å skrive til Software Serial, må du ha en Start Software Serial-kloss i setup",
+      "missingSoftwareSerialInclude": "For å skrive til Software Serial, må du ha en Inkluder Software Serial-kloss øverst i programmet ditt",
+      "variableNamedElement": "Du bør gi variablene dine et beskrivende navn, f.eks. hastighet, lampe, motor1, osv",
+      "servoIncludeMissing": "For å bruke en servo motor, må du ha en Inkluder Servo Bibliotek-kloss øverst i programmet ditt",
+      "servoAttachMissing": "For å bruke en servo motor, må du fortellet hvilken pin motoren styres fra via en Koble Servo-kloss i setup"
     }
   }
 };

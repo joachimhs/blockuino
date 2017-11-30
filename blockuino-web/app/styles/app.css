@@ -218,3 +218,35 @@
   margin-right: 15px;
   padding-right: 15px;
 }
+
+.context-help {
+  position: absolute;
+  bottom: 0;
+  background-color: white;
+  height: 50px;
+  line-height: 50px;
+  padding-left: 30px;
+  padding-right: 30px;
+  overflow: hidden;
+  z-index: 100;
+  border-top: 1px solid #999;
+  right: 0;
+  left: 0;
+  margin-right: -15px;
+}
+
+.btn-pixels {
+  background-color: #5aa593;
+  color: #fff;
+}
+
+
+.btn-car {
+  background-color: #7f5aa4;
+  color: #fff;
+}
+
+.error-image {
+  width: 350px;
+  margin-left: 15px;
+}

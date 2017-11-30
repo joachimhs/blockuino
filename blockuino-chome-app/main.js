@@ -68,6 +68,8 @@ chrome.runtime.onMessageExternal.addListener(
 
                     if (port && port.vendorId === '0x2341' && port.productId === '0x43') {
                         board = 'Arduino Uno'
+                    } else if (port && (port.productId === '0x6001' || port.productId === '0x7523')) {
+                        board = 'Arduino Nano';
                     }
 
                     portsReturn.push({
@@ -82,6 +84,10 @@ chrome.runtime.onMessageExternal.addListener(
         } else if (request.action === "serialports_open") {
             console.log('serialdata_open');
             console.log('port: ' + request.port);
+
+            if (window.selectedSerialPort) {
+                window.selectedSerialPort.close();
+            }
 
             if (request.port) {
                 var serialPort = new SerialPort(request.port, {
@@ -103,6 +109,19 @@ chrome.runtime.onMessageExternal.addListener(
             }
 
             sendResponse('{}');
+        } else if (request.action === 'serialports_write_serial') {
+
+            if (selectedSerialPort) {
+                if (request.serialMessage) {
+                    console.log('Serial write: !' + request.serialMessage + "!");
+
+                    selectedSerialPort.write(request.serialMessage + "\r\n", function (err) {
+                        if (err) {
+                            return console.log('Error on write: ', err.message);
+                        }
+                    });
+                }
+            }
         } else if (request.action === "serialports_read_serial") {
             var returnObj = {
                 data: window.serialDataCache
@@ -113,6 +132,7 @@ chrome.runtime.onMessageExternal.addListener(
         } else if (request.action === "serialports_close") {
             if (window.selectedSerialPort) {
                 window.selectedSerialPort.close();
+                window.selectedSerialPort = null;
             }
             sendResponse(JSON.stringify('{}'));
         }
