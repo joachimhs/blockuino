@@ -5,5 +5,10 @@
 {{/if}}
 
 {{#if mousingOver}}
-  <div class="vertical-menu-item-content">{{text}}</div>
+  <div class="vertical-menu-item-content">
+    {{#if translationKey}}
+      {{t translationKey}}
+    {{/if}}
+    {{text}}
+  </div>
 {{/if}}

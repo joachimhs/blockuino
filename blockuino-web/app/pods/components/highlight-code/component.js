@@ -12,14 +12,24 @@ export default Ember.Component.extend({
         Ember.run.schedule('afterRender', function () {
           Ember.$('pre code').each(function (i, block) {
             var highligted = js_beautify(self.get('sourceCode'));
-            highligted = hljs.highlight('javascript', highligted).value;
+            //highligted = hljs.highlight('javascript', highligted).value;
 
             console.log(highligted);
-            highligted = highligted.replace("#\n  ", "#");
-            highligted = highligted.replace("&lt; ", "&lt;");
-            highligted = highligted.replace(" &gt;", "&gt;");
 
-            self.set('highligtedSourceCode', new Ember.Handlebars.SafeString(highligted));
+            highligted = self.replaceAll(highligted, "#\n  ", "#");
+            highligted = self.replaceAll(highligted, "< ", "<");
+            highligted = self.replaceAll(highligted, " >", ">");
+            highligted = self.replaceAll(highligted, "    #", "#");
+            highligted = self.replaceAll(highligted, "  #", "#");
+            highligted = self.replaceAll(highligted, "&nbsp;&nbsp;#", "#");
+            highligted = self.replaceAll(highligted, "# ", "#");
+            highligted = self.replaceAll(highligted, "    #include", "#include");
+            highligted = self.replaceAll(highligted, " &gt;", ">");
+            highligted = self.replaceAll(highligted, "&lt; ", "<");
+            highligted = self.replaceAll(highligted, "&gt;", ">");
+            highligted = self.replaceAll(highligted, "&lt;", "<");
+
+            self.set('highligtedSourceCode', highligted);//new Ember.Handlebars.SafeString(highligted));
           });
         });
       } else if (self.get('isXml') === true) {
@@ -34,6 +44,14 @@ export default Ember.Component.extend({
       }
     }
   }.observes('sourceCode').on('init'),
+
+  escapeRegExp: function (str) {
+    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+  },
+
+  replaceAll: function (str, find, replace) {
+    return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+  },
 
   escapeHtml: function (unsafe) {
     return unsafe

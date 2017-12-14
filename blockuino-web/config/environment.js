@@ -8,6 +8,11 @@ module.exports = function(environment) {
     baseURL: '/',
     locationType: 'auto',
 
+
+    i18n: {
+      defaultLocale: 'zh'
+    },
+
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -27,6 +32,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.chromeAppKey = 'iobkdcnmnbcjhdnlglhplmjonobkmipo';
   }
 
   if (environment === 'test') {
@@ -45,6 +51,8 @@ module.exports = function(environment) {
     ENV.googleAnalytics = {
       webPropertyId: 'UA-47245350-4'
     };
+
+    ENV.chromeAppKey = 'ekbpmcpbckbdpbjhdchoniihflnmabie';
   }
 
   ENV.contentSecurityPolicy = {

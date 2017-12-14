@@ -136,7 +136,7 @@ Blockly.Arduino.finish = function(code) {
   // Indent every line.
   code = '  ' + code.replace(/\n/g, '\n  ');
   code = code.replace(/\n\s+$/, '\n  ');
-  code = code.replace(/;/g, ';\n  ');
+  //code = code.replace(/;/g, ';\n  ');
   code = code.replace(/{/g, '{\n  ');
   code = code.replace(/}/g, '}\n\n  ');
 
