@@ -78,7 +78,9 @@ export default {
       "projectID": "Prosjekt ID ",
       "created": "Opprettet ",
       "madeBy": "Laget av ",
-      "remixedBy": "Remixet av "
+      "remixedBy": "Remixet av ",
+      "videos": "Videoer",
+      "sketch": "Sketch"
 
     },
     "divs": {
@@ -90,6 +92,7 @@ export default {
       "installAddProgram": "For å laste opp fra Blockuino.no direkte til Arduinoen, må du installere et tilleggsprogram. Kodegenet har utviklet programvare for å støtte Chromebook via en Chrome App, samt Windows og Mac via en egenutviklet Electron applikasjon (beta).",
       "accountBlockuino": "Blockuino bruker samme konto som på kodegenet.no. Dersom du ikke har en Kodegenet bruker kan du opprette en på ",
       "loginKeySent": "Kodegenet har sendt en epost med en unik innloggingsnøkkel til din epost addresse. Logg inn ved å fylle den inn nedenfor",
+      "docsInfo": "Blockuino er et enkelt blokk-basert verktøy for å generere Arduino kode. Klossene kan kobles sammen, og den ferdige Arduino koden kan leses av i feltet til høyre. Når koden er ferdig kan den kopieres og limes inn i Arduino IDE for å lastes opp til Arduinoen din.",
     },
     "helpMenu": {
       "label": "Få hjelp til",
@@ -97,7 +100,8 @@ export default {
       "neoPixelLabel": "Hvordan bruke LED Pixels",
       "arduinoCarLabel": "Hvordan bruke motorkontroller",
       "arduinoCarText": "Arduino Bil-prosjektet benytter en helt vanlig L293D motorkontroller. Denne kan styres ved hjelp av fire digitale pinner på Arduinoen. Arduino Bil-klossene hjelper deg på vei ved å gjøre programmeringen mye enklere!",
-      "introText": "Hjelpemenyen nederst på skjermen vil alltid vise feilmeldinger, tips og triks basert på de kodeklossene som er i bruk i programmet ditt. Her vil du både finne gode feilmeldinger på koden din, samt tips for hvordan enkelte av klossene fungerer."
+      "introText": "Hjelpemenyen nederst på skjermen vil alltid vise feilmeldinger, tips og triks basert på de kodeklossene som er i bruk i programmet ditt. Her vil du både finne gode feilmeldinger på koden din, samt tips for hvordan enkelte av klossene fungerer.",
+
     },
     "errors": {
       "codeHas": "Koden har",
