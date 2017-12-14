@@ -10,9 +10,6 @@ var Router = Ember.Router.extend(googlePageview, {
 Router.map(function() {
   this.route('news');
   this.route('docs');
-  this.route('saved-projects');
-  this.route('login');
-  this.route('sketch');
 });
 
 export default Router;
