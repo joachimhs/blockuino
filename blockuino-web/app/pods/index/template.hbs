@@ -1,73 +1,71 @@
 <div class="vertical-menu-bar">
-  {{vertical-menu-item icon="fa fa-2x fa-clipboard" translationKey="common.index.copyToClipboard" clickAction="showClipboardModal"}}
-  {{vertical-menu-item icon="fa fa-2x fa-download"translationKey="common.index.downloadToComputer" clickAction="showDownloadXmlModal"}}
-  {{vertical-menu-item icon="fa fa-2x fa-upload" translationKey="common.index.uploadFromComputer" clickAction="showUploadXmlModal"}}
+  {{vertical-menu-item icon="fa fa-2x fa-clipboard" text="Kopier koden til  utklippstavlen" clickAction="showClipboardModal"}}
+  {{vertical-menu-item icon="fa fa-2x fa-download" text="Last ned til datamaskinen" clickAction="showDownloadXmlModal"}}
+  {{vertical-menu-item icon="fa fa-2x fa-upload" text="Last opp fra datamasinen" clickAction="showUploadXmlModal"}}
 
     <hr class="vertical-menu-separator">
-  {{#if codeVisible}}
-    {{vertical-menu-item icon="fa fa-2x fa-arrow-circle-o-right" translationKey="common.index.hideArduinoCode" clickAction="hideCodeArea"}}
-  {{else}}
-    {{vertical-menu-item icon="fa fa-2x fa-arrow-circle-o-left" translationKey="common.index.showArduinoCode" clickAction="showCodeArea"}}
-  {{/if}}
-
-    <hr class="vertical-menu-separator">
-  {{vertical-menu-item icon="fa fa-2x fa-home" translationKey="common.index.visitKodegenet" link="http://kodegenet.no"}}
-  {{vertical-menu-item icon="fa fa-2x fa-github" translationKey="common.index.visitGithub" link="https://github.com/joachimhs/blockuino"}}
-  {{vertical-menu-item icon="fa fa-2x fa-instagram" translationKey="common.index.visitInstagram" link="http://instagram.com/kodegenet"}}
-  {{vertical-menu-item icon="fa fa-2x fa-twitter-square" translationKey="common.index.visitTwitter" link="http://twitter.com/kodegenet"}}
-  {{vertical-menu-item icon="fa fa-2x fa-facebook-square" translationKey="common.index.visitFacebook" link="http://facebook.com/kodegenet"}}
+  {{vertical-menu-item icon="fa fa-2x fa-home" text="Besøk Kodeklubben Kodegenet" link="http://kodegenet.no"}}
+  {{vertical-menu-item icon="fa fa-2x fa-twitter-square" text="Besøk oss på Twitter" link="http://twitter.com/kodegenet"}}
+  {{vertical-menu-item icon="fa fa-2x fa-facebook-square" text="Besøk oss på Facebook" link="http://facebook.com/kodegenet"}}
 </div>
-
-{{#if (eq editor 'blocks')}}
 <div class="programming-area">
     <div class="row">
-        <div class="{{if codeVisible 'col-md-6' 'col-md-12'}}">
-          {{blockly-comp lang=session.lang codeVisible=codeVisible workspace=workspace generatedCode=blocklyCode generatedXML=generatedXML}}
+        <div class="col-md-6">
+          {{blockly-comp workspace=workspace generatedCode=blocklyCode generatedXML=generatedXML}}
         </div>
-        <div class="{{if codeVisible 'col-md-6' 'col-md-2'}}">
-          {{#if codeVisible}}
-            {{#if showCode}}
-              {{highlight-code sourceCode=blocklyCode isCode=true isXml=false}}
+        <div class="col-md-5">
+            <ul class="nav nav-tabs">
+                <li role="presentation" class=showCode:active:inactive><a href="#" {{action "showCode"}}>Vis
+                    Arduinokode</a></li>
+                <li role="presentation" class=showXml:active:inactive><a href="#" {{action "showXml"}}>Vis XML</a></li>
+            </ul>
 
-            {{/if}}
+          {{#if showCode}}
+            {{highlight-code sourceCode=blocklyCode isCode=true isXml=false}}
+          {{/if}}
 
-            {{#if showXml}}
-                <button class="btn btn-primary" {{action "fromXml"}}><i class="fa fa-arrow-circle-o-left"></i> Last inn XML
-                </button>
-              {{textarea classNames="generated-code" value=generatedXML}}
-            {{/if}}
+          {{#if showXml}}
+              <button class="btn btn-primary" {{action "fromXml"}}><i class="fa fa-arrow-circle-o-left"></i> Last inn
+                  XML
+              </button>
+            {{textarea classNames="generated-code" value=generatedXML}}
           {{/if}}
         </div>
     </div>
-</div>
-{{/if}}
 
-{{#if (eq editor 'sketch')}}
-  <div class="programming-area">
     <div class="row">
-      <div class="col-md-12">
-        {{ivy-codemirror options=(hash lineNumbers=true mode="text/x-csrc" matchClosing=true) value=model.project.content.content valueUpdated=(action (mut model.project.content.content))}}
-      </div>
+        <div class="col-sm-4">
+            <div class="tilbakemelding-area">Har du tilbakemeldinger? <a href="mailto:jhs@kodegenet.no">Vi vil gjerne
+                høre dem</a>!
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="text-right right-margin-small">
+                <a href="https://kodegenet.no"><img src="/kodegenet_logo.png" class="kodegenet-logo"/></a>
+                <br/>
+                Developed by Joachim Haagen Skeie, Kodegenet AS
+            </div>
+        </div>
     </div>
-  </div>
-{{/if}}
+</div>
 
 {{#if showUploadModal}}
     <div id="uploadXmlModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title text-center">{{t "common.index.uploadFromComputer"}}</h4>
+                    <h4 class="modal-title text-center">Last opp fil fra Datamaskinen</h4>
                 </div>
                 <div class="modal-body">
-                    <div>{{t "common.divs.uploadXML"}}
+                    <div>Her kan du laste opp en XML fil som du har lagret fra Blockuino tidligere. Du kan også dele
+                        Blockuino-prosjekter med andre ved å sende dem den nedlastede XML filen.
                     </div>
                     <div class="text-center" style="margin-top: 20px;">
                         <input id="xmlFileChooser" type="file">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" {{action "hideUploadXmlModal"}}>{{t "common.done"}}</button>
+                    <button type="button" class="btn btn-primary" {{action "hideUploadXmlModal"}}>Ferdig</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -81,22 +79,24 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title text-center">{{t "common.index.downloadToComputer"}}</h4>
+                    <h4 class="modal-title text-center">Last ned fil til Datamaskinen</h4>
                 </div>
                 <div class="modal-body">
-                    <div>{{t "common.divs.downloadXML"}}
+                    <div>Her kan du laste ned Blockuino prosjektet ditt som en XML fil. Denne XML filen kan du senere
+                        laste opp igjen, eller dele med andre ved å sende dem den nedlastede XML filen.
                     </div>
                     <div style="margin-top: 20px;">
-                      {{t "common.index.nameFile"}}
-                      {{input type="text" value=blockuinoFilename classNames="form-control" placeholder=(t "common.index.typeFileName")}}
+                        Gi filen et navn:
+                      {{input type="text" value=blockuinoFilename classNames="form-control" placeholder="Skriv inn et filnavn"}}
                     </div>
                     <div class="text-right">
-                        <button class="btn btn-primary" style="margin-top: 20px;" {{action "downloadXml"}}>{{t "common.index.download"}} {{blockuinoFilename}}</button>
+                        <button class="btn btn-primary" style="margin-top: 20px;" {{action "downloadXml"}}>Last
+                            Ned {{blockuinoFilename}}</button>
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" {{action "hideDownloadXmlModal"}}>{{t "common.done"}}</button>
+                    <button type="button" class="btn btn-primary" {{action "hideDownloadXmlModal"}}>Ferdig</button>
                 </div>
             </div>
             <!-- /.modal-content -->
@@ -110,21 +110,24 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title text-center">{{t "common.index.copyToClipboard"}}</h4>
+                    <h4 class="modal-title text-center">Kopier kildekode til utklippstavlen</h4>
                 </div>
                 <div class="modal-body">
-                    <div>{{t "common.divs.copyCodeDescription"}}
+                    <div>Her kan du kopiere kildekoden du har kodet til utklippstavlen. Du kan enten kopiere kildekoden
+                        som du kan lime inn i Arduino IDE, eller XML koden som tegner klossene til programmet ditt.
                     </div>
                     <div class="text-center" style="margin-top: 20px;">
-                        <button class="btn btn-primary" style="margin-top: 20px;" {{action "copyArduino"}}>{{t "common.index.copyToClipboard"}}</button>
-                        <!--button class="btn btn-primary" style="margin-top: 20px;" {{action "copyXml"}}>Kopier XML
+                        <button class="btn btn-primary" style="margin-top: 20px;" {{action "copyArduino"}}>Kopier
+                            Arduino kildekode
+                        </button>
+                        <button class="btn btn-primary" style="margin-top: 20px;" {{action "copyXml"}}>Kopier XML
                             kildekode
-                        </button-->
+                        </button>
                     </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" {{action "hideClipboardModal"}}>{{t "common.done"}}</button>
+                    <button type="button" class="btn btn-primary" {{action "hideClipboardModal"}}>Ferdig</button>
                 </div>
             </div>
             <!-- /.modal-content -->

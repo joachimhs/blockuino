@@ -6,15 +6,6 @@ module.exports = function(defaults) {
 
     emberCliFontAwesome: {
       useScss: true
-    },
-
-    codemirror: {
-      modes: ['clike'],
-      themes: ['solarized', 'twilight']
-    },
-
-    fingerprint: {
-      exclude: ['errors']
     }
 
 
