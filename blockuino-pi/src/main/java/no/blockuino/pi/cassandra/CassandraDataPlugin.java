@@ -2,7 +2,11 @@ package no.blockuino.pi.cassandra;
 
 import com.datastax.driver.core.*;
 import no.blockuino.pi.cassandra.dao.ProjectDao;
+import no.blockuino.pi.cassandra.dao.SessionDao;
 import no.blockuino.pi.util.IntegerParser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by joachimhaagenskeie on 15/04/2017.
@@ -12,8 +16,11 @@ public class CassandraDataPlugin {
     private Cluster cluster;
     private Session session;
 
+    private List<String> adminUserList;
+
     //DAOs
     private ProjectDao projectDao;
+    private SessionDao sessionDao;
 
     private CassandraDataPlugin() {
         setup();
@@ -28,6 +35,8 @@ public class CassandraDataPlugin {
     }
 
     public void setup() {
+        //Read out who is admin users
+        generateAdminUser();
         //Setting up the Cassandra environment, session and DAOs
         cluster = null;
 
@@ -54,10 +63,24 @@ public class CassandraDataPlugin {
         this.initializeDb();
 
         projectDao = new ProjectDao(session);
+        sessionDao = new SessionDao(session, adminUserList);
 
         ResultSet rs = session.execute("select release_version from system.local");
         Row row = rs.one();
         System.out.println(" version: " + row.getString("release_version"));
+    }
+
+    private void generateAdminUser() {
+        adminUserList = new ArrayList<>();
+        String adminUsers = System.getProperty("no.kodegenet.blockuino.adminUsers");
+        if (adminUsers != null && adminUsers.contains(",") && adminUsers.contains("@")) {
+            String[] emails = adminUsers.split(",");
+            for (String email : emails) {
+                adminUserList.add(email);
+            }
+        } else if (adminUsers != null && !adminUsers.contains(",") && adminUsers.contains("@")) {
+            adminUserList.add(adminUsers);
+        }
     }
 
     private void initializeDb() {
@@ -73,5 +96,13 @@ public class CassandraDataPlugin {
 
     public ProjectDao getProjectDao() {
         return projectDao;
+    }
+
+    public SessionDao getSessionDao() {
+        return sessionDao;
+    }
+
+    private void setAdminUserList(List<String> adminUserList) {
+        this.adminUserList = adminUserList;
     }
 }

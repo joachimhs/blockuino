@@ -3,6 +3,7 @@ package no.blockuino.pi.models;
 import com.datastax.driver.mapping.annotations.ClusteringColumn;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
+import com.datastax.driver.mapping.annotations.Transient;
 import com.google.gson.annotations.Expose;
 import no.haagensoftware.hyrrokkin.annotations.SerializedClassName;
 
@@ -17,9 +18,9 @@ public class Session {
     @Expose @PartitionKey private String id;
     @Expose private String username;
     @Expose private Boolean authenticated;
+    @Expose @Transient private String role;
 
-    @Expose private List<Project> projects;
-
+    @Expose @Transient private List<Project> projects;
 
     public Session() {
         this.authenticated = false;
@@ -55,5 +56,13 @@ public class Session {
 
     public void setProjects(List<Project> projects) {
         this.projects = projects;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

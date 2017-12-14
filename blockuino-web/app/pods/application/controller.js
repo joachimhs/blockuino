@@ -506,6 +506,13 @@ export default Ember.Controller.extend({
     }, 500);
   },
 
+  showContextHelp: function() {
+    var path = this.get('currentPath');
+    var editor = this.get('indexController.editor');
+
+    return path && path === 'index' && editor === 'blocks';
+  }.property('indexController.editor', 'currentPath'),
+
   generateUuidIsh: function (a) {
     return a ? (0 | Math.random() * 16).toString(16) : ("" + 1e10).replace(/1|0/g, this.generateUuidIsh)
   },

@@ -33,10 +33,8 @@ import static spark.Spark.*;
  */
 public class WebServer {
     private static final Logger logger = Logger.getLogger(WebServer.class.getName());
-    private static Map<String, Session> sessions = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
-        sessions.clear();
         if (System.getProperty("log4j.configuration") == null) {
             configureLogger();
         }
@@ -319,7 +317,8 @@ public class WebServer {
                     newSession.setAuthenticated(hlokkSession.getAuthenticated());
                     newSession.setUsername(creds.getUsername());
                     newSession.setId(hlokkSession.getId().replace("-", "").substring(0, 12));
-                    sessions.put(newSession.getId(), newSession);
+
+                    CassandraDataPlugin.getInstance().getSessionDao().persistSession(newSession);
                     authenticated = true;
                 }
             }
@@ -337,7 +336,7 @@ public class WebServer {
             Session session = null;
 
             if (sessionId != null) {
-                session = sessions.get(sessionId);
+                session = CassandraDataPlugin.getInstance().getSessionDao().getSession(sessionId);
             }
 
             if (session != null) {
@@ -356,7 +355,7 @@ public class WebServer {
         Session session = null;
 
         if (cookieId != null) {
-            session = sessions.get(cookieId);
+            session = CassandraDataPlugin.getInstance().getSessionDao().getSession(cookieId);
         }
 
         return session;

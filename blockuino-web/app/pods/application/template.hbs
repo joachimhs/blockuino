@@ -21,7 +21,7 @@
 
 {{outlet}}
 
-{{#if (eq indexController.editor 'blocks')}}
+{{#if showContextHelp}}
   <div class="context-help">
     {{fa-icon "question-circle" size=1 border=false}} {{t "common.helpMenu.label"}}:
     <button class="btn btn-default" {{action "doShowIntroHelp"}}>{{t "common.helpMenu.introButton"}}</button>
