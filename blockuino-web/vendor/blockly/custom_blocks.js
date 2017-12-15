@@ -1690,8 +1690,8 @@ Blockly.Blocks['arduino_pixel_strip_color'] = {
     this.appendValueInput("BLUE")
       .appendField(Blockly.Msg.ARDUINO_LED_STRIP_COLOR_BLUE);
     this.setInputsInline(true);
-    this.setPreviousStatement(true, null)
-    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);;
+    this.setPreviousStatement(true, null);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_COLOR_TOOLTIP);
     this.setHelpUrl('http://www.example.com/');
@@ -1708,6 +1708,93 @@ Blockly.Arduino['arduino_pixel_strip_color'] = function(block) {
   var code = 'strip.setPixelColor(' + value_pixel + ', strip.Color(' + value_red + ', ' + value_green + ', ' + value_blue + '));';
 
   return code;
+};
+
+Blockly.FieldColour.COLOURS = ['#900','#090','#009','#000','#888','#fff', '#F4D03F', '#5DADE2', '#884EA0', '#D98880', '#EDBB99', '#AF601A'];
+Blockly.FieldColour.COLUMNS = 4;
+
+Blockly.Blocks['arduino_pixels_color'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Farge:")
+      .appendField(new Blockly.FieldColour('#990000'), 'color');
+    this.setOutput(true, null);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixels_color'] = function(block) {
+  var dropdown_color = block.getFieldValue('color');
+
+    // TODO: Assemble JavaScript into code variable.
+      var code = '';
+
+      if (dropdown_color) {
+        var c = Blockly.Arduino.colorHexToRgb(dropdown_color);
+        code = 'strip.Color(' + c.r + ', ' + c.g + ', ' + c.b + ')';
+      }
+
+  // TODO: Change ORDER_NONE to the correct strength.
+    return code;
+};
+
+Blockly.Blocks['arduino_pixels_color_rgb'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Farge: ");
+    this.appendValueInput("Red")
+      .setCheck(null)
+      .appendField("Red: ");
+    this.appendValueInput("Green")
+      .setCheck(null)
+      .appendField("Green: ");
+    this.appendValueInput("Blue")
+      .setCheck(null)
+      .appendField("Blue: ");
+    this.setInputsInline(false);
+    this.setOutput(true, null);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixels_color_rgb'] = function(block) {
+  var value_red = Blockly.Arduino.getValueForVariable(block, 'Red', Blockly.Arduino.ORDER_ATOMIC);
+  var value_green = Blockly.Arduino.getValueForVariable(block, 'Green', Blockly.Arduino.ORDER_ATOMIC);
+  var value_blue = Blockly.Arduino.getValueForVariable(block, 'Blue', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+    var code = 'strip.Color(' + value_red + ', ' + value_green + ', ' + value_blue + ')';
+  // TODO: Change ORDER_NONE to the correct strength.
+    return code;
+};
+
+Blockly.Blocks['arduino_pixels_color_set'] = {
+  init: function() {
+    this.appendValueInput("setPixel")
+      .setCheck(null)
+      .appendField("Gi pixel");
+    this.appendValueInput("setColor")
+      .setCheck(null)
+      .appendField("fargen");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixels_color_set'] = function(block) {
+  var value_setPixel = Blockly.Arduino.getValueForVariable(block, 'setPixel', Blockly.Arduino.ORDER_ATOMIC);
+  var value_setColor = Blockly.Arduino.getValueForVariable(block, 'setColor', Blockly.Arduino.ORDER_ATOMIC);
+  // TODO: Assemble JavaScript into code variable.
+    var code = 'strip.setPixelColor(' + value_setPixel + ',' + value_setColor + ');';
+  // TODO: Change ORDER_NONE to the correct strength.
+    return code;
 };
 
 /* //NEO PIXELS */

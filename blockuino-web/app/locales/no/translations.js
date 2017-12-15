@@ -78,7 +78,9 @@ export default {
       "projectID": "Prosjekt ID ",
       "created": "Opprettet ",
       "madeBy": "Laget av ",
-      "remixedBy": "Remixet av "
+      "remixedBy": "Remixet av ",
+      "videos": "Videoer",
+      "sketch": "Sketch"
 
     },
     "divs": {
@@ -90,7 +92,8 @@ export default {
       "installAddProgram": "For å laste opp fra Blockuino.no direkte til Arduinoen, må du installere et tilleggsprogram. Kodegenet har utviklet programvare for å støtte Chromebook via en Chrome App, samt Windows og Mac via en egenutviklet Electron applikasjon (beta).",
       "accountBlockuino": "Blockuino bruker samme konto som på kodegenet.no. Dersom du ikke har en Kodegenet bruker kan du opprette en på ",
       "loginKeySent": "Kodegenet har sendt en epost med en unik innloggingsnøkkel til din epost addresse. Logg inn ved å fylle den inn nedenfor",
-    },
+      "docsInfo": "Blockuino er et enkelt blokk-basert verktøy for å generere Arduino kode. Klossene kan kobles sammen, og den ferdige Arduino koden kan leses av i feltet til høyre. Når koden er ferdig kan den kopieres og limes inn i Arduino IDE for å lastes opp til Arduinoen din."
+},
     "helpMenu": {
       "label": "Få hjelp til",
       "introButton": "Hva er dette?",

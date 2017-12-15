@@ -79,7 +79,9 @@ export default {
       "projectID": "Project ID ",
       "created": "Created ",
       "madeBy": "Made by ",
-      "remixedBy": "Remixed by "
+      "remixedBy": "Remixed by ",
+          "videos": "Videos",
+        "sketch": "Sketch"
     },
     "divs": {
       "copyCodeDescription": "If you want to upload your code to an Arduino via Arduino IDE or Arduino Create, you need to copy the code to the clipboard first, before pasting it in manually.",
@@ -90,8 +92,10 @@ export default {
       "installAddProgram": "To upload directly from Blockuino.no to an Arduino, you are required to download an additional program. Kodegenet has developed software that supports Chromebook via a Chrome app. We have also developed a Electron application (beta)",
       "accountBlockuino": "Blockuino uses the same account as on kodegenet.no. If you don't have a kodegenet account you can create one here at ",
       "loginKeySent": "You have been sent an email with a unique Login-Key to your email address. Log in by typing the Login-Key you have received down below",
-      "uploadXML": "Here you can upload your XML-files that you have previously saved from Blockuino. You can also share Blockuino projects by sending them your XML-file"
-    },
+      "uploadXML": "Here you can upload your XML-files that you have previously saved from Blockuino. You can also share Blockuino projects by sending them your XML-file",
+      "docsInfo": "Blockuino is a simple block-based application with a purpose of generating Arduino code. The blocks can stick together with each other, then the complete Arduino code can be read on the right field. When the code is complete, you can copy and paste it into Arduino IDE to then upload to your Arduino",
+
+},
     "helpMenu": {
       "label": "Get help with",
       "introButton": "What's this?",
