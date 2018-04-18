@@ -94,8 +94,7 @@ export default {
       "loginKeySent": "You have been sent an email with a unique Login-Key to your email address. Log in by typing the Login-Key you have received down below",
       "uploadXML": "Here you can upload your XML-files that you have previously saved from Blockuino. You can also share Blockuino projects by sending them your XML-file",
       "docsInfo": "Blockuino is a simple block-based application with a purpose of generating Arduino code. The blocks can stick together with each other, then the complete Arduino code can be read on the right field. When the code is complete, you can copy and paste it into Arduino IDE to then upload to your Arduino",
-
-    },
+  },
     "helpMenu": {
       "label": "Get help with",
       "introButton": "What's this?",

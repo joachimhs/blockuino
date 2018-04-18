@@ -24,30 +24,3 @@ Blockly.Blocks.ledPixelsHue = {
 Blockly.Blocks.motorHue = {
   HUE: 270
 };
-/**
- *
- * Stepper: 28-BYJ-48 + ULN2003 driver
- *
- * @param block
- * @returns {string}
- */
-/**
- *
- * //Stepper 28-BYJ-48
- * @type {{init: Blockly.Blocks.arduino_for.init, getVars: Blockly.Blocks.arduino_for.getVars, renameVar: Blockly.Blocks.arduino_for.renameVar}}
- */
-/*
- double thermistorTemp(int RawADC, boolean invertInput) {
- double temp;
- // See http://en.wikipedia.org/wiki/Thermistor for explanation of formula
- temp = log(((10240000/RawADC) - 10000));
- temp = 1 / (0.001129148 + (0.000234125 * temp) + (0.0000000876741 * temp * temp * temp));
- temp = temp - 273.15;           // Convert Kelvin to Celcius
- return temp;
- }
- */
-
-
-
-
-
