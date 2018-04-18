@@ -191,6 +191,7 @@ Blockly.Msg.MATH_CONSTRAIN_HELPURL = "https://en.wikipedia.org/wiki/Clamping_%28
 Blockly.Msg.MATH_CONSTRAIN_TITLE = "begrense %1 lav %2 høy %3";
 Blockly.Msg.MATH_CONSTRAIN_TOOLTIP = "Begrens et tall til å være mellom de angitte grenseverdiene (inklusiv).";
 Blockly.Msg.MATH_DIVISION_SYMBOL = "÷";
+Blockly.Msg.MATH_MODULUS = "rest fra";
 Blockly.Msg.MATH_IS_DIVISIBLE_BY = "er delelig med";
 Blockly.Msg.MATH_IS_EVEN = "er et partall";
 Blockly.Msg.MATH_IS_NEGATIVE = "er negativer negativt";

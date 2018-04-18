@@ -180,7 +180,7 @@ public class WebServer {
             String arduino = req.params(":arduino");
             JniResult commandResult = null;
 
-            if (arduino.equals("uno") || arduino.equals("nanoatmega328") || arduino.equals("bbcmicrobit")) {
+            if (arduino.equals("uno") || arduino.equals("nanoatmega328") || arduino.equals("bbcmicrobit") || arduino.equals("zeroUSB")) {
                 String hex = null;
 
                 if (code != null && code.length() > 10 && projectId != null) {

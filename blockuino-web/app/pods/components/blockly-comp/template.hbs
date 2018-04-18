@@ -87,26 +87,36 @@
 
   <category name="{{compCustomFunctions}}" colour="267">
     <block type="arduino_declare_function"></block>
+    <block type="arduino_declare_function_one_parameter"></block>
     <block type="function_return"></block>
     <block type="arduino_function"></block>
+    <block type="arduino_function_one_param"></block>
 
   </category>
 
   <sep></sep>
 
   <category name="{{compVariables}}" colour="10">
-    <block type="arduino_declare_variable"></block>
-    <block type="arduino_declare_variable_with_value"></block>
-    <block type="arduino_set_variable"></block>
-    <block type="arduino_variable"></block>
-    <block type="arduino_variable_value"></block>
-    <block type="variable_increment"></block>
-    <block type="variable_decrement"></block>
-    <block type="logic_boolean"></block>
-    <block type="extract_from_array"></block>
-    <block type="array_length"></block>
-    <block type="char_to_int"></block>
-    <block type="arduino_variable_char"></block>
+    <category name="{{compVariables}}" colour="10">
+      <block type="arduino_declare_variable"></block>
+      <block type="arduino_declare_variable_with_value"></block>
+      <block type="arduino_set_variable"></block>
+      <block type="arduino_variable"></block>
+      <block type="arduino_variable_value"></block>
+      <block type="logic_boolean"></block>
+      <block type="arduino_variable_char"></block>
+    </category>
+    <category name="Lister" colour="10">
+      <block type="arduino_array_create"></block>
+      <block type="arduino_array_set"></block>
+      <block type="extract_from_array"></block>
+      <block type="array_length"></block>
+    </category>
+    <category name="Variabelfunksjoner" colour="10">
+      <block type="variable_increment"></block>
+      <block type="variable_decrement"></block>
+      <block type="char_to_int"></block>
+    </category>
   </category>
 
   <category name="{{compConstants}}" colour="10">
@@ -125,7 +135,11 @@
     <block type="arduino_pixel_strip_show"></block>
     <block type="arduino_pixels_color"></block>
     <block type="arduino_pixels_color_rgb"></block>
+    <block type="arduino_pixel_random_color"></block>
     <block type="arduino_pixels_color_set"></block>
+    <block type="arduino_pixel_clear"></block>
+    <block type="arduino_pixel_matrix_pixel_number"></block>
+    <block type="arduino_pixel_matrix_move_dir"></block>
   </category>
 
 

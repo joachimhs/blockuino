@@ -191,6 +191,7 @@ Blockly.Msg.MATH_CONSTRAIN_HELPURL = "https://en.wikipedia.org/wiki/Clamping_%28
 Blockly.Msg.MATH_CONSTRAIN_TITLE = "constrain %1 low %2 high %3";
 Blockly.Msg.MATH_CONSTRAIN_TOOLTIP = "Constrain a number to be between the specified limits (inclusive).";
 Blockly.Msg.MATH_DIVISION_SYMBOL = "÷";
+Blockly.Msg.MATH_MODULUS = "remainder of";
 Blockly.Msg.MATH_IS_DIVISIBLE_BY = "is divisible by";
 Blockly.Msg.MATH_IS_EVEN = "is even";
 Blockly.Msg.MATH_IS_NEGATIVE = "is negative";

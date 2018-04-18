@@ -69,7 +69,7 @@ Blockly.Blocks['comment'] = {
 
 Blockly.Arduino['comment'] = function(block) {
   var text_comment = block.getFieldValue('COMMENT');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '\n//' + text_comment + '\n';
   return code;
 };
@@ -94,7 +94,7 @@ Blockly.Blocks['arduino_pinmode'] = {
 Blockly.Arduino['arduino_pinmode'] = function (block) {
   var dropdown_pin = block.getFieldValue('Pin');
   var dropdown_type = block.getFieldValue('Type');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'pinMode(' + dropdown_pin + ', ' + dropdown_type + ' );';
   return code;
 };
@@ -120,7 +120,7 @@ Blockly.Blocks['arduino_pinmode_variable'] = {
 Blockly.Arduino['arduino_pinmode_variable'] = function (block) {
   var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
   var dropdown_type = block.getFieldValue('Type');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'pinMode(' + value_pin + ', ' + dropdown_type + ' );';
   return code;
 };
@@ -145,7 +145,7 @@ Blockly.Blocks['arduino_digitalWrite'] = {
 Blockly.Arduino['arduino_digitalWrite'] = function (block) {
   var dropdown_pin = block.getFieldValue('Pin');
   var dropdown_type = block.getFieldValue('type');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'digitalWrite(' + dropdown_pin + ', ' + dropdown_type + ' );';
   return code;
 };
@@ -171,7 +171,7 @@ Blockly.Blocks['arduino_digital_write_variable'] = {
 Blockly.Arduino['arduino_digital_write_variable'] = function(block) {
   var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
   var value_pintype = Blockly.Arduino.getValueForVariable(block, 'PINTYPE', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'digitalWrite(' + value_pin + ', ' + value_pintype + ");";
   return code;
 };
@@ -195,7 +195,7 @@ Blockly.Arduino['arduino_digital_read'] = function(block) {
 
   console.log(block);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'digitalRead(' + value_pin + ')';
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.Arduino.ORDER_NONE];
@@ -220,7 +220,7 @@ Blockly.Arduino['arduino_analog_read'] = function(block) {
 
   console.log(block);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'analogRead(' + value_pin + ')';
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.Arduino.ORDER_NONE];
@@ -249,7 +249,7 @@ Blockly.Blocks['arduino_analog_write'] = {
 Blockly.Arduino['arduino_analog_write'] = function(block) {
   var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
   var value_value = Blockly.Arduino.getValueForVariable(block, 'VALUE', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'analogWrite(' + value_pin + ', ' + value_value + ');';
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -268,7 +268,7 @@ Blockly.Blocks['arduino_serial_begin'] = {
   }
 };
 
-// TODO: Assemble JavaScript into code variable.
+
 Blockly.Arduino['arduino_serial_begin'] = function(block) {
   var code = 'Serial.begin(9600);';
   return code;
@@ -295,7 +295,7 @@ Blockly.Arduino['arduino_serial_print'] = function(block) {
   var value_text = Blockly.Arduino.getValueForVariable(block, 'TEXT');
   var dropdown_name = block.getFieldValue('NAME');
   var value_op = block.getFieldValue('OP');
-  // TODO: Assemble JavaScript into code variable.
+
 
   var printStatement = "print";
   if (dropdown_name === "YES") {
@@ -485,7 +485,7 @@ Blockly.Arduino['arduino_map'] = function(block) {
   var value_max_from = Blockly.Arduino.valueToCode(block, 'max_from', Blockly.Arduino.ORDER_ATOMIC);
   var value_min_to = Blockly.Arduino.valueToCode(block, 'min_to', Blockly.Arduino.ORDER_ATOMIC);
   var value_max_to = Blockly.Arduino.valueToCode(block, 'max_to', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble Arduino into code variable.
+
   var code = 'map(' + value_var + ', ' + value_min_from + ', ' + value_max_from + ', ' + value_min_to + ', ' + value_max_to + ')';
   return code;
 };
@@ -515,7 +515,7 @@ Blockly.Arduino['arduino_tone_ms'] = function(block) {
   var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
   var value_frequency = Blockly.Arduino.statementToCode(block, 'FREQUENCY', Blockly.Arduino.ORDER_ATOMIC);
   var value_ms = Blockly.Arduino.getValueForVariable(block, 'MS', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'tone(' + value_pin + ', ' + value_frequency + ', ' + value_ms + ');';
   return code;
 };
@@ -541,7 +541,7 @@ Blockly.Blocks['arduino_tone'] = {
 Blockly.Arduino['arduino_tone'] = function(block) {
   var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
   var value_frequency = Blockly.Arduino.statementToCode(block, 'FREQUENCY', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'tone(' + value_pin + ', ' + value_frequency + ');';
   return code;
 };
@@ -564,7 +564,7 @@ Blockly.Blocks['arduino_no_tone'] = {
 
 Blockly.Arduino['arduino_no_tone'] = function(block) {
   var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'noTone(' + value_pin + ');';
   return code;
 };
@@ -591,7 +591,7 @@ Blockly.Arduino['arduino_setup'] = function (block) {
   console.log(statements_setup);
   console.log(block);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'void setup() {' + statements_setup + '}';
   return code;
 };
@@ -612,7 +612,7 @@ Blockly.Blocks['arduino_loop'] = {
 
 Blockly.Arduino['arduino_loop'] = function (block) {
   var statements_setup = Blockly.Arduino.statementToCode(block, 'loop');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'void loop() {' + statements_setup + '}';
   return code;
 };
@@ -634,7 +634,7 @@ Blockly.Blocks['arduino_delay'] = {
 
 Blockly.Arduino['arduino_delay'] = function (block) {
   var value_delay = block.getFieldValue('delay');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'delay(' + value_delay + ');';
   return code;
 };
@@ -659,7 +659,7 @@ Blockly.Blocks['arduino_delay_variable'] = {
 Blockly.Arduino['arduino_delay_variable'] = function(block) {
   var value_delay = Blockly.Arduino.getValueForVariable(block, "delay");
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'delay(' + value_delay + ');';
   return code;
 };
@@ -684,7 +684,7 @@ Blockly.Blocks['arduino_set_int_variable'] = {
 Blockly.Arduino['arduino_set_int_variable'] = function (block) {
   var variable_var_name = Blockly.Arduino.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
   var text_var_value = block.getFieldValue('var_value');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = variable_var_name + " = " + text_var_value + ";";
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -725,8 +725,96 @@ Blockly.Blocks['arduino_declare_variable'] = {
 Blockly.Arduino['arduino_declare_variable'] = function (block) {
   var variable_var_name = Blockly.Arduino.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
   var dropdown_type = block.getFieldValue('type');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = dropdown_type + ' ' + variable_var_name + ";";
+  return code;
+};
+
+Blockly.Blocks['arduino_array_create'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Lag liste med navn")
+      .appendField(new Blockly.FieldVariable(Blockly.Msg.VARIABLES_DEFAULT_NAME), 'VAR');
+    this.appendValueInput("LENGTH")
+      .appendField("med antall elementer");
+    this.appendDummyInput()
+      .setAlign(Blockly.ALIGN_RIGHT)
+      .appendField(Blockly.Msg.ARDUINO_DECLARE_VARIABLE_TYPE)
+      .appendField(new Blockly.FieldDropdown([["int", "int"], ["double", "double"], ["float", "float"], ["String", "String"], ["boolean", "boolean"]]), "type");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+
+  getVars: function () {
+    return [this.getFieldValue('VAR')];
+  },
+  /**
+   * Notification that a variable is renaming.
+   * If the name matches one of this block's variables, rename it.
+   * @param {string} oldName Previous name of variable.
+   * @param {string} newName Renamed variable.
+   * @this Blockly.Block
+   */
+  renameVar: function (oldName, newName) {
+    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+      this.setFieldValue(newName, 'VAR');
+    }
+  }
+};
+
+Blockly.Arduino['arduino_array_create'] = function (block) {
+  var variable_var_name = Blockly.Arduino.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
+  var variable_length = Blockly.Arduino.getValueForVariable(block, "LENGTH");
+  var dropdown_type = block.getFieldValue('type');
+
+  var code = dropdown_type + ' ' + variable_var_name + "[" + variable_length + "];\n\n";
+  return code;
+};
+
+Blockly.Blocks['arduino_array_set'] = {
+  init: function() {
+    this.appendValueInput("INDEX")
+      .appendField("Sett liste element nummer:");
+    this.appendDummyInput()
+      .appendField("for liste: ")
+      .appendField(new Blockly.FieldVariable(Blockly.Msg.VARIABLES_DEFAULT_NAME), 'VAR');
+    this.appendValueInput("VALUE")
+      .appendField("til verdi: ");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+
+  getVars: function () {
+    return [this.getFieldValue('VAR')];
+  },
+  /**
+   * Notification that a variable is renaming.
+   * If the name matches one of this block's variables, rename it.
+   * @param {string} oldName Previous name of variable.
+   * @param {string} newName Renamed variable.
+   * @this Blockly.Block
+   */
+  renameVar: function (oldName, newName) {
+    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+      this.setFieldValue(newName, 'VAR');
+    }
+  }
+};
+
+Blockly.Arduino['arduino_array_set'] = function (block) {
+  var variable_var_name = Blockly.Arduino.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
+  var variable_index= Blockly.Arduino.getValueForVariable(block, "INDEX");
+  var variable_value = Blockly.Arduino.getValueForVariable(block, "VALUE");
+
+  var code = variable_var_name + "[" + variable_index + "] = " + variable_value + ";\n\n";
   return code;
 };
 
@@ -772,7 +860,7 @@ Blockly.Arduino['arduino_declare_variable_with_value'] = function (block) {
   var variable_var_name = Blockly.Arduino.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
   var variable_value = Blockly.Arduino.getValueForVariable(block, "VALUE");
   var dropdown_type = block.getFieldValue('type');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = dropdown_type + ' ' + variable_var_name + " = " + variable_value + ";";
   return code;
 };
@@ -802,7 +890,7 @@ Blockly.Arduino['arduino_set_variable'] = function (block) {
   var value_variable_name = Blockly.Arduino.statementToCode(block, 'VAR');
 
   var value_variable_value = Blockly.Arduino.getValueForVariable(block, 'variable_value');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = value_variable_name + ' =  ' + value_variable_value + ";";
   return code;
 };
@@ -865,7 +953,7 @@ Blockly.Blocks['arduino_variable'] = {
 
 Blockly.Arduino['arduino_variable'] = function (block) {
   var variable_variable_name = block.getFieldValue('VAR');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = variable_variable_name;
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -885,7 +973,7 @@ Blockly.Blocks['arduino_digital_port'] = {
 
 Blockly.Arduino['arduino_digital_port'] = function(block) {
   var dropdown_name = block.getFieldValue('Pin');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = dropdown_name;
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -905,7 +993,7 @@ Blockly.Blocks['arduino_analog_port'] = {
 
 Blockly.Arduino['arduino_analog_port'] = function(block) {
   var dropdown_name = block.getFieldValue('Pin');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = dropdown_name;
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -946,7 +1034,7 @@ Blockly.Arduino['arduino_variable_value'] = function (block) {
 
   console.log(typeof text_variable_value);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = text_variable_value;
 
   var numberRegex = /^-?\d*\.?\d*$/;
@@ -1010,7 +1098,7 @@ Blockly.Blocks['arduino_pulse_in'] = {
 Blockly.Arduino['arduino_pulse_in'] = function(block) {
   var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
   var value_value = Blockly.Arduino.getValueForVariable(block, 'VALUE', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'pulseIn(' + value_pin + ', ' + value_value + ')';
   return code;
 };
@@ -1054,8 +1142,62 @@ Blockly.Arduino['arduino_declare_function'] = function(block) {
   var text_funktion = block.getFieldValue('FUNCTION');
   var dropdown_type = block.getFieldValue('TYPE');
   var statements_name = Blockly.Arduino.statementToCode(block, 'CODE');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '\n' + dropdown_type + " " + text_funktion + "() { " + statements_name + "}";
+  return code;
+};
+
+Blockly.Blocks['arduino_declare_function_one_parameter'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ARDUINO_DECLARE_FUNCTION_VALUE)
+      .appendField(new Blockly.FieldVariable("function"), "FUNCTION");
+    this.appendDummyInput()
+      .appendField("med parameter")
+      .appendField(new Blockly.FieldVariable("param1_name"), "PARAM1_NAME")
+      .appendField(new Blockly.FieldDropdown([["int","int"], ["string","string"], ["double", "double"], ["boolean","boolean"]]), "PARAM1_TYPE");
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ARDUINO_DECLARE_FUNCTION_RETURNS)
+      .appendField(new Blockly.FieldDropdown([["void", "void"], ["int", "int"], ["String", "String"], ["double", "double"], ["boolean", "boolean"]]), "TYPE");
+    this.appendStatementInput("CODE");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(267);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+
+
+  getVars: function () {
+    return [this.getFieldValue('FUNCTION'), this.getFieldValue("PARAM1_NAME")];
+  },
+  /**
+   * Notification that a variable is renaming.
+   * If the name matches one of this block's variables, rename it.
+   * @param {string} oldName Previous name of variable.
+   * @param {string} newName Renamed variable.
+   * @this Blockly.Block
+   */
+  renameVar: function (oldName, newName) {
+    if (Blockly.Names.equals(oldName, this.getFieldValue('FUNCTION'))) {
+      this.setFieldValue(newName, 'FUNCTION');
+    }
+
+    if (Blockly.Names.equals(oldName, this.getFieldValue('PARAM1_NAME'))) {
+      this.setFieldValue(newName, 'PARAM1_NAME');
+    }
+  }
+};
+
+Blockly.Arduino['arduino_declare_function_one_parameter'] = function(block) {
+  var text_funktion = block.getFieldValue('FUNCTION');
+  var dropdown_type = block.getFieldValue('TYPE');
+  var param1Name = block.getFieldValue('PARAM1_NAME');
+  var param1Type = block.getFieldValue('PARAM1_TYPE');
+  var statements_name = Blockly.Arduino.statementToCode(block, 'CODE');
+
+  var code = '\n' + dropdown_type + " " + text_funktion + "(" + param1Type + " " + param1Name + ") { " + statements_name + "}";
   return code;
 };
 
@@ -1078,7 +1220,7 @@ Blockly.Arduino['function_return'] = function(block) {
   var value_retVal = Blockly.Arduino.getValueForVariable(block, "retVal");
 
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'return ' + value_retVal + ';';
   return code;
 };
@@ -1103,7 +1245,7 @@ Blockly.Blocks['array_element'] = {
 Blockly.Arduino['array_element'] = function(block) {
   var value_index = Blockly.Arduino.valueToCode(block, 'index', Blockly.Arduino.ORDER_ATOMIC);
   var value_list = Blockly.Arduino.getValueForVariable(block, 'list', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = value_list + '[' + value_index + ']';
   // TODO: Change ORDER_NONE to the correct strength.
   return [code, Blockly.Arduino.ORDER_NONE];
@@ -1140,10 +1282,52 @@ Blockly.Blocks['arduino_function'] = {
 
 Blockly.Arduino['arduino_function'] = function(block) {
   var variable_function = Blockly.Arduino.variableDB_.getName(block.getFieldValue('FUNCTION'), Blockly.Variables.NAME_TYPE);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = variable_function + "();";
   return code;
 };
+
+Blockly.Blocks['arduino_function_one_param'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField(Blockly.Msg.ARDUINO_USE_FUNCTION_VALUE)
+      .appendField(new Blockly.FieldVariable("function"), "FUNCTION");
+    this.appendValueInput("PARAM_ONE")
+      .setCheck(null)
+      .appendField("med parameter:");
+    this.setInputsInline(false);
+    this.setInputsInline(false);
+    this.setOutput(true, null);
+    this.setColour(230);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  },
+
+  getVars: function () {
+    return [this.getFieldValue('FUNCTION')];
+  },
+  /**
+   * Notification that a variable is renaming.
+   * If the name matches one of this block's variables, rename it.
+   * @param {string} oldName Previous name of variable.
+   * @param {string} newName Renamed variable.
+   * @this Blockly.Block
+   */
+  renameVar: function (oldName, newName) {
+    if (Blockly.Names.equals(oldName, this.getFieldValue('FUNCTION'))) {
+      this.setFieldValue(newName, 'FUNCTION');
+    }
+  }
+};
+
+Blockly.Arduino['arduino_function_one_param'] = function(block) {
+  var variable_function = Blockly.Arduino.variableDB_.getName(block.getFieldValue('FUNCTION'), Blockly.Variables.NAME_TYPE);
+  var param1Name = Blockly.Arduino.getValueForVariable(block, 'PARAM_ONE', Blockly.Arduino.ORDER_NONE);
+  // param1Name
+  var code = variable_function + "(" + param1Name + ")";
+  return code;
+};
+
 
 /**
  *
@@ -1206,7 +1390,7 @@ Blockly.Arduino['initialize_28byj'] = function(block) {
   var value_in3 = Blockly.Arduino.getValueForVariable(block, 'IN3', Blockly.Arduino.ORDER_NONE);
   var value_in4 = Blockly.Arduino.getValueForVariable(block, 'IN4', Blockly.Arduino.ORDER_NONE);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'int ' + dropdown_var + "_in1 = " + value_in1 + ';\n';
   code += 'int ' + dropdown_var + "_in2 = " + value_in2 + ';\n';
   code += 'int ' + dropdown_var + "_in3 = " + value_in3 + ';\n';
@@ -1247,7 +1431,7 @@ Blockly.Blocks['setup_28byj'] = {
 Blockly.Arduino['setup_28byj'] = function(block) {
   var dropdown_var = block.getFieldValue('VAR');
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'pinMode(' + dropdown_var + '_in1, OUTPUT);\n';
   code += 'pinMode(' + dropdown_var + '_in2, OUTPUT);\n';
   code += 'pinMode(' + dropdown_var + '_in3, OUTPUT);\n';
@@ -1268,7 +1452,7 @@ Blockly.Blocks['stepper_function'] = {
 };
 
 Blockly.Arduino['stepper_function'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'int stepper(int in1, int in2, int in3, int in4, int currStep, boolean forward) {;\n';
   code += 'digitalWrite(in1, currStep == 0);\n';
   code += 'digitalWrite(in2, currStep == 1);\n';
@@ -1373,7 +1557,7 @@ Blockly.Blocks['variable_decrement'] = {
 
 Blockly.Arduino['variable_decrement'] = function(block) {
   var dropdown_var = block.getFieldValue('VAR');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = dropdown_var + '--;';
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -1412,7 +1596,7 @@ Blockly.Blocks['variable_increment'] = {
 
 Blockly.Arduino['variable_increment'] = function(block) {
   var dropdown_var = block.getFieldValue('VAR');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = dropdown_var + '++;';
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -1476,7 +1660,7 @@ Blockly.Arduino['arduino_for'] = function(block) {
   }
 
   var statements_statement = Blockly.Arduino.statementToCode(block, 'STATEMENT');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'for (int ' + dropdown_type + ' = ' + value_from + "; " + dropdown_type + ' ' + compareSymbol + ' ' + value_to + '; ' + dropdown_type + incrementSymbol + ') { ' + statements_statement + '}';
   return code;
 };
@@ -1503,7 +1687,7 @@ Blockly.Arduino['arduino_repeat'] = function(block) {
   var value_to = Blockly.Arduino.getValueForVariable(block, 'TO', Blockly.Arduino.ORDER_ATOMIC);
 
   var statements_statement = Blockly.Arduino.statementToCode(block, 'STATEMENT');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'for (int index = 0; index < ' + value_to + '; index++) { ' + statements_statement + '}';
   return code;
 };
@@ -1531,7 +1715,7 @@ Blockly.Blocks['arduino_random'] = {
 Blockly.Arduino['arduino_random'] = function(block) {
   var value_from = Blockly.Arduino.getValueForVariable(block, 'from', Blockly.Arduino.ORDER_ATOMIC);
   var value_to = Blockly.Arduino.getValueForVariable(block, 'to', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'random(' + value_from + ',' + value_to + ')';
   return code;
 };
@@ -1549,7 +1733,7 @@ Blockly.Blocks['arduino_high_low'] = {
 
 Blockly.Arduino['arduino_high_low'] = function(block) {
   var dropdown_name = block.getFieldValue('NAME');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = dropdown_name;
   return code;
 };
@@ -1615,8 +1799,69 @@ Blockly.Arduino['arduino_pixel_strip'] = function(block) {
   var value_num_pixels = Blockly.Arduino.getValueForVariable(block, 'NUM_PIXELS', Blockly.Arduino.ORDER_ATOMIC);
   var value_pin = Blockly.Arduino.getValueForVariable(block, 'PIN', Blockly.Arduino.ORDER_ATOMIC);
   var dropdown_type = block.getFieldValue('TYPE');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'Adafruit_NeoPixel strip = Adafruit_NeoPixel(' + value_num_pixels + ', ' + value_pin + ', ' + dropdown_type + ');';
+
+
+  code += '\nint pixel_moveLeft(int position) {';
+  code += '\nint matrixWidth = sqrt(strip.numPixels());';
+    code += 'if ((position % matrixWidth) > 0) {';
+      code += 'position--;';
+    code += '}';
+    code += 'return position;';
+  code += '}';
+
+  code += '\nint pixel_moveRight(int position) {';
+  code += '\nint matrixWidth = sqrt(strip.numPixels());';
+    code += 'if (((position + 1) % 8) > 0) {';
+      code += 'position++;';
+    code += '}';
+    code += 'return position;';
+  code += '}';
+
+  code += '\nint pixel_moveUp(int position) {';
+  code += '\nint matrixWidth = sqrt(strip.numPixels());';
+    code += 'if ((position - matrixWidth) >= 0) {';
+      code += 'position -= matrixWidth;';
+    code += '}';
+    code += 'return position;';
+  code += '}';
+
+  code += '\nint pixel_moveDown (int position) {';
+  code += '\nint matrixWidth = sqrt(strip.numPixels());';
+    code += 'if ((position + matrixWidth) < strip.numPixels()) {';
+      code += 'position += matrixWidth;';
+    code += '}';
+    code += 'return position;';
+  code += '}';
+
+  code += '\nint pixel_matrixPixel(int pixel) {';
+    code += 'int matrixWidth = sqrt(strip.numPixels());';
+    code += 'int kolonne = pixel / matrixWidth;';
+    code += 'int rad = pixel % matrixWidth;';
+    code += 'int riktigPixel = pixel;';
+    code += 'if (kolonne % 2 != (0)) {';
+      code += 'riktigPixel = kolonne * 8 + 7 - rad;';
+    code += '}';
+    code += 'return riktigPixel;';
+  code += '}';
+
+  code += 'void pixel_clear() {\n';
+    code += 'for (int pixel = 0; pixel < strip.numPixels(); pixel++) {\n';
+      code += 'strip.setPixelColor(pixel, strip.Color(0, 0, 0));\n';
+    code += '}\n';
+  code += '}\n';
+  code += '\n';
+
+
+  code += 'uint32_t pixel_random_color() {';
+  code += 'int pixelr = random(0, 50);';
+  code += 'int pixelg = random(0, 50);';
+  code += 'int pixelb = random(0, 50);\n\n';
+
+  code += 'return strip.Color(pixelr, pixelg, pixelb);\n\n';
+  code += "}\n";
+
 
   // Adafruit_NeoPixel strip = Adafruit_NeoPixel(10, PIN, NEO_GRB + NEO_KHZ800);
   return code;
@@ -1636,7 +1881,7 @@ Blockly.Blocks['arduino_pixel_strip_begin'] = {
 };
 
 Blockly.Arduino['arduino_pixel_strip_begin'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'strip.begin();';
   return code;
 };
@@ -1655,7 +1900,7 @@ Blockly.Blocks['arduino_pixel_strip_show'] = {
 };
 
 Blockly.Arduino['arduino_pixel_strip_show'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'strip.show();';
   return code;
 };
@@ -1674,7 +1919,7 @@ Blockly.Blocks['arduino_pixel_strip_include'] = {
 };
 
 Blockly.Arduino['arduino_pixel_strip_include'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '#include <Adafruit_NeoPixel.h>\n\n';
   return code;
 };
@@ -1704,7 +1949,7 @@ Blockly.Arduino['arduino_pixel_strip_color'] = function(block) {
   var value_red = Blockly.Arduino.getValueForVariable(block, 'RED', Blockly.Arduino.ORDER_ATOMIC);
   var value_green = Blockly.Arduino.getValueForVariable(block, 'GREEN', Blockly.Arduino.ORDER_ATOMIC);
   var value_blue = Blockly.Arduino.getValueForVariable(block, 'BLUE', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'strip.setPixelColor(' + value_pixel + ', strip.Color(' + value_red + ', ' + value_green + ', ' + value_blue + '));';
 
   return code;
@@ -1728,7 +1973,7 @@ Blockly.Blocks['arduino_pixels_color'] = {
 Blockly.Arduino['arduino_pixels_color'] = function(block) {
   var dropdown_color = block.getFieldValue('color');
 
-    // TODO: Assemble JavaScript into code variable.
+
       var code = '';
 
       if (dropdown_color) {
@@ -1765,7 +2010,7 @@ Blockly.Arduino['arduino_pixels_color_rgb'] = function(block) {
   var value_red = Blockly.Arduino.getValueForVariable(block, 'Red', Blockly.Arduino.ORDER_ATOMIC);
   var value_green = Blockly.Arduino.getValueForVariable(block, 'Green', Blockly.Arduino.ORDER_ATOMIC);
   var value_blue = Blockly.Arduino.getValueForVariable(block, 'Blue', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
     var code = 'strip.Color(' + value_red + ', ' + value_green + ', ' + value_blue + ')';
   // TODO: Change ORDER_NONE to the correct strength.
     return code;
@@ -1791,10 +2036,187 @@ Blockly.Blocks['arduino_pixels_color_set'] = {
 Blockly.Arduino['arduino_pixels_color_set'] = function(block) {
   var value_setPixel = Blockly.Arduino.getValueForVariable(block, 'setPixel', Blockly.Arduino.ORDER_ATOMIC);
   var value_setColor = Blockly.Arduino.getValueForVariable(block, 'setColor', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
     var code = 'strip.setPixelColor(' + value_setPixel + ',' + value_setColor + ');';
   // TODO: Change ORDER_NONE to the correct strength.
     return code;
+};
+
+Blockly.Blocks['arduino_pixel_matrix_pixel_number'] = {
+  init: function() {
+    this.appendValueInput("pixel")
+      .setCheck(null)
+      .appendField("LED panel pixel:");
+    this.setOutput(true, null);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixel_matrix_pixel_number'] = function(block) {
+  var pixel = Blockly.Arduino.getValueForVariable(block, 'pixel', Blockly.Arduino.ORDER_ATOMIC);
+
+  var code = 'pixel_matrixPixel(' + pixel + ')';
+
+  // TODO: Change ORDER_NONE to the correct strength.
+  return code;
+};
+
+Blockly.Blocks['arduino_pixel_matrix_move_dir'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Flytt ")
+      .appendField(new Blockly.FieldDropdown([["Oppover", "Up"], ["Nedover", "Down"], ["Høyre", "Right"], ["Venstre", "Left"]]), "DIRECTION");
+    this.appendValueInput("pixel")
+      .setCheck(null)
+      .appendField(" fra posisjon:");
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixel_matrix_move_dir'] = function(block) {
+  var pixel = Blockly.Arduino.getValueForVariable(block, 'pixel', Blockly.Arduino.ORDER_ATOMIC);
+  var dir = block.getFieldValue('DIRECTION');
+
+  var functionName = 'move' + dir;
+
+  var code = pixel + ' = pixel_' + functionName + '(' + pixel + ');';
+
+  // TODO: Change ORDER_NONE to the correct strength.
+  return code;
+};
+
+Blockly.Blocks['arduino_pixel_random_color'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Tilfeldig farge ");
+    this.setOutput(true, null);
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixel_random_color'] = function(block) {
+  var pixel = Blockly.Arduino.getValueForVariable(block, 'pixel', Blockly.Arduino.ORDER_ATOMIC);
+  var dir = block.getFieldValue('DIRECTION');
+
+  var code = 'pixel_random_color()';
+
+  // TODO: Change ORDER_NONE to the correct strength.
+  return code;
+};
+
+Blockly.Blocks['arduino_pixel_matrix_move_up'] = {
+  init: function() {
+    this.appendValueInput("pixel")
+      .setCheck(null)
+      .appendField("Flytt oppover fra posisjon:");
+    this.setOutput(true, null);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixel_matrix_move_up'] = function(block) {
+  var pixel = Blockly.Arduino.getValueForVariable(block, 'pixel', Blockly.Arduino.ORDER_ATOMIC);
+
+  var code = 'pixel_moveUp(' + pixel + ')';
+
+  // TODO: Change ORDER_NONE to the correct strength.
+  return code;
+};
+
+Blockly.Blocks['arduino_pixel_matrix_move_down'] = {
+  init: function() {
+    this.appendValueInput("pixel")
+      .setCheck(null)
+      .appendField("Flytt nedover fra posisjon:");
+    this.setOutput(true, null);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixel_matrix_move_down'] = function(block) {
+  var pixel = Blockly.Arduino.getValueForVariable(block, 'pixel', Blockly.Arduino.ORDER_ATOMIC);
+
+  var code = 'pixel_moveDown(' + pixel + ')';
+
+  // TODO: Change ORDER_NONE to the correct strength.
+  return code;
+};
+
+Blockly.Blocks['arduino_pixel_matrix_move_left'] = {
+  init: function() {
+    this.appendValueInput("pixel")
+      .setCheck(null)
+      .appendField("Flytt til venstre fra posisjon:");
+    this.setOutput(true, null);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixel_matrix_move_left'] = function(block) {
+  var pixel = Blockly.Arduino.getValueForVariable(block, 'pixel', Blockly.Arduino.ORDER_ATOMIC);
+
+  var code = 'pixel_moveLeft(' + pixel + ')';
+
+  // TODO: Change ORDER_NONE to the correct strength.
+  return code;
+};
+
+Blockly.Blocks['arduino_pixel_matrix_move_right'] = {
+  init: function() {
+    this.appendValueInput("pixel")
+      .setCheck(null)
+      .appendField("Flytt til høyre fra posisjon:");
+    this.setOutput(true, null);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixel_matrix_move_right'] = function(block) {
+  var pixel = Blockly.Arduino.getValueForVariable(block, 'pixel', Blockly.Arduino.ORDER_ATOMIC);
+
+  var code = 'pixel_moveRight(' + pixel + ')';
+
+  // TODO: Change ORDER_NONE to the correct strength.
+  return code;
+};
+
+Blockly.Blocks['arduino_pixel_clear'] = {
+  init: function() {
+    this.appendDummyInput()
+      .appendField("Slå av alle pixels");
+    this.setInputsInline(false);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+    this.setTooltip("");
+    this.setHelpUrl("");
+  }
+};
+
+Blockly.Arduino['arduino_pixel_clear'] = function(block) {
+  var pixel = Blockly.Arduino.getValueForVariable(block, 'pixel', Blockly.Arduino.ORDER_ATOMIC);
+
+  var code = 'pixel_clear();';
+
+  // TODO: Change ORDER_NONE to the correct strength.
+  return code;
 };
 
 /* //NEO PIXELS */
@@ -1922,6 +2344,32 @@ Blockly.Arduino['logic_null'] = function (block) {
   return ['null', Blockly.Arduino.ORDER_ATOMIC];
 };
 
+
+Blockly.Blocks.math_arithmetic = {
+  init: function () {
+    var a = [[Blockly.Msg.MATH_ADDITION_SYMBOL, "ADD"], [Blockly.Msg.MATH_SUBTRACTION_SYMBOL, "MINUS"], [Blockly.Msg.MATH_MULTIPLICATION_SYMBOL, "MULTIPLY"], [Blockly.Msg.MATH_DIVISION_SYMBOL, "DIVIDE"], [Blockly.Msg.MATH_POWER_SYMBOL, "POWER"], [Blockly.Msg.MATH_MODULUS, "MODULUS"]];
+    this.setHelpUrl(Blockly.Msg.MATH_ARITHMETIC_HELPURL);
+    this.setColour(Blockly.Blocks.math.HUE);
+    this.setOutput(!0, "Number");
+    this.appendValueInput("A").setCheck("Number");
+    this.appendValueInput("B").setCheck("Number").appendField(new Blockly.FieldDropdown(a),
+      "OP");
+    this.setInputsInline(!0);
+    var b = this;
+    this.setTooltip(function () {
+      var a = b.getFieldValue("OP");
+      return {
+        ADD: Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_ADD,
+        MINUS: Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MINUS,
+        MULTIPLY: Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_MULTIPLY,
+        DIVIDE: Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_DIVIDE,
+        POWER: Blockly.Msg.MATH_ARITHMETIC_TOOLTIP_POWER
+      }[a]
+    })
+  }
+};
+
+
 Blockly.Arduino['math_arithmetic'] = function(block) {
   // Basic arithmetic operators, and power.
   var OPERATORS = {
@@ -1929,6 +2377,7 @@ Blockly.Arduino['math_arithmetic'] = function(block) {
     'MINUS': [' - ', Blockly.Arduino.ORDER_SUBTRACTION],
     'MULTIPLY': [' * ', Blockly.Arduino.ORDER_MULTIPLICATION],
     'DIVIDE': [' / ', Blockly.Arduino.ORDER_DIVISION],
+    'MODULUS': [' % ', Blockly.Arduino.ORDER_DIVISION],
     'POWER': [null, Blockly.Arduino.ORDER_COMMA]  // Handle power separately.
   };
   var tuple = OPERATORS[block.getFieldValue('OP')];
@@ -1998,7 +2447,7 @@ Blockly.Arduino['arduino_car_variables'] = function(block) {
   var value_in4 = Blockly.Arduino.getValueForVariable(block, 'in4', Blockly.Arduino.ORDER_ATOMIC);
   var value_speed = Blockly.Arduino.getValueForVariable(block, 'motorSpeed', Blockly.Arduino.ORDER_ATOMIC);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'int ena = ' + value_ena + ';';
   code += 'int in1 = ' + value_in1 + ';';
   code += 'int in2 = ' + value_in2 + ';';
@@ -2114,7 +2563,7 @@ Blockly.Blocks['arduino_car_setup'] = {
 };
 
 Blockly.Arduino['arduino_car_setup'] = function(block) {
-    // TODO: Assemble JavaScript into code variable.
+
   var code = 'pinMode(ena, OUTPUT);';
   code += 'pinMode(in1, OUTPUT);';
   code += 'pinMode(in2, OUTPUT);';
@@ -2138,7 +2587,7 @@ Blockly.Blocks['arduino_car_stop'] = {
 };
 
 Blockly.Arduino['arduino_car_stop'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
 
   var code = 'mcStop();';
   return code;
@@ -2158,7 +2607,7 @@ Blockly.Blocks['arduino_car_forwards'] = {
 };
 
 Blockly.Arduino['arduino_car_forwards'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
 
   var code = 'mcForwards();';
   return code;
@@ -2178,7 +2627,7 @@ Blockly.Blocks['arduino_car_backwards'] = {
 };
 
 Blockly.Arduino['arduino_car_backwards'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'mcBackwards();';
   return code;
 };
@@ -2197,7 +2646,7 @@ Blockly.Blocks['arduino_car_rotate_right'] = {
 };
 
 Blockly.Arduino['arduino_car_rotate_right'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'mcRotateRight();';
   return code;
 };
@@ -2216,7 +2665,7 @@ Blockly.Blocks['arduino_bil_rotate_left'] = {
 };
 
 Blockly.Arduino['arduino_bil_rotate_left'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'mcRotateLeft();';
   return code;
 };
@@ -2245,7 +2694,7 @@ Blockly.Blocks['arduino_car_analog_speed'] = {
 Blockly.Arduino['arduino_car_analog_speed'] = function(block) {
   var value_left_side = Blockly.Arduino.getValueForVariable(block, 'LEFT_SIDE', Blockly.Arduino.ORDER_NONE);
   var value_right_side = Blockly.Arduino.getValueForVariable(block, 'RIGHT_SIDE', Blockly.Arduino.ORDER_NONE);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'mcAnalogSpeed(' + value_left_side + ',' + value_right_side + ');';
   return code;
 };
@@ -2279,7 +2728,7 @@ Blockly.Blocks['arduino_car_rf_speed'] = {
 Blockly.Arduino['arduino_car_rf_speed'] = function(block) {
   var value_x_dir = Blockly.Arduino.getValueForVariable(block, 'X_DIR');
   var value_y_dir = Blockly.Arduino.getValueForVariable(block, 'Y_DIR');
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'mcRfSpeed(' + value_x_dir + ',' + value_y_dir + ');';
   return code;
 };
@@ -2301,7 +2750,7 @@ Blockly.Blocks['arduino_car_set_speed'] = {
 
 Blockly.Arduino['arduino_car_set_speed'] = function(block) {
   var value_speed = Blockly.Arduino.getValueForVariable(block, 'speed', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'mcSetSpeed(' + value_speed + ');';
   return code;
 };
@@ -2366,7 +2815,7 @@ Blockly.Blocks['ultrasonic_setup'] = {
 };
 
 Blockly.Arduino['ultrasonic_setup'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'pinMode(trigPin, OUTPUT);';
   code += 'pinMode(echoPin, INPUT);';
   return code;
@@ -2405,7 +2854,7 @@ Blockly.Blocks['servo_include'] = {
 };
 
 Blockly.Arduino['servo_include'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '#include <Servo.h>\n';
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -2447,7 +2896,7 @@ Blockly.Arduino['servo_attach'] = function (block) {
   var variable_var_name = Blockly.Arduino.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
   var variable_value = Blockly.Arduino.getValueForVariable(block, "VALUE");
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = variable_var_name + '.attach(' + variable_value + ");";
   return code;
 };
@@ -2473,7 +2922,7 @@ Blockly.Blocks['servo_write'] = {
 Blockly.Arduino['servo_write'] = function(block) {
   var value_servo = Blockly.Arduino.getValueForVariable(block, 'servo', Blockly.Arduino.ORDER_ATOMIC);
   var value_angle = Blockly.Arduino.getValueForVariable(block, 'angle', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = value_servo + '.write(' + value_angle + ');';
   return code;
 };
@@ -2494,7 +2943,7 @@ Blockly.Blocks['oled_include'] = {
 };
 
 Blockly.Arduino['oled_include'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '#include <SPI.h>\n\n';
   code += '#include <Wire.h>\n\n';
   code += '#include <Adafruit_GFX.h>\n\n';
@@ -2518,7 +2967,7 @@ Blockly.Blocks['oled_setup'] = {
 };
 
 Blockly.Arduino['oled_setup'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '// initialize with the I2C addr 0x3C (for the 128x32)\n';
   code += 'display.begin(SSD1306_SWITCHCAPVCC, 0x3C);';
   code += 'display.setTextSize(1);';
@@ -2553,7 +3002,7 @@ Blockly.Arduino['oled_draw_pixel'] = function(block) {
   var value_x = Blockly.Arduino.getValueForVariable(block, 'x', Blockly.Arduino.ORDER_ATOMIC);
   var value_y = Blockly.Arduino.getValueForVariable(block, 'y', Blockly.Arduino.ORDER_ATOMIC);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'display.drawPixel(' + value_x + ', ' + value_y + ', WHITE);';
   return code;
 };
@@ -2583,7 +3032,7 @@ Blockly.Arduino['oled_set_cursor'] = function(block) {
   var value_x = Blockly.Arduino.getValueForVariable(block, 'x', Blockly.Arduino.ORDER_ATOMIC);
   var value_y = Blockly.Arduino.getValueForVariable(block, 'y', Blockly.Arduino.ORDER_ATOMIC);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'display.setCursor(' + value_x + ', ' + value_y + ');';
   return code;
 };
@@ -2605,7 +3054,7 @@ Blockly.Blocks['oled_print'] = {
 
 Blockly.Arduino['oled_print'] = function(block) {
   var value_text = Blockly.Arduino.getValueForVariable(block, 'text', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'display.print(' + value_text + ');';
   return code;
 };
@@ -2624,7 +3073,7 @@ Blockly.Blocks['oled_update_display'] = {
 };
 
 Blockly.Arduino['oled_update_display'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'display.display();';
   return code;
 };
@@ -2643,7 +3092,7 @@ Blockly.Blocks['oled_clear_display'] = {
 };
 
 Blockly.Arduino['oled_clear_display'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'display.clearDisplay();';
   return code;
 };
@@ -2666,7 +3115,7 @@ Blockly.Blocks['eeprom_include'] = {
 };
 
 Blockly.Arduino['eeprom_include'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '#include <EEPROM.h>\n';
   return code;
 };
@@ -2696,7 +3145,7 @@ Blockly.Blocks['eeprom_write'] = {
 Blockly.Arduino['eeprom_write'] = function(block) {
   var value_address = Blockly.Arduino.getValueForVariable(block, 'address', Blockly.Arduino.ORDER_ATOMIC);
   var value_value = Blockly.Arduino.getValueForVariable(block, 'value', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'EEPROM.write(' + value_address + ',' + value_value + ');';
   return code;
 };
@@ -2725,7 +3174,7 @@ Blockly.Blocks['eeprom_update'] = {
 Blockly.Arduino['eeprom_update'] = function(block) {
   var value_address = Blockly.Arduino.getValueForVariable(block, 'address', Blockly.Arduino.ORDER_ATOMIC);
   var value_value = Blockly.Arduino.getValueForVariable(block, 'value', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'EEPROM.update(' + value_address + ',' + value_value + ');';
   return code;
 };
@@ -2749,7 +3198,7 @@ Blockly.Blocks['eeprom_read'] = {
 Blockly.Arduino['eeprom_read'] = function(block) {
   var value_address = Blockly.Arduino.getValueForVariable(block, 'address', Blockly.Arduino.ORDER_ATOMIC);
   var value_value = Blockly.Arduino.getValueForVariable(block, 'value', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'EEPROM.read(' + value_address + ')';
   return code;
 };
@@ -2769,7 +3218,7 @@ Blockly.Blocks['eeprom_length'] = {
 Blockly.Arduino['eeprom_length'] = function(block) {
   var value_address = Blockly.Arduino.getValueForVariable(block, 'address', Blockly.Arduino.ORDER_ATOMIC);
   var value_value = Blockly.Arduino.getValueForVariable(block, 'value', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'EEPROM.length()';
   return code;
 };
@@ -2812,7 +3261,7 @@ Blockly.Blocks['rf_receiver433_init'] = {
 Blockly.Arduino['rf_receiver433_init'] = function(block) {
   var value_pin= Blockly.Arduino.getValueForVariable(block, 'rfPin', Blockly.Arduino.ORDER_NONE);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '\n#include <RFReceiver.h>\n\n';
   code += '\n#include <PinChangeInterruptHandler.h>\n\n';
   code += 'RFReceiver receiver(' + value_pin + ');\n\n';
@@ -2853,7 +3302,7 @@ Blockly.Arduino['rf_sender433_init'] = function(block) {
   var value_pin = Blockly.Arduino.getValueForVariable(block, 'rfPin', Blockly.Arduino.ORDER_NONE);
   var node_id = Blockly.Arduino.getValueForVariable(block, 'nodeId', Blockly.Arduino.ORDER_NONE);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '\n#include <RFTransmitter.h>\n\n';
   code += 'RFTransmitter transmitter(' + value_pin + ', ' + node_id + ', 100, 100, 0);';
 
@@ -2889,7 +3338,7 @@ Blockly.Arduino['rf_sender433_send'] = function(block) {
   var tall1 = Blockly.Arduino.getValueForVariable(block, 'tall1', Blockly.Arduino.ORDER_NONE);
   var tall2 = Blockly.Arduino.getValueForVariable(block, 'tall2', Blockly.Arduino.ORDER_NONE);
 
-  // TODO: Assemble JavaScript into code variable.
+
 
   var packetLength = tekst.length - 2 + (tall1 + "").length + (tall2 + "").length;
 
@@ -2914,7 +3363,7 @@ Blockly.Blocks['rf_receiver433_setup'] = {
 };
 
 Blockly.Arduino['rf_receiver433_setup'] = function(block) {
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '\nreceiver.begin();';
   return code;
 };
@@ -2957,7 +3406,7 @@ Blockly.Arduino['rf_receiver433_read'] = function(block) {
   var variable_var_name = Blockly.Arduino.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
   var variable_value = Blockly.Arduino.getValueForVariable(block, "VALUE");
 
-  // TODO: Assemble JavaScript into code variable.
+
   code = '\tchar ' + variable_var_name + '[MAX_PACKAGE_SIZE];';
   code += "\tbyte " + variable_var_name + "_senderId = 0;";
   code += "\tbyte " + variable_var_name + "_packageId = 0;";
@@ -3005,7 +3454,7 @@ Blockly.Arduino['extract_from_array'] = function(block) {
   var value_name = Blockly.Arduino.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
   var value_number = Blockly.Arduino.getValueForVariable(block, "number");
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = value_name + "[" + value_number + "]";
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -3046,7 +3495,7 @@ Blockly.Blocks['array_length'] = {
 Blockly.Arduino['array_length'] = function(block) {
   var value_name = Blockly.Arduino.variableDB_.getName(block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = value_name + ".length()";
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -3068,7 +3517,7 @@ Blockly.Blocks['char_to_int'] = {
 Blockly.Arduino['char_to_int'] = function(block) {
   var value_name = Blockly.Arduino.getValueForVariable(block, 'input');
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '(' + value_name + " - '0')";
   // TODO: Change ORDER_NONE to the correct strength.
   return code;
@@ -3117,7 +3566,7 @@ Blockly.Blocks['dht11_init'] = {
 
 Blockly.Arduino['dht11_init'] = function(block) {
   var value_pin= Blockly.Arduino.getValueForVariable(block, 'dhtPin', Blockly.Arduino.ORDER_NONE);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = '\n#include <DHT.h>\n\n';
   code += '#define DHTPIN ' + value_pin + '\n\n';
   code += '#define DHTTYPE DHT11\n\n';
@@ -3141,7 +3590,7 @@ Blockly.Blocks['dht11_setup'] = {
 
 Blockly.Arduino['dht11_setup'] = function(block) {
   var value_pin= Blockly.Arduino.getValueForVariable(block, 'dhtPin', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'dht.begin();';
   return code;
 };
@@ -3160,7 +3609,7 @@ Blockly.Blocks['dht11_read_temp'] = {
 
 Blockly.Arduino['dht11_read_temp'] = function(block) {
   var value_pin= Blockly.Arduino.getValueForVariable(block, 'dhtPin', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'dht.readTemperature()';
   return code;
 };
@@ -3179,7 +3628,7 @@ Blockly.Blocks['dht11_read_humidity'] = {
 
 Blockly.Arduino['dht11_read_humidity'] = function(block) {
   var value_pin= Blockly.Arduino.getValueForVariable(block, 'dhtPin', Blockly.Arduino.ORDER_ATOMIC);
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'dht.readHumidity()';
   return code;
 };
@@ -3203,7 +3652,7 @@ Blockly.Blocks['arduino_raw_thermistor_to_temp_function'] = {
 
 Blockly.Arduino['arduino_raw_thermistor_to_temp_function'] = function(block) {
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = "// See http://en.wikipedia.org/wiki/Thermistor for explanation of formula\n\n";
     code += 'int thermistorTemp(int rawADC, boolean invertInput) {\n\n';
     code += "if (invertInput) { rawADC = 1024 - rawADC; }\n\n";
@@ -3240,7 +3689,7 @@ Blockly.Arduino['arduino_raw_thermistor_to_temp'] = function(block) {
   var value_analog_pin = Blockly.Arduino.getValueForVariable(block, 'analogPin', Blockly.Arduino.ORDER_ATOMIC);
   var dropdown_name = block.getFieldValue('invert');
 
-  // TODO: Assemble JavaScript into code variable.
+
   var code = 'thermistorTemp(' + value_analog_pin + "," + dropdown_name + ')';
   return code;
 };
