@@ -1,0 +1,43 @@
+{
+  "name": "Blockuino-Electron",
+  "version": "0.1.0",
+  "description": "An application that allows for direct uploads to Arduino from Blockuino.no",
+  "main": "index.js",
+  "dependencies": {
+    "electron-is-dev": "^0.1.2",
+    "menubar": "^5.1.0",
+    "brfs": "^1.3.0",
+    "transform-loader": "^0.2.1",
+    "intel-hex": "^0.1.1",
+    "avrgirl-arduino": "^1.11.12",
+    "avrgirl-stk500v2": "^1.1.0"
+  },
+  "devDependencies": {
+    "electron": "^1.4.0",
+    "electron-installer-dmg": "^0.2.1",
+    "electron-packager": "^8.7.2",
+    "electron-rebuild": "^1.5.11",
+    "electron-winstaller": "^2.6.3",
+    "standard": "^4.5.3"
+  },
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=app/icon.png --prune=true --out=release-builds",
+    "test": "standard index.js",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=./app/icon.ico --prune=true --out=release-builds",
+    "package-win": "electron-packager . blockuino-electron-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=app/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Blockuino Electron App\"",
+    "package-linux": "electron-packager . blockuino-electron-app--overwrite --asar=true --platform=linux --arch=x64 --icon=app/icon.png --prune=true --out=release-builds",
+	"create-installer-mac": "electron-installer-dmg ./release-builds/Blockuino-Electron-darwin-x64/Blockuino-Electron.app blockuino-electron-app --out=release-builds --overwrite --icon=app/icon.png",
+	"create-installer-win": "node installers/windows/createinstaller.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joachimhs/blockuino.git"
+  },
+  "author": "Joachim Haagen Skeie <joachim@kodegenet.no>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joachimhs/blockuino/issues"
+  },
+  "homepage": "https://github.com/joachimhs/blockuino"
+}

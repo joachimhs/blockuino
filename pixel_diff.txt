@@ -1,0 +1,245 @@
+diff --git a/blockuino-web/app/locales/en/translations.js b/blockuino-web/app/locales/en/translations.js
+index 1ead3d2..2f6b54c 100644
+--- a/blockuino-web/app/locales/en/translations.js
++++ b/blockuino-web/app/locales/en/translations.js
+@@ -79,9 +79,7 @@ export default {
+       "projectID": "Project ID ",
+       "created": "Created ",
+       "madeBy": "Made by ",
+-      "remixedBy": "Remixed by ",
+-      "videos": "Videos",
+-      "sketch": "Sketch"
++      "remixedBy": "Remixed by "
+     },
+     "divs": {
+       "copyCodeDescription": "If you want to upload your code to an Arduino via Arduino IDE or Arduino Create, you need to copy the code to the clipboard first, before pasting it in manually.",
+@@ -92,9 +90,7 @@ export default {
+       "installAddProgram": "To upload directly from Blockuino.no to an Arduino, you are required to download an additional program. Kodegenet has developed software that supports Chromebook via a Chrome app. We have also developed a Electron application (beta)",
+       "accountBlockuino": "Blockuino uses the same account as on kodegenet.no. If you don't have a kodegenet account you can create one here at ",
+       "loginKeySent": "You have been sent an email with a unique Login-Key to your email address. Log in by typing the Login-Key you have received down below",
+-      "uploadXML": "Here you can upload your XML-files that you have previously saved from Blockuino. You can also share Blockuino projects by sending them your XML-file",
+-      "docsInfo": "Blockuino is a simple block-based application with a purpose of generating Arduino code. The blocks can stick together with each other, then the complete Arduino code can be read on the right field. When the code is complete, you can copy and paste it into Arduino IDE to then upload to your Arduino",
+-
++      "uploadXML": "Here you can upload your XML-files that you have previously saved from Blockuino. You can also share Blockuino projects by sending them your XML-file"
+     },
+     "helpMenu": {
+       "label": "Get help with",
+diff --git a/blockuino-web/app/locales/no/translations.js b/blockuino-web/app/locales/no/translations.js
+index e74ce08..e0b6d0f 100644
+--- a/blockuino-web/app/locales/no/translations.js
++++ b/blockuino-web/app/locales/no/translations.js
+@@ -78,9 +78,7 @@ export default {
+       "projectID": "Prosjekt ID ",
+       "created": "Opprettet ",
+       "madeBy": "Laget av ",
+-      "remixedBy": "Remixet av ",
+-      "videos": "Videoer",
+-      "sketch": "Sketch"
++      "remixedBy": "Remixet av "
+ 
+     },
+     "divs": {
+@@ -92,7 +90,6 @@ export default {
+       "installAddProgram": "For å laste opp fra Blockuino.no direkte til Arduinoen, må du installere et tilleggsprogram. Kodegenet har utviklet programvare for å støtte Chromebook via en Chrome App, samt Windows og Mac via en egenutviklet Electron applikasjon (beta).",
+       "accountBlockuino": "Blockuino bruker samme konto som på kodegenet.no. Dersom du ikke har en Kodegenet bruker kan du opprette en på ",
+       "loginKeySent": "Kodegenet har sendt en epost med en unik innloggingsnøkkel til din epost addresse. Logg inn ved å fylle den inn nedenfor",
+-      "docsInfo": "Blockuino er et enkelt blokk-basert verktøy for å generere Arduino kode. Klossene kan kobles sammen, og den ferdige Arduino koden kan leses av i feltet til høyre. Når koden er ferdig kan den kopieres og limes inn i Arduino IDE for å lastes opp til Arduinoen din.",
+     },
+     "helpMenu": {
+       "label": "Få hjelp til",
+@@ -100,8 +97,7 @@ export default {
+       "neoPixelLabel": "Hvordan bruke LED Pixels",
+       "arduinoCarLabel": "Hvordan bruke motorkontroller",
+       "arduinoCarText": "Arduino Bil-prosjektet benytter en helt vanlig L293D motorkontroller. Denne kan styres ved hjelp av fire digitale pinner på Arduinoen. Arduino Bil-klossene hjelper deg på vei ved å gjøre programmeringen mye enklere!",
+-      "introText": "Hjelpemenyen nederst på skjermen vil alltid vise feilmeldinger, tips og triks basert på de kodeklossene som er i bruk i programmet ditt. Her vil du både finne gode feilmeldinger på koden din, samt tips for hvordan enkelte av klossene fungerer.",
+-
++      "introText": "Hjelpemenyen nederst på skjermen vil alltid vise feilmeldinger, tips og triks basert på de kodeklossene som er i bruk i programmet ditt. Her vil du både finne gode feilmeldinger på koden din, samt tips for hvordan enkelte av klossene fungerer."
+     },
+     "errors": {
+       "codeHas": "Koden har",
+diff --git a/blockuino-web/app/pods/application/template.hbs b/blockuino-web/app/pods/application/template.hbs
+index 4b0686f..c8ee952 100644
+--- a/blockuino-web/app/pods/application/template.hbs
++++ b/blockuino-web/app/pods/application/template.hbs
+@@ -129,7 +129,7 @@
+                     {{else}}
+                       {{fa-icon "check" size=2 border=false style="color: green;"}}
+                     {{/if}}
+-                      {{t "common.index.statusUpload"}}
++                    {{t "statusUpload"}}
+ 
+                   </td>
+                   <td>{{uploadError}}</td>
+diff --git a/blockuino-web/app/pods/components/blockly-comp/template.hbs b/blockuino-web/app/pods/components/blockly-comp/template.hbs
+index 1808966..24f5493 100644
+--- a/blockuino-web/app/pods/components/blockly-comp/template.hbs
++++ b/blockuino-web/app/pods/components/blockly-comp/template.hbs
+@@ -123,10 +123,8 @@
+     <block type="arduino_pixel_strip"></block>
+     <block type="arduino_pixel_strip_begin"></block>
+     <block type="arduino_pixel_strip_show"></block>
+-    <block type="arduino_pixel_strip_color"></block>
+     <block type="arduino_pixels_color"></block>
+-    <block type="arduino_pixels_color_rgb"></block>
+-    <block type="arduino_pixels_color_set"></block>
++    <block type="arduino_pixel_strip_color"></block>
+   </category>
+ 
+ 
+diff --git a/blockuino-web/app/pods/docs/template.hbs b/blockuino-web/app/pods/docs/template.hbs
+index 809f141..8ee197e 100644
+--- a/blockuino-web/app/pods/docs/template.hbs
++++ b/blockuino-web/app/pods/docs/template.hbs
+@@ -1,13 +1,15 @@
+ <div class="row">
+     <div class="col-md-offset-2 col-md-8">
+-        <h1>{{t "common.index.documentation"}}</h1>
++        <h1>Dokumentasjon</h1>
+ 
+-        <p>{{t "common.divs.docsInfo"}}</p>
++        <p>Blockuino er et enkelt blokk-basert verktøy for å generere Arduino kode. Klossene kan kobles sammen, og den
++            ferdige Arduino koden kan leses av i feltet til høyre. Når koden er ferdig kan den kopieres og limes inn i Arduino IDE
++            for å lastes opp til Arduinoen din.</p>
+ 
+         <img src="/blockuino.gif" style="max-width: 800px"/>
+ 
+       <div class="clearfix"></div>
+-      <h2>{{t "common.index.videos"}}</h2>
++      <h2>Videoer</h2>
+         <div style="text-align: center;">
+             <iframe width="560" height="315" src="https://www.youtube.com/embed/C1LwjOm0TIk" frameborder="0" allowfullscreen></iframe>
+         </div>
+diff --git a/blockuino-web/app/pods/sketch/template.hbs b/blockuino-web/app/pods/sketch/template.hbs
+index 00fe28c..d19f167 100644
+--- a/blockuino-web/app/pods/sketch/template.hbs
++++ b/blockuino-web/app/pods/sketch/template.hbs
+@@ -1,2 +1,2 @@
+ {{outlet}}
+-<h1>{{t "common.index.sketch"}}</h1>
+\ No newline at end of file
++<h1>Sketch</h1>
+\ No newline at end of file
+diff --git a/blockuino-web/vendor/blockly/custom_blocks.js b/blockuino-web/vendor/blockly/custom_blocks.js
+index 161c265..54a7898 100644
+--- a/blockuino-web/vendor/blockly/custom_blocks.js
++++ b/blockuino-web/vendor/blockly/custom_blocks.js
+@@ -1690,8 +1690,8 @@ Blockly.Blocks['arduino_pixel_strip_color'] = {
+     this.appendValueInput("BLUE")
+       .appendField(Blockly.Msg.ARDUINO_LED_STRIP_COLOR_BLUE);
+     this.setInputsInline(true);
+-    this.setPreviousStatement(true, null)
+-    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);;
++    this.setPreviousStatement(true, null);
++    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+     this.setNextStatement(true, null);
+     this.setTooltip(Blockly.Msg.ARDUINO_LED_STRIP_COLOR_TOOLTIP);
+     this.setHelpUrl('http://www.example.com/');
+@@ -1710,13 +1710,17 @@ Blockly.Arduino['arduino_pixel_strip_color'] = function(block) {
+   return code;
+ };
+ 
++Blockly.FieldColour.COLOURS = ['#f00','#0f0','#00f','#000','#888','#fff'];
++Blockly.FieldColour.COLUMNS = 3;
++
+ Blockly.Blocks['arduino_pixels_color'] = {
+   init: function() {
++
+     this.appendDummyInput()
+-      .appendField("Farge:")
+-      .appendField(new Blockly.FieldDropdown([["Red","r"], ["Green","g"], ["Blue","b"], ["Yellow","y"], ["Turquoise","t"], ["Purple","p"]]), "color");
++      .appendField("Farge: ")
++      .appendField(new Blockly.FieldColour('#ff0000'), 'color');
+     this.setOutput(true, null);
+-    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
++    this.setColour(this.setColour(Blockly.Blocks.ledPixelsHue.HUE));
+     this.setTooltip("");
+     this.setHelpUrl("");
+   }
+@@ -1727,85 +1731,9 @@ Blockly.Arduino['arduino_pixels_color'] = function(block) {
+ 
+   // TODO: Assemble JavaScript into code variable.
+   var code = '';
+-  if(dropdown_color === 'r') {
+-    code = 'strip.Color(100, 0, 0)'
+-  }
+-  else if(dropdown_color === 'g') {
+-    code = 'strip.Color(0, 100, 0)'
++  if (dropdown_color === 'r') {
++    code = 'strip.color(100, 0, 0)'
+   }
+-
+-  else if(dropdown_color === 'b'){
+-    code = 'strip.Color(0, 0, 100)'
+-  }
+-
+-  else if(dropdown_color === 'y'){
+-    code = 'strip.Color(255, 255, 0)'
+-  }
+-
+-  else if(dropdown_color === 't'){
+-    code = 'strip.Color(0, 255, 255)'
+-  }
+-
+-  else if(dropdown_color === 'p'){
+-    code = 'strip.Color(204, 204, 0)'
+-  }
+-  // TODO: Change ORDER_NONE to the correct strength.
+-  return code;
+-};
+-
+-Blockly.Blocks['arduino_pixels_color_rgb'] = {
+-  init: function() {
+-    this.appendDummyInput()
+-      .appendField("Farge: ");
+-    this.appendValueInput("Red")
+-      .setCheck(null)
+-      .appendField("Red: ");
+-    this.appendValueInput("Green")
+-      .setCheck(null)
+-      .appendField("Green: ");
+-    this.appendValueInput("Blue")
+-      .setCheck(null)
+-      .appendField("Blue: ");
+-    this.setInputsInline(false);
+-    this.setOutput(true, null);
+-    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+-    this.setTooltip("");
+-    this.setHelpUrl("");
+-  }
+-};
+-
+-Blockly.Arduino['arduino_pixels_color_rgb'] = function(block) {
+-  var value_red = Blockly.Arduino.getValueForVariable(block, 'Red', Blockly.Arduino.ORDER_ATOMIC);
+-  var value_green = Blockly.Arduino.getValueForVariable(block, 'Green', Blockly.Arduino.ORDER_ATOMIC);
+-  var value_blue = Blockly.Arduino.getValueForVariable(block, 'Blue', Blockly.Arduino.ORDER_ATOMIC);
+-  // TODO: Assemble JavaScript into code variable.
+-  var code = 'strip.Color(' + value_red + ', ' + value_green + ', ' + value_blue + ')';
+-  // TODO: Change ORDER_NONE to the correct strength.
+-  return code;
+-};
+-
+-Blockly.Blocks['arduino_pixels_color_set'] = {
+-  init: function() {
+-    this.appendValueInput("setPixel")
+-      .setCheck(null)
+-      .appendField("Gi pixel");
+-    this.appendValueInput("setColor")
+-      .setCheck(null)
+-      .appendField("fargen");
+-    this.setInputsInline(true);
+-    this.setPreviousStatement(true, null);
+-    this.setNextStatement(true, null);
+-    this.setColour(Blockly.Blocks.ledPixelsHue.HUE);
+-    this.setTooltip("");
+-    this.setHelpUrl("");
+-  }
+-};
+-
+-Blockly.Arduino['arduino_pixels_color_set'] = function(block) {
+-  var value_setPixel = Blockly.Arduino.getValueForVariable(block, 'setPixel', Blockly.Arduino.ORDER_ATOMIC);
+-  var value_setColor = Blockly.Arduino.getValueForVariable(block, 'setColor', Blockly.Arduino.ORDER_ATOMIC);
+-  // TODO: Assemble JavaScript into code variable.
+-  var code = 'strip.setPixelColor(' + value_setPixel + ',' + value_setColor + ');';
+   // TODO: Change ORDER_NONE to the correct strength.
+   return code;
+ };

@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="alert alert-info"><i class="glyphicon glyphicon-info-sign"></i> {{t "common.divs.accountBlockuino"}} <a href="https://kodegenet.no/login" target="_blank">kodegenet.no/login</a></div>
+
+  {{#if errorMessage}}
+    <div class="alert alert-danger" role="alert">{{errorMessage}}</div>
+  {{/if}}
+
+  {{#if session.session.username}}
+    <div>{{t "common.index.loggedInWith"}} {{session.session.username}}.
+      <button {{action "doLogOut"}}>{{t "common.index.logOut"}}</button>
+    </div>
+  {{else}}
+
+    <div class="clearfix"></div>
+
+    {{#unless readyForTokenInput}}
+      <form {{action "doGetToken" on="submit"}}>
+        <div class="form-group">
+          <label for="exampleInputEmail1">{{t "common.index.email"}}</label>
+          {{input type="email" value=model.email class="form-control" id="exampleInputEmail1" placeholder="Email"}}
+        </div>
+
+
+        <div class="text-left">
+          <button class="btn btn-primary">
+            <i class="fa fa-lock"></i> {{t "common.index.loginKeySend"}}
+          </button>
+        </div>
+      </form>
+    {{/unless}}
+
+
+    {{#if readyForTokenInput}}
+    <form {{action "doLogIn" on="submit"}}>
+      <div class="alert alert-warning">
+        {{t "common.divs.loginKeySent"}}
+      </div>
+
+      <div class="section label-placeholder">
+        <div class="input-set">
+          <fieldset>
+            {{input elementId="token" type="text" name="token" value=token classNames="input-placeholder" required=""}}
+            <label for="token">{{t "common.index.loginKey"}}</label>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="clearfix"></div>
+
+      <div class="text-left">
+        <button class="btn btn-primary">
+          <i class="fa fa-lock"></i> {{t "common.index.loginKeyWrite"}}
+        </button>
+      </div>
+    </form>
+    {{/if}}
+
+
+  {{/if}}
+
+</div>

@@ -1,0 +1,19 @@
+{
+  "name": "Blockuino HEX Uploader AVRGirl",
+  "version": "0.1.6",
+  "manifest_version": 2,
+  "minimum_chrome_version": "23",
+  "description": "Used by Blockuino to upload precompiled HEX files to Arduino.",
+
+  "app": {
+    "background": {
+      "scripts": [ "bundle.js" ]
+    }
+  },
+  "permissions": [
+    "serial"
+  ],
+  "externally_connectable": {
+    "matches": ["*://*.blockuino.no/*"]
+  }
+}
