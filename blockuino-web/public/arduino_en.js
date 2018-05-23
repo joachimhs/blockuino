@@ -589,3 +589,7 @@ Blockly.Msg.EEPROM_UPDATE= "Update EEPROM value";
 Blockly.Msg.EEPROM_WRITE_ADDRESS = "Address:";
 Blockly.Msg.EEPROM_WRITE_VALUE = "Value:";
 Blockly.Msg.EEPROM_UPDATE_TOOLTIP= "Use this block to update the value of a EEPROM address";
+
+Blockly.Msg.INCREMENT_ELEMENT_BY_ONE = "Increment the elementnumber: ";
+Blockly.Msg.FROM_LIST = "From list: ";
+Blockly.Msg.WITH_ONE = "with 1";

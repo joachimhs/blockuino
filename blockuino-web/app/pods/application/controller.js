@@ -400,6 +400,7 @@ export default Ember.Controller.extend({
     closeUploadPanel() {
       Ember.$("#uploadProjectModal").modal('hide');
 
+      selectedArduino = selectedArduino;
       var self = this;
       Ember.run.later(function () {
         self.set('showUploadToArduinoModal', false);

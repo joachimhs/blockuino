@@ -152,6 +152,7 @@ module.exports = function(defaults) {
   app.import('vendor/blockly/custom/arduino_raw_thermistor_to_temp.js');
   app.import('vendor/blockly/custom/logic_compare.js');
   app.import('vendor/blockly/custom/controls_whileUntil.js');
+  app.import('vendor/blockly/custom/arduino_list_increment.js');
 
 
 

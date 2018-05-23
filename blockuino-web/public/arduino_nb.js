@@ -593,3 +593,7 @@ Blockly.Msg.EEPROM_UPDATE= "Oppdater EEPROM Verdi";
 Blockly.Msg.EEPROM_WRITE_ADDRESS = "Addresse:";
 Blockly.Msg.EEPROM_WRITE_VALUE = "Verdi:";
 Blockly.Msg.EEPROM_UPDATE_TOOLTIP= "Bruk denne klossen for å oppdatere en verdi til EEPROM addressen angitt";
+
+Blockly.Msg.INCREMENT_ELEMENT_BY_ONE = "Increment the elementnumber: ";
+Blockly.Msg.FROM_LIST = "From list: ";
+Blockly.Msg.WITH_ONE = "with 1";
