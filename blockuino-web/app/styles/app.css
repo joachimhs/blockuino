@@ -26,6 +26,11 @@
   border: 1px #000 solid;
 }
 
+.blocklyFlyout{
+  height: auto;
+  width: auto;
+}
+
 .tilbakemelding-area {
   margin-top: 20px;
   margin-left: 20px;
@@ -224,11 +229,11 @@
 }
 
 .context-help {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   background-color: white;
-  height: 50px;
-  line-height: 50px;
+  height: 45px;
+  line-height: 45px;
   padding-left: 30px;
   padding-right: 30px;
   overflow: hidden;

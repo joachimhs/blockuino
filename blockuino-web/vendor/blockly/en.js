@@ -506,3 +506,9 @@ Blockly.Msg.RF_RECEIVER_433_SETUP = "RF 433 MHz setup";
 Blockly.Msg.RF_RECEIVER_433_SETUP_TOOLTIP = "Place this block in setup to use the 433 MHz sender";
 Blockly.Msg.RF_RECEIVER_433_READ= "Read from RF 433 and save in variable";
 Blockly.Msg.RF_RECEIVER_433_READ_TOOLTIP= "Use this block to read from RF433";
+
+Blockly.Msg.INCREMENT_ELEMENT_BY_ONE = "Increment the elementnumber: ";
+Blockly.Msg.FROM_LIST = "From list: ";
+Blockly.Msg.WITH_ONE = "with 1";
+
+
